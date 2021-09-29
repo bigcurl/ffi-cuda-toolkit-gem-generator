@@ -4,6 +4,7 @@ ruby '3.0.2'
 gem 'clamp'
 gem 'ox'
 gem 'typhoeus'
+gem 'erb'
 
 group :development do
   gem 'irb'

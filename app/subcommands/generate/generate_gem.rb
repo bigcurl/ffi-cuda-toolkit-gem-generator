@@ -71,8 +71,6 @@ class GenerateGem < ApplicationSubcommand
     ### Parse modules from html
     ### Transform parsed output to ruby code
     ### Genrate class from template
-
-    # Save files on disk
   end
 
   private
