@@ -80,12 +80,30 @@ class GenerateDriverApi < ApplicationSubcommand
   def parse_struct_html_pages(struct_html_pages_paths)
     c_type_structs = []
     struct_html_pages_paths.each do |struct_html_pages_path|
-      c_type_struct = {name: "", layout: [{name: "", type: ""}]}
-      doc = Nokogiri::HTML(struct_html_pages_path)
-      doc.css('nav ul.menu li a', 'article h2').each do |link|
-        puts link.content
+      struct_name = ''
+      layout = []
+
+      doc = File.open(struct_html_pages_path) { |f| Nokogiri::HTML(f) }
+      doc.css('.description span').each do |description|
+        # "size_t  CUDA_ARRAY3D_DESCRIPTOR_v2::Height [inherited] "
+        if description.elements.count == 3
+          return_type = description.elements[0].text.strip.split('\n').join(' ')
+          struct_name = description.elements[1].text.strip
+          function_name = description.elements[2].text.strip
+        elsif description.elements.count == 2
+          return_type = description.child.text.split("\n").join('').strip.split.join(' ')
+          struct_name = description.elements[0].text.strip
+          function_name = description.elements[1].text.strip
+        end
+
+        # Fix errors in documents from nvidia
+        return_type = 'void *' if return_type == '*'
+        return_type = 'void *' if return_type.include? '[MAX_PLANES]'
+
+        layout << { function_name: function_name, return_type: return_type }
       end
-      c_type_structs << c_type_struct
+
+      c_type_structs << { struct_name: struct_name, layout: layout } unless layout.empty?
     end
     c_type_structs
   end
