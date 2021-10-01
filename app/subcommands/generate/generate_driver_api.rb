@@ -1,12 +1,12 @@
-class GenerateGem < ApplicationSubcommand
+class GenerateDriverApi < ApplicationSubcommand
   def execute
     @logger = Logger.new(STDOUT)
-    @logger.info 'Start generate-gem subcommand'
+    @logger.info 'Start generate-driver-api subcommand'
 
     # Select version to parse
     cuda_version = '11.4.2' # default for now
 
-    # Parse html documentation
+    # Parsrequiree html documentation
     cuda_docu_path = File.join(__dir__, "../../../archived_documentation/#{cuda_version}/")
 
     ## Generate unions
@@ -71,12 +71,23 @@ class GenerateGem < ApplicationSubcommand
     ### Parse modules from html
     ### Transform parsed output to ruby code
     ### Genrate class from template
+
+    @logger.info 'End generate-driver-api subcommand'
   end
 
   private
 
-  def parse_struct_html_pages(_struct_html_pages_paths)
+  def parse_struct_html_pages(struct_html_pages_paths)
     c_type_structs = []
+    struct_html_pages_paths.each do |struct_html_pages_path|
+      c_type_struct = {name: "", layout: [{name: "", type: ""}]}
+      doc = Nokogiri::HTML(struct_html_pages_path)
+      doc.css('nav ul.menu li a', 'article h2').each do |link|
+        puts link.content
+      end
+      c_type_structs << c_type_struct
+    end
+    c_type_structs
   end
 
   def transform_c_type_structs_into_ruby_type_structs(_c_type_structs)

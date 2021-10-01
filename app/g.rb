@@ -6,7 +6,7 @@ require 'bundler/setup'
 
 require 'clamp'
 
-require 'ox'
+require 'nokogiri'
 require 'typhoeus'
 
 require 'byebug'
@@ -18,11 +18,11 @@ Dir[File.join(base_path, 'app/**/*', '*.rb')].sort.each { |file| require file }
 
 Clamp do
   option '--version', :flag, 'Show version' do
-    puts '0.0.1'
+    puts '11.4.2.0'
     exit(0)
   end
 
   subcommand 'generate', 'Generator subcommand' do
-    subcommand 'gem', 'Generates the gem', GenerateGem
+    subcommand 'driver-api', 'Generates the driver api', GenerateDriverApi
   end
 end
