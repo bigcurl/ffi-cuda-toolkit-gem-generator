@@ -125,7 +125,7 @@ class GenerateDriverApi < ApplicationSubcommand
       layout = []
 
       layout = c_type_struct[:layout].map do |layout_pair|
-        puts layout_pair[:return_type] if ffi_types(layout_pair[:return_type]).nil?
+        # TODO DEBUG: puts layout_pair[:return_type] if ffi_types(layout_pair[:return_type]).nil?
         layout_pair[:return_type] = ffi_types(layout_pair[:return_type])
         layout_pair
       end
@@ -175,8 +175,6 @@ class GenerateDriverApi < ApplicationSubcommand
       'CUeglFrameType' => :pointer,
       'CUmemAccess_flags' => :pointer,
       'CUmemLocation' => :pointer,
-      'CUmemAllocationHandleType' => :pointer,
-      'CUmemAllocationType' => :pointer,
       'CUmemLocationType' => :pointer,
       'CUmemAllocationType' => :pointer,
       'CUmemAllocationHandleType' => :pointer,
