@@ -4,7 +4,8 @@ ruby '3.0.2'
 gem 'clamp'
 gem 'nokogiri'
 gem 'typhoeus'
-gem 'erb'
+gem 'erubi'
+gem 'ostruct'
 
 group :development do
   gem 'irb'

@@ -1,3 +1,4 @@
 class ApplicationSubcommand < Clamp::Command
-  require 'erb'
+  require 'erubi'
+  require 'ostruct'
 end

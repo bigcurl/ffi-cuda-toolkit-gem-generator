@@ -42,11 +42,18 @@ class GenerateDriverApi < ApplicationSubcommand
     #   layout :mi, MouseInput
     # end
 
-    struct_template = %{
-      class <%= ruby_type_structs[name] %> < FFI::Struct
-      layout <%= ruby_type_structs[layout].join(',\n') %>
+    struct_template = %(
+      class <%= name %> < FFI::Struct
+      layout <% for i in layout %>
+      "<%= i[:function_name] %>", "<%= i[:return_type] %>"
+      <% end %>
       end
-    }
+    )
+
+    a = Erubi::Engine.new(struct_template).src
+    br = OpenStruct.new(ruby_type_structs.first).instance_eval(a)
+    br.strip!
+    File.open('yourfile.rb', 'w') { |file| file.write(br) }
 
     ## Generate typedefs
     ### Garther html pages
@@ -125,7 +132,7 @@ class GenerateDriverApi < ApplicationSubcommand
       layout = []
 
       layout = c_type_struct[:layout].map do |layout_pair|
-        # TODO DEBUG: puts layout_pair[:return_type] if ffi_types(layout_pair[:return_type]).nil?
+        # TODO: DEBUG: puts layout_pair[:return_type] if ffi_types(layout_pair[:return_type]).nil?
         layout_pair[:return_type] = ffi_types(layout_pair[:return_type])
         layout_pair
       end
