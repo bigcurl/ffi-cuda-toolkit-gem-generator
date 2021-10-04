@@ -37,23 +37,7 @@ class GenerateDriverApi < ApplicationSubcommand
     ### Transform parsed output to ruby code
     ruby_type_structs = transform_c_types_into_ffi_types(c_type_structs)
 
-    ### Generate class from template
-    # class InputEvent < FFI::Struct
-    #   layout :mi, MouseInput
-    # end
-
-    struct_template = %(
-      class <%= name %> < FFI::Struct
-      layout <% for i in layout %>
-      "<%= i[:function_name] %>", "<%= i[:return_type] %>"
-      <% end %>
-      end
-    )
-
-    a = Erubi::Engine.new(struct_template).src
-    br = OpenStruct.new(ruby_type_structs.first).instance_eval(a)
-    br.strip!
-    File.open('yourfile.rb', 'w') { |file| file.write(br) }
+    store_ruby_type_structs_on_disk(ruby_type_structs)
 
     ## Generate typedefs
     ### Garther html pages
@@ -187,5 +171,39 @@ class GenerateDriverApi < ApplicationSubcommand
       'CUmemAllocationHandleType' => :pointer,
       'CUexternalMemoryHandleType' => :pointer
     }[ffi_type]
+  end
+
+  def store_ruby_type_structs_on_disk(ruby_type_structs)
+    ### Generate class from template
+    # class InputEvent < FFI::Struct
+    #   layout :mi, MouseInput
+    # end
+
+    struct_template = %(
+      class <%= name %> < FFI::Struct
+      layout <%= layout %>
+      end
+    )
+
+    # create module folder
+    FileUtils.mkdir_p 'module'
+
+    a = Erubi::Engine.new(struct_template).src
+    ruby_type_structs.each do |ruby_type_struct|
+      layout = ruby_type_struct[:layout].map { |x| ":#{x[:function_name]}, :#{x[:return_type]}" }.join(",\n ")
+      name = ruby_type_struct[:struct_name]
+
+      splitted_file_name = name.split('_')[0..-2].first
+      file_name = if splitted_file_name == splitted_file_name.upcase
+                    name.downcase.snake_case
+                  else
+                    name.snake_case.gsub('c_u', 'cu_')
+                  end
+
+      file_name = "#{file_name}.rb"
+
+      br = OpenStruct.new(name: name, layout: layout).instance_eval(a)
+      File.open(File.join('module', "#{name.snake_case}.rb"), 'w') { |file| file.write(br) }
+    end
   end
 end

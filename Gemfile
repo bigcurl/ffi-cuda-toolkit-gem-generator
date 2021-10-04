@@ -6,6 +6,7 @@ gem 'nokogiri'
 gem 'typhoeus'
 gem 'erubi'
 gem 'ostruct'
+gem 'lucky_case'
 
 group :development do
   gem 'irb'
