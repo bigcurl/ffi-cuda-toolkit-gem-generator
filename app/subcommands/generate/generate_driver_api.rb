@@ -180,7 +180,7 @@ class GenerateDriverApi < ApplicationSubcommand
     # end
 
     struct_template = %(
-      class <%= name %> < FFI::Struct
+      class <%= struct_name %> < FFI::Struct
       layout <%= layout %>
       end
     )
@@ -193,17 +193,23 @@ class GenerateDriverApi < ApplicationSubcommand
       layout = ruby_type_struct[:layout].map { |x| ":#{x[:function_name]}, :#{x[:return_type]}" }.join(",\n ")
       name = ruby_type_struct[:struct_name]
 
-      splitted_file_name = name.split('_')[0..-2].first
-      file_name = if splitted_file_name == splitted_file_name.upcase
+      splitted_name = name.split('_v').first
+
+      struct_name = if splitted_name == splitted_name.upcase
+                      name.downcase.pascal_case
+                    else
+                      name
+                    end
+      br = OpenStruct.new(name: struct_name, layout: layout).instance_eval(a)
+
+      file_name = if splitted_name == splitted_name.upcase
                     name.downcase.snake_case
                   else
                     name.snake_case.gsub('c_u', 'cu_')
                   end
 
       file_name = "#{file_name}.rb"
-
-      br = OpenStruct.new(name: name, layout: layout).instance_eval(a)
-      File.open(File.join('module', "#{name.snake_case}.rb"), 'w') { |file| file.write(br) }
+      File.open(File.join('module', file_name), 'w') { |file| file.write(br) }
     end
   end
 end
