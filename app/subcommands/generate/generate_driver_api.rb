@@ -116,12 +116,19 @@ class GenerateDriverApi < ApplicationSubcommand
       layout = []
 
       layout = c_type_struct[:layout].map do |layout_pair|
-        # TODO: DEBUG: puts layout_pair[:return_type] if ffi_types(layout_pair[:return_type]).nil?
-        layout_pair[:return_type] = ffi_types(layout_pair[:return_type])
-        layout_pair
+        return_type = ffi_types(layout_pair[:return_type])
+        if return_type.nil?
+          puts 'Problem while parsing return type: ' + layout_pair[:return_type]
+          nil
+        else
+          layout_pair[:return_type] = return_type
+          layout_pair
+        end
       end
 
-      ruby_type_structs << { struct_name: struct_name, layout: layout } unless layout.empty?
+      next if layout.nil? || layout.any? { |x| x.nil? }
+
+      ruby_type_structs << { struct_name: struct_name, layout: layout }
     end
     ruby_type_structs
   end
@@ -186,7 +193,7 @@ class GenerateDriverApi < ApplicationSubcommand
     )
 
     # create module folder
-    FileUtils.mkdir_p 'module'
+    FileUtils.mkdir_p 'modules/structs'
 
     a = Erubi::Engine.new(struct_template).src
     ruby_type_structs.each do |ruby_type_struct|
@@ -198,7 +205,7 @@ class GenerateDriverApi < ApplicationSubcommand
       struct_name = if splitted_name == splitted_name.upcase
                       name.downcase.pascal_case
                     else
-                      name
+                      name.pascal_case
                     end
       br = OpenStruct.new(name: struct_name, layout: layout).instance_eval(a)
 
@@ -209,7 +216,7 @@ class GenerateDriverApi < ApplicationSubcommand
                   end
 
       file_name = "#{file_name}.rb"
-      File.open(File.join('module', file_name), 'w') { |file| file.write(br) }
+      File.open(File.join('modules', 'structs', file_name), 'w') { |file| file.write(br) }
     end
   end
 end
