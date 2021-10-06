@@ -6,27 +6,25 @@ class GenerateDriverApi < ApplicationSubcommand
     # Select version to parse
     cuda_version = '11.4.2' # default for now
 
-    # Parsrequiree html documentation
-    cuda_docu_path = File.join(__dir__, "../../../archived_documentation/#{cuda_version}/")
+    # Parse required html documentation
+    cuda_docu_path = File.join(__dir__, "../../../archived_documentation/#{cuda_version}/cuda-driver-api")
 
-    ## Generate unions
-    ### Garther html pages
-    union_html_pages_paths = Dir[File.join(cuda_docu_path, 'cuda-driver-api', 'union*')].sort
+    parse_structs_from_documentation(cuda_docu_path)
+    parse_unions_from_documentation(cuda_docu_path)
+    parse_typedefs_from_documentation(cuda_docu_path)
+    parse_defines_from_documentation(cuda_docu_path)
+    parse_enums_from_documentation(cuda_docu_path)
+    parse_functions_from_documentation(cuda_docu_path)
 
-    ### Parse from html
-    # union = {name: "", layout: [{name: "", type: ""}]}
+    @logger.info 'End generate-driver-api subcommand'
+  end
 
-    ### Transform c types output into ffi types
+  private
 
-    ### Generate class from template
-
-    # class InputEvent < FFI::Union
-    #   layout :mi, MouseInput
-    # end
-
+  def parse_structs_from_documentation(cuda_docu_path)
     ## Generate structs
     ### Garther html pages
-    struct_html_pages_paths = Dir[File.join(cuda_docu_path, 'cuda-driver-api', 'struct*')].sort
+    struct_html_pages_paths = Dir[File.join(cuda_docu_path, 'struct*')].sort
     # remove Data types used by CUDA driver from list
     struct_html_pages_paths.reject! { |name| name.include? 'group__CUDA__TYPES.html' }
 
@@ -38,35 +36,56 @@ class GenerateDriverApi < ApplicationSubcommand
     ruby_type_structs = transform_c_types_into_ffi_types(c_type_structs)
 
     store_ruby_type_structs_on_disk(ruby_type_structs)
+  end
 
+  def parse_unions_from_documentation(cuda_docu_path)
+    ## Generate unions
+    ### Garther html pages
+    union_html_pages_paths = Dir[File.join(cuda_docu_path, 'union*')].sort
+
+    ### Parse from html
+    # union = {name: "", layout: [{name: "", type: ""}]}
+
+    ### Transform c types output into ffi types
+
+    ### Generate class from template
+
+    # class InputEvent < FFI::Union
+    #   layout :mi, MouseInput
+    # end
+  end
+
+  def parse_typedefs_from_documentation(cuda_docu_path)
     ## Generate typedefs
     ### Garther html pages
     ### Parse typedefs from html
     ### Transform parsed output to ruby code
     ### Genrate class from template
+  end
 
+  def parse_defines_from_documentation(cuda_docu_path)
     ## Generate define
     ### Garther html pages
     ### Parse typedefs from html
     ### Transform parsed output to ruby code
     ### Genrate class from template
+  end
 
+  def parse_enums_from_documentation(cuda_docu_path)
     ## Generate enum
     ### Garther html pages
     ### Parse typedefs from html
     ### Transform parsed output to ruby code
     ### Genrate class from template
+  end
 
+  def parse_functions_from_documentation(cuda_docu_path)
     ## Generate modules/functions
     ### Garther html pages
     ### Parse modules from html
     ### Transform parsed output to ruby code
     ### Genrate class from template
-
-    @logger.info 'End generate-driver-api subcommand'
   end
-
-  private
 
   def parse_struct_html_pages(struct_html_pages_paths)
     c_type_structs = []
@@ -118,7 +137,7 @@ class GenerateDriverApi < ApplicationSubcommand
       layout = c_type_struct[:layout].map do |layout_pair|
         return_type = ffi_types(layout_pair[:return_type])
         if return_type.nil?
-          puts 'Problem while parsing return type: ' + layout_pair[:return_type]
+          puts 'Problem while parsing struct return type: ' + layout_pair[:return_type]
           nil
         else
           layout_pair[:return_type] = return_type
