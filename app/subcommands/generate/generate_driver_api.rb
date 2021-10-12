@@ -153,9 +153,9 @@ class GenerateDriverApi < ApplicationSubcommand
         module DriverApi
           module <%= module_name %>
             extend FFI::Library
-            ffi_lib 'cuda-path'
+            ffi_lib '/usr/local/cuda-11.4/targets/x86_64-linux/lib/stubs/libcuda.so'
             <% for function in functions %>
-            attach_function <%= function[:name] %>, [<%= function[:args] %>], <%= function[:return_type] %>
+            attach_function :<%= function[:name] %>, [<%= function[:args] %>], <%= function[:return_type] %>
             <% end %>
           end
         end
@@ -337,7 +337,7 @@ class GenerateDriverApi < ApplicationSubcommand
       'CUmemAllocationHandleType' => :pointer,
       'CUexternalMemoryHandleType' => :pointer,
       # functions
-      'CUresult' => :pointer,
+      'CUresult' => :int,
       'CUcontext*' => :pointer,
       'CUdevice' => :pointer,
       'CUexecAffinityParam*' => :pointer,
