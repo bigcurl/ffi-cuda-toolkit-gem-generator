@@ -11,10 +11,15 @@ require 'typhoeus'
 
 require 'byebug'
 
+require 'fileutils'
+require 'erubi'
+require 'ostruct'
+require 'lucky_case/string'
+
 # require all model files
 base_path = File.join(__dir__, '../')
-Dir[File.join(base_path, 'app/**/*', '*application_*.rb')].sort.each { |file| require file }
-Dir[File.join(base_path, 'app/**/*', '*.rb')].sort.each { |file| require file }
+Dir[File.join(base_path, 'lib/**/*', '*application_*.rb')].sort.each { |file| require file }
+Dir[File.join(base_path, 'lib/**/*', '*.rb')].sort.each { |file| require file }
 
 Clamp do
   option '--version', :flag, 'Show version' do

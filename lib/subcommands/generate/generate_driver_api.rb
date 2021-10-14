@@ -1,13 +1,15 @@
 class GenerateDriverApi < ApplicationSubcommand
+  option ['--cuda-version'],
+         'N',
+         'version of cuda to parse',
+         default: '11.4.2'
+
   def execute
     @logger = Logger.new(STDOUT)
     @logger.info 'Start generate-driver-api subcommand'
 
-    # Select version to parse
-    cuda_version = '11.4.2' # default for now
-
     # Parse required html documentation
-    cuda_docu_path = File.join(__dir__, "../../../archived_documentation/#{cuda_version}/cuda-driver-api")
+    cuda_docu_path = File.join(__dir__, "../../../vendor/nvidia/cuda-documentation/#{cuda_version}/cuda-driver-api")
 
     parse_structs_from_documentation(cuda_docu_path)
     # parse_unions_from_documentation(cuda_docu_path)
@@ -153,9 +155,9 @@ class GenerateDriverApi < ApplicationSubcommand
         module DriverApi
           module <%= module_name %>
             extend FFI::Library
-            ffi_lib '/usr/local/cuda-11.4/targets/x86_64-linux/lib/stubs/libcuda.so'
+            ffi_lib '/usr/lib/x86_64-linux-gnu/libcuda.so'
             <% for function in functions %>
-            attach_function :<%= function[:name] %>, [<%= function[:args] %>], <%= function[:return_type] %>
+            attach_function :<%= function[:name].to_sym %>, [<%= function[:args] %>], <%= function[:return_type] %>
             <% end %>
           end
         end
@@ -167,13 +169,11 @@ class GenerateDriverApi < ApplicationSubcommand
 
     template = Erubi::Engine.new(function_template).src
     ffi_type_modules.each do |ffi_type_module|
-      functions = []
-
-      ffi_type_module[:functions].each do |ffi_type_function|
-        args = ffi_type_function[:args].map { |x| ":#{x[:type]}" }.join(', ')
-        name = ffi_type_function[:function_name]
-        return_type = ":#{ffi_type_function[:return_type]}"
-        functions << { name: name, args: args, return_type: return_type }
+      functions = ffi_type_module[:functions].map do |ffi_type_function|
+        args = ffi_type_function[:args].map { |x| x[:type].to_sym.to_s }.join(', ')
+        name = ffi_type_function[:function_name].to_sym
+        return_type = ":#{ffi_type_function[:return_type].to_sym}"
+        { name: name, args: args, return_type: return_type }
       end
 
       module_name = ffi_type_module[:module_name].downcase.pascal_case
