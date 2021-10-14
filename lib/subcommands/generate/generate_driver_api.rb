@@ -26,25 +26,15 @@ class GenerateDriverApi < ApplicationSubcommand
   private
 
   def parse_structs_from_documentation(cuda_docu_path)
-    ## Generate structs
-    ### Garther html pages
     struct_html_pages_paths = Dir[File.join(cuda_docu_path, 'struct*')].sort
-    # remove Data types used by CUDA driver from list
     struct_html_pages_paths.reject! { |name| name.include? 'group__CUDA__TYPES.html' }
 
-    ### Parse structs from html
-    # struct = {name: "", layout: [{name: "", type: ""}]}
     c_type_structs = parse_struct_html_pages(struct_html_pages_paths)
-
-    ### Transform parsed output to ffi code
     ffi_type_structs = transform_struct_c_types_into_ffi_types(c_type_structs)
-
     store_ffi_type_structs_on_disk(ffi_type_structs)
   end
 
   def parse_unions_from_documentation(cuda_docu_path)
-    ## Generate unions
-    ### Garther html pages
     union_html_pages_paths = Dir[File.join(cuda_docu_path, 'union*')].sort
 
     ### Parse from html
@@ -68,19 +58,12 @@ class GenerateDriverApi < ApplicationSubcommand
   end
 
   def parse_functions_from_documentation(cuda_docu_path)
-    ## Generate structs
-    ### Garther html pages
     function_html_pages_paths = Dir[File.join(cuda_docu_path, 'group__CUDA__*')].sort
-    # remove Data types used by CUDA driver from list
     function_html_pages_paths.reject! { |name| name.include? 'group__CUDA__TYPES.html' }
 
-    ### Parse structs from html
     # struct = {module_name: "", functions: [{function_name: "", return_type: "type", arguments: ["type"]}]}
     c_type_functions = parse_function_html_pages(function_html_pages_paths)
-
-    ### Transform parsed output to ffi code
     ffi_type_functions = transform_function_c_types_into_ffi_types(c_type_functions)
-
     store_ffi_type_functions_on_disk(ffi_type_functions)
   end
 
@@ -167,12 +150,12 @@ class GenerateDriverApi < ApplicationSubcommand
     )
 
     # create module folder
-    FileUtils.mkdir_p 'modules/functions'
+    FileUtils.mkdir_p 'modules/driver/functions'
 
     template = Erubi::Engine.new(function_template).src
     ffi_type_modules.each do |ffi_type_module|
       functions = ffi_type_module[:functions].map do |ffi_type_function|
-        args = ffi_type_function[:args].map { |x| x[:type].to_sym.to_s }.join(', ')
+        args = ffi_type_function[:args].map { |x| ":#{x[:type]}" }.join(', ') # ugly to get sym but works
         name = ffi_type_function[:function_name].to_sym
         return_type = ":#{ffi_type_function[:return_type].to_sym}"
         { name: name, args: args, return_type: return_type }
@@ -185,7 +168,7 @@ class GenerateDriverApi < ApplicationSubcommand
       file_name = ffi_type_module[:module_name].downcase.snake_case
 
       file_name = "#{file_name}.rb"
-      File.open(File.join('modules', 'functions', file_name), 'w') { |file| file.write(br) }
+      File.open(File.join('modules', 'driver', 'functions', file_name), 'w') { |file| file.write(br) }
     end
   end
 
