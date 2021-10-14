@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GenerateDriverApi < ApplicationSubcommand
   option ['--cuda-version'],
          'N',
@@ -5,7 +7,7 @@ class GenerateDriverApi < ApplicationSubcommand
          default: '11.4.2'
 
   def execute
-    @logger = Logger.new(STDOUT)
+    @logger = Logger.new($stdout)
     @logger.info 'Start generate-driver-api subcommand'
 
     # Parse required html documentation
@@ -123,13 +125,13 @@ class GenerateDriverApi < ApplicationSubcommand
       c_type_module[:functions].each do |c_type_function|
         function_name = c_type_function[:function_name]
         return_type = ffi_types(c_type_function[:return_type])
-        puts 'Problem while parsing function return type: ' + c_type_function[:return_type] if return_type.nil?
+        puts "Problem while parsing function return type: #{c_type_function[:return_type]}" if return_type.nil?
 
         args = []
 
         args = c_type_function[:args].map do |args_pair|
           type = ffi_types(args_pair[:type])
-          puts 'Problem while parsing function return type: ' + args_pair[:type] if type.nil?
+          puts "Problem while parsing function return type: #{args_pair[:type]}" if type.nil?
           args_pair[:type] = type
           args_pair
         end
@@ -196,11 +198,12 @@ class GenerateDriverApi < ApplicationSubcommand
       doc = File.open(struct_html_pages_path) { |f| Nokogiri::HTML(f) }
       doc.css('.description span').each do |description|
         # "size_t  CUDA_ARRAY3D_DESCRIPTOR_v2::Height [inherited] "
-        if description.elements.count == 3
+        case description.elements.count
+        when 3
           return_type = description.elements[0].text.strip.split('\n').join(' ')
           struct_name = description.elements[1].text.strip
           function_name = description.elements[2].text.strip
-        elsif description.elements.count == 2
+        when 2
           return_type = description.child.text.split("\n").join('').strip.split.join(' ')
           struct_name = description.elements[0].text.strip
           function_name = description.elements[1].text.strip
@@ -237,7 +240,7 @@ class GenerateDriverApi < ApplicationSubcommand
       layout = c_type_struct[:layout].map do |layout_pair|
         return_type = ffi_types(layout_pair[:return_type])
         if return_type.nil?
-          puts 'Problem while parsing struct return type: ' + layout_pair[:return_type]
+          puts "Problem while parsing struct return type: #{layout_pair[:return_type]}"
           nil
         else
           layout_pair[:return_type] = return_type
@@ -245,7 +248,7 @@ class GenerateDriverApi < ApplicationSubcommand
         end
       end
 
-      next if layout.nil? || layout.any? { |x| x.nil? }
+      next if layout.nil? || layout.any?(&:nil?)
 
       ffi_type_structs << { struct_name: struct_name, layout: layout }
     end
