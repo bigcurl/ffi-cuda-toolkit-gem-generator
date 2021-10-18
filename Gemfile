@@ -15,5 +15,7 @@ group :development do
   gem 'irb'
 
   gem 'rubocop'
+  gem 'rubocop-minitest'
+  gem 'rubocop-rake'
   gem 'solargraph'
 end
