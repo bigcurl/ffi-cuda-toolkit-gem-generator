@@ -209,8 +209,11 @@ class GenerateDriverApi < ApplicationSubcommand
       module Cuda
         module DriverApi
           module <%= module_name %>
+            include Cuda::DriverApi:Enums
+
             extend FFI::Library
             ffi_lib '/usr/lib/x86_64-linux-gnu/libcuda.so'
+
             <% for function in functions %>
             attach_function :<%= function[:name].to_sym %>, [<%= function[:args] %>], <%= function[:return_type] %>
             <% end %>
