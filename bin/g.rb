@@ -23,7 +23,7 @@ Dir[File.join(base_path, 'lib/**/*', '*.rb')].sort.each { |file| require file }
 
 Clamp do
   option '--version', :flag, 'Show version' do
-    puts '11.4.2.0'
+    puts '0.0.1.pre'
     exit(0)
   end
 
