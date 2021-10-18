@@ -13,11 +13,11 @@ class GenerateDriverApi < ApplicationSubcommand
     # Parse required html documentation
     cuda_docu_path = File.join(__dir__, "../../../vendor/nvidia/cuda-documentation/#{cuda_version}/cuda-driver-api")
 
-    parse_structs_from_documentation(cuda_docu_path)
+    # parse_structs_from_documentation(cuda_docu_path)
     # parse_unions_from_documentation(cuda_docu_path)
     # parse_typedefs_from_documentation(cuda_docu_path)
     # parse_defines_from_documentation(cuda_docu_path)
-    # parse_enums_from_documentation(cuda_docu_path)
+    parse_enums_from_documentation(cuda_docu_path)
     parse_functions_from_documentation(cuda_docu_path)
 
     @logger.info 'End generate-driver-api subcommand'
@@ -50,11 +50,83 @@ class GenerateDriverApi < ApplicationSubcommand
   end
 
   def parse_enums_from_documentation(cuda_docu_path)
-    ## Generate enum
-    ### Garther html pages
-    ### Parse typedefs from html
-    ### Transform parsed output to ffi code
-    ### Genrate class from template
+    enum_html_pages_paths = Dir[File.join(cuda_docu_path, 'group__CUDA__*')].sort
+    enum_html_pages_paths.select! { |name| name.include? 'group__CUDA__TYPES.html' }
+
+    c_type_enums = parse_enum_html_pages(enum_html_pages_paths)
+    store_c_type_enums_on_disk(c_type_enums)
+  end
+
+  def parse_enum_html_pages(enum_html_pages_paths)
+    c_type_enums = []
+
+    enum_html_pages_paths.each do |enum_html_pages_path|
+      doc = File.open(enum_html_pages_path) { |f| Nokogiri::HTML(f) }
+
+      enum_name = ''
+      values = []
+      doc.css('.description~ .description+ .description dt').each do |description|
+        if description.text.include? 'enum'
+          c_type_enums << { enum_name: enum_name, values: values } unless values.empty?
+          enum_name = ''
+          values = []
+          enum_name = description.text.strip.split[1]
+        else
+          name = description.text.split('=')[0]
+          value = description.text.split('=')[1]
+          values << { name: name, value: value }
+        end
+      end
+    end
+    c_type_enums
+  end
+
+  def store_c_type_enums_on_disk(c_type_enums)
+    ### Generate enum from template
+    #  enum :letters, [:a, 1, :b, :c, :y, 25, :z]
+
+    function_template = %(
+      # rubocop:disable Naming/VariableNumber
+      # rubocop:disable Metrics/ModuleLength
+
+      module Cuda
+        module DriverApi
+          module Enums
+            extend FFI::Library
+            <% for enum in enums %>
+            enum :<%= enum[:enum_name] %>, [<%= enum[:values] %>]
+
+            <% end %>
+          end
+        end
+      end
+
+      # rubocop:enable Metrics/ModuleLength
+      # rubocop:enable Naming/VariableNumber
+    )
+
+    template = Erubi::Engine.new(function_template).src
+    enums = []
+    c_type_enums.each do |c_type_enum|
+      values = c_type_enum[:values].map do |c_type_value|
+        line = ''
+        line += ":#{c_type_value[:name]}"
+        line += ", #{c_type_value[:value]}" unless c_type_value[:value].nil?
+        line
+      end
+      enums << { enum_name: c_type_enum[:enum_name], values: values.join(",\n") }
+    end
+
+    br = OpenStruct.new(enums: enums).instance_eval(template)
+
+    # create module folder
+    folder_path = File.join('gem', 'cuda', 'lib', 'cuda', 'driver', 'enums')
+
+    FileUtils.mkdir_p folder_path
+
+    File.open(File.join(folder_path, 'enums.rb'), 'w') do |file|
+      file.write(br)
+    end
   end
 
   def parse_functions_from_documentation(cuda_docu_path)
@@ -110,8 +182,6 @@ class GenerateDriverApi < ApplicationSubcommand
         return_type = ffi_types(c_type_function[:return_type])
         puts "Problem while parsing function return type: #{c_type_function[:return_type]}" if return_type.nil?
 
-        args = []
-
         args = c_type_function[:args].map do |args_pair|
           type = ffi_types(args_pair[:type])
           puts "Problem while parsing function return type: #{args_pair[:type]}" if type.nil?
@@ -150,7 +220,7 @@ class GenerateDriverApi < ApplicationSubcommand
     )
 
     # create module folder
-    FileUtils.mkdir_p 'modules/driver/functions'
+    FileUtils.mkdir_p File.join('gem', 'cuda', 'lib', 'cuda', 'driver', 'functions')
 
     template = Erubi::Engine.new(function_template).src
     ffi_type_modules.each do |ffi_type_module|
@@ -168,7 +238,9 @@ class GenerateDriverApi < ApplicationSubcommand
       file_name = ffi_type_module[:module_name].downcase.snake_case
 
       file_name = "#{file_name}.rb"
-      File.open(File.join('modules', 'driver', 'functions', file_name), 'w') { |file| file.write(br) }
+      File.open(File.join('gem', 'cuda', 'lib', 'cuda', 'driver', 'functions', file_name), 'w') do |file|
+        file.write(br)
+      end
     end
   end
 
@@ -218,8 +290,6 @@ class GenerateDriverApi < ApplicationSubcommand
 
     c_type_structs.each do |c_type_struct|
       struct_name = c_type_struct[:struct_name]
-      layout = []
-
       layout = c_type_struct[:layout].map do |layout_pair|
         return_type = ffi_types(layout_pair[:return_type])
         if return_type.nil?
@@ -251,7 +321,7 @@ class GenerateDriverApi < ApplicationSubcommand
     )
 
     # create module folder
-    FileUtils.mkdir_p 'modules/structs'
+    FileUtils.mkdir_p File.join('gem', 'cuda', 'lib', 'cuda', 'driver', 'structs')
 
     a = Erubi::Engine.new(struct_template).src
     ffi_type_structs.each do |ffi_type_struct|
@@ -274,7 +344,7 @@ class GenerateDriverApi < ApplicationSubcommand
                   end
 
       file_name = "#{file_name}.rb"
-      File.open(File.join('modules', 'structs', file_name), 'w') { |file| file.write(br) }
+      File.open(File.join('gem', 'cuda', 'lib', 'cuda', 'driver', 'structs', file_name), 'w') { |file| file.write(br) }
     end
   end
 
@@ -290,9 +360,7 @@ class GenerateDriverApi < ApplicationSubcommand
       'size_t' => :size_t,
       'void *' => :pointer,
       'const void *' => :pointer,
-      'CUarray_format' => :pointer,
       'CUDA_ARRAY3D_DESCRIPTOR' => :pointer,
-      'CUexternalSemaphoreHandleType' => :pointer,
       'CUexternalSemaphore*' => :pointer,
       'CUDA_EXTERNAL_SEMAPHORE_SIGNAL_PARAMS' => :pointer,
       'CUDA_EXTERNAL_SEMAPHORE_WAIT_PARAMS' => :pointer,
@@ -301,51 +369,27 @@ class GenerateDriverApi < ApplicationSubcommand
       'CUstream' => :pointer,
       'CUarray' => :pointer,
       'CUdeviceptr' => :pointer,
-      'CUmemorytype' => :pointer,
       'CUcontext' => :pointer,
       'CUmemAccessDesc' => :pointer,
       'CUmemPoolProps' => :pointer,
       'CUmipmappedArray' => :pointer,
-      'CUresourcetype' => :pointer,
-      'CUresourceViewFormat' => :pointer,
-      'CUaddress_mode' => :pointer,
-      'CUfilter_mode' => :pointer,
-      'CUaccessProperty' => :pointer,
-      'CUmemHandleType' => :pointer,
-      'CUmemOperationType' => :pointer,
-      'CUarraySparseSubresourceType' => :pointer,
-      'CUeglColorFormat' => :pointer,
-      'CUeglFrameType' => :pointer,
-      'CUmemAccess_flags' => :pointer,
       'CUmemLocation' => :pointer,
-      'CUmemLocationType' => :pointer,
-      'CUmemAllocationType' => :pointer,
-      'CUmemAllocationHandleType' => :pointer,
-      'CUexternalMemoryHandleType' => :pointer,
       # functions
-      'CUresult' => :int,
       'CUcontext*' => :pointer,
       'CUdevice' => :pointer,
       'CUexecAffinityParam*' => :pointer,
       'unsigned int*' => :pointer,
       'CUfunc_cache*' => :pointer,
       'CUdevice*' => :pointer,
-      'CUexecAffinityType' => :pointer,
       'size_t*' => :pointer,
-      'CUlimit' => :pointer,
       'CUsharedconfig*' => :pointer,
       'int*' => :pointer,
-      'CUfunc_cache' => :pointer,
-      'CUsharedconfig' => :pointer,
-      'CUdevice_attribute' => :pointer,
       'CUmemoryPool*' => :pointer,
       'char*' => :pointer,
       'void*' => :pointer,
       'unsigned' => :pointer,
       'CUuuid*' => :pointer,
       'CUmemoryPool' => :pointer,
-      'CUflushGPUDirectRDMAWritesTarget' => :pointer,
-      'CUflushGPUDirectRDMAWritesScope' => :pointer,
       'CUdevprop*' => :pointer,
       'const char*' => :pointer,
       'void**' => :pointer,
@@ -365,7 +409,6 @@ class GenerateDriverApi < ApplicationSubcommand
       'const char**' => :pointer,
       'CUevent' => :pointer,
       'float*' => :pointer,
-      'CUfunction_attribute' => :pointer,
       'CUmodule*' => :pointer,
       'CUDA_LAUNCH_PARAMS*' => :pointer,
       'CUtexref' => :pointer,
@@ -403,7 +446,6 @@ class GenerateDriverApi < ApplicationSubcommand
       'CUDA_EXT_SEM_WAIT_NODE_PARAMS*' => :pointer,
       'CUDA_HOST_NODE_PARAMS*' => :pointer,
       'CUgraphExec*' => :pointer,
-      'CUkernelNodeAttrID' => :pointer,
       'CUkernelNodeAttrValue*' => :pointer,
       'CUDA_KERNEL_NODE_PARAMS*' => :pointer,
       'const CUkernelNodeAttrValue*' => :pointer,
@@ -417,7 +459,6 @@ class GenerateDriverApi < ApplicationSubcommand
       'CUmemPoolPtrExportData*' => :pointer,
       'CUmemAccess_flags*' => :pointer,
       'CUmemLocation*' => :pointer,
-      'CUmemPool_attribute' => :pointer,
       'const CUmemAccessDesc*' => :pointer,
       'const CUDA_ARRAY3D_DESCRIPTOR*' => :pointer,
       'CUDA_ARRAY3D_DESCRIPTOR*' => :pointer,
@@ -434,7 +475,6 @@ class GenerateDriverApi < ApplicationSubcommand
       'CUstreamBatchMemOpParams*' => :pointer,
       'cuuint32_t' => :pointer,
       'CUlinkState' => :pointer,
-      'CUjitInputType' => :pointer,
       'CUjit_option*' => :pointer,
       'CUlinkState*' => :pointer,
       'CUfunction*' => :pointer,
@@ -442,11 +482,8 @@ class GenerateDriverApi < ApplicationSubcommand
       'CUsurfref*' => :pointer,
       'CUtexref*' => :pointer,
       'CUoccupancyB2DSize' => :pointer,
-      'CUdevice_P2PAttribute' => :pointer,
       'CUoutput_mode' => :pointer,
       'CUstreamCallback' => :pointer,
-      'CUstreamCaptureMode' => :pointer,
-      'CUstreamAttrID' => :pointer,
       'CUstreamAttrValue*' => :pointer,
       'CUstreamCaptureStatus*' => :pointer,
       'const CUgraphNode**' => :pointer,
@@ -466,23 +503,91 @@ class GenerateDriverApi < ApplicationSubcommand
       'CUaddress_mode*' => :pointer,
       'CUfilter_mode*' => :pointer,
       'CUarray_format*' => :pointer,
-      'CUmem_advise' => :pointer,
       'CUmem_range_attribute' => :pointer,
       'CUmem_range_attribute*' => :pointer,
-      'CUpointer_attribute' => :pointer,
       'CUpointer_attribute*' => :pointer,
       'CUmemGenericAllocationHandle*' => :pointer,
       'const CUmemAllocationProp*' => :pointer,
       'CUmemGenericAllocationHandle' => :pointer,
       'unsigned long long*' => :pointer,
       'const CUmemLocation*' => :pointer,
-      'CUmemAllocationGranularity_flags' => :pointer,
       'CUmemAllocationProp*' => :pointer,
       'CUarrayMapInfo*' => :pointer,
       'VdpOutputSurface' => :pointer,
       'VdpVideoSurface' => :pointer,
       'VdpDevice' => :pointer,
-      'VdpGetProcAddress*' => :pointer
+      'VdpGetProcAddress*' => :pointer,
+      # # enums
+      'CUDA_POINTER_ATTRIBUTE_ACCESS_FLAGS' => :CUDA_POINTER_ATTRIBUTE_ACCESS_FLAGS,
+      'CUGPUDirectRDMAWritesOrdering' => :CUGPUDirectRDMAWritesOrdering,
+      'CUaccessProperty' => :CUaccessProperty,
+      'CUaddress_mode' => :CUaddress_mode,
+      'CUarraySparseSubresourceType' => :CUarraySparseSubresourceType,
+      'CUarray_cubemap_face' => :CUarray_cubemap_face,
+      'CUarray_format' => :CUarray_format,
+      'CUcomputemode' => :CUcomputemode,
+      'CUctx_flags' => :CUctx_flags,
+      'CUdevice_P2PAttribute' => :CUdevice_P2PAttribute,
+      'CUdevice_attribute' => :CUdevice_attribute,
+      'CUdriverProcAddress_flags' => :CUdriverProcAddress_flags,
+      'CUeglColorFormat' => :CUeglColorFormat,
+      'CUeglFrameType' => :CUeglFrameType,
+      'CUeglResourceLocationFlags' => :CUeglResourceLocationFlags,
+      'CUevent_flags' => :CUevent_flags,
+      'CUevent_record_flags' => :CUevent_record_flags,
+      'CUevent_wait_flags' => :CUevent_wait_flags,
+      'CUexecAffinityType' => :CUexecAffinityType,
+      'CUexternalMemoryHandleType' => :CUexternalMemoryHandleType,
+      'CUexternalSemaphoreHandleType' => :CUexternalSemaphoreHandleType,
+      'CUfilter_mode' => :CUfilter_mode,
+      'CUflushGPUDirectRDMAWritesOptions' => :CUflushGPUDirectRDMAWritesOptions,
+      'CUflushGPUDirectRDMAWritesScope' => :CUflushGPUDirectRDMAWritesScope,
+      'CUflushGPUDirectRDMAWritesTarget' => :CUflushGPUDirectRDMAWritesTarget,
+      'CUfunc_cache' => :CUfunc_cache,
+      'CUfunction_attribute' => :CUfunction_attribute,
+      'CUgraphDebugDot_flags' => :CUgraphDebugDot_flags,
+      'CUgraphInstantiate_flags' => :CUgraphInstantiate_flags,
+      'CUgraphNodeType' => :CUgraphNodeType,
+      'CUgraphicsMapResourceFlags' => :CUgraphicsMapResourceFlags,
+      'CUgraphicsRegisterFlags' => :CUgraphicsRegisterFlags,
+      'CUipcMem_flags' => :CUipcMem_flags,
+      'CUjitInputType' => :CUjitInputType,
+      'CUjit_cacheMode' => :CUjit_cacheMode,
+      'CUjit_fallback' => :CUjit_fallback,
+      'CUjit_option' => :CUjit_option,
+      'CUjit_target' => :CUjit_target,
+      'CUkernelNodeAttrID' => :CUkernelNodeAttrID,
+      'CUlimit' => :CUlimit,
+      'CUmemAccess_flags' => :CUmemAccess_flags,
+      'CUmemAllocationCompType' => :CUmemAllocationCompType,
+      'CUmemAllocationGranularity_flags' => :CUmemAllocationGranularity_flags,
+      'CUmemAllocationHandleType' => :CUmemAllocationHandleType,
+      'CUmemAllocationType' => :CUmemAllocationType,
+      'CUmemAttach_flags' => :CUmemAttach_flags,
+      'CUmemHandleType' => :CUmemHandleType,
+      'CUmemLocationType' => :CUmemLocationType,
+      'CUmemOperationType' => :CUmemOperationType,
+      'CUmemPool_attribute' => :CUmemPool_attribute,
+      'CUmem_advise' => :CUmem_advise,
+      'CUmemorytype' => :CUmemorytype,
+      'CUoccupancy_flags' => :CUoccupancy_flags,
+      'CUpointer_attribute' => :CUpointer_attribute,
+      'CUresourceViewFormat' => :CUresourceViewFormat,
+      'CUresourcetype' => :CUresourcetype,
+      'CUresult' => :CUresult,
+      'CUshared_carveout' => :CUshared_carveout,
+      'CUsharedconfig' => :CUsharedconfig,
+      'CUstreamAttrID' => :CUstreamAttrID,
+      'CUstreamBatchMemOpType' => :CUstreamBatchMemOpType,
+      'CUstreamCaptureMode' => :CUstreamCaptureMode,
+      'CUstreamCaptureStatus' => :CUstreamCaptureStatus,
+      'CUstreamUpdateCaptureDependencies_flags' => :CUstreamUpdateCaptureDependencies_flags,
+      'CUstreamWaitValue_flags' => :CUstreamWaitValue_flags,
+      'CUstreamWriteValue_flags' => :CUstreamWriteValue_flags,
+      'CUstream_flags' => :CUstream_flags,
+      'CUuserObjectRetain_flags' => :CUuserObjectRetain_flags,
+      'CUuserObject_flags' => :CUuserObject_flags
+      # enums pointer
     }[ffi_type]
   end
 end
