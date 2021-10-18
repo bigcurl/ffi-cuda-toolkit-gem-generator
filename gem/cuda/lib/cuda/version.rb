@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module Cuda
-  VERSION = "11.2.0.pre"
+  VERSION = "0.0.1.pre"
 end

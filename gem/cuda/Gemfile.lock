@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    cuda (11.2.0.pre)
+    cuda (0.0.1.pre)
       ffi (~> 1.15.4)
 
 GEM
