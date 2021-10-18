@@ -3,8 +3,11 @@
 module Cuda
   module DriverApi
     module UnifiedAddressing
+      include Cuda::DriverApi :Enums
+
       extend FFI::Library
       ffi_lib "/usr/lib/x86_64-linux-gnu/libcuda.so"
+
       attach_function :cuMemAdvise, %i[pointer size_t CUmem_advise pointer], :CUresult
       attach_function :cuMemPrefetchAsync, %i[pointer size_t pointer pointer], :CUresult
       attach_function :cuMemRangeGetAttribute, %i[pointer size_t pointer pointer size_t], :CUresult

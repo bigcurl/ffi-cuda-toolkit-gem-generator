@@ -3,8 +3,11 @@
 module Cuda
   module DriverApi
     module EventManagement
+      include Cuda::DriverApi :Enums
+
       extend FFI::Library
       ffi_lib "/usr/lib/x86_64-linux-gnu/libcuda.so"
+
       attach_function :cuEventCreate, %i[pointer uint], :CUresult
       attach_function :cuEventDestroy, [:pointer], :CUresult
       attach_function :cuEventElapsedTime, %i[pointer pointer pointer], :CUresult

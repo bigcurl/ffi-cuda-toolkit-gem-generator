@@ -3,8 +3,11 @@
 module Cuda
   module DriverApi
     module DeviceManagement
+      include Cuda::DriverApi :Enums
+
       extend FFI::Library
       ffi_lib "/usr/lib/x86_64-linux-gnu/libcuda.so"
+
       attach_function :cuDeviceGet, %i[pointer int], :CUresult
       attach_function :cuDeviceGetAttribute, %i[pointer CUdevice_attribute pointer], :CUresult
       attach_function :cuDeviceGetCount, [:pointer], :CUresult

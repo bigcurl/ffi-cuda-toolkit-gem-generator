@@ -3,8 +3,11 @@
 module Cuda
   module DriverApi
     module StreamManagement
+      include Cuda::DriverApi :Enums
+
       extend FFI::Library
       ffi_lib "/usr/lib/x86_64-linux-gnu/libcuda.so"
+
       attach_function :cuStreamAddCallback, %i[pointer pointer pointer uint], :CUresult
       attach_function :cuStreamAttachMemAsync, %i[pointer pointer size_t uint], :CUresult
       attach_function :cuStreamBeginCapture, %i[pointer CUstreamCaptureMode], :CUresult

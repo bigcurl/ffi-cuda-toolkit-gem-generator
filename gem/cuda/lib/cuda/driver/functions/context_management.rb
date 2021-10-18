@@ -3,8 +3,11 @@
 module Cuda
   module DriverApi
     module ContextManagement
+      include Cuda::DriverApi :Enums
+
       extend FFI::Library
       ffi_lib "/usr/lib/x86_64-linux-gnu/libcuda.so"
+
       attach_function :cuCtxCreate, %i[pointer uint pointer], :CUresult
       attach_function :cuCtxCreate_v3, %i[pointer pointer int uint pointer], :CUresult
       attach_function :cuCtxDestroy, [:pointer], :CUresult

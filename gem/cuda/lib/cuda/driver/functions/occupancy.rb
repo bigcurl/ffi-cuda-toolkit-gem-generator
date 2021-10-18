@@ -3,8 +3,11 @@
 module Cuda
   module DriverApi
     module Occupancy
+      include Cuda::DriverApi :Enums
+
       extend FFI::Library
       ffi_lib "/usr/lib/x86_64-linux-gnu/libcuda.so"
+
       attach_function :cuOccupancyAvailableDynamicSMemPerBlock, %i[pointer pointer int int], :CUresult
       attach_function :cuOccupancyMaxActiveBlocksPerMultiprocessor, %i[pointer pointer int size_t], :CUresult
       attach_function :cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags,

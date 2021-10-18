@@ -3,8 +3,11 @@
 module Cuda
   module DriverApi
     module GraphManagement
+      include Cuda::DriverApi :Enums
+
       extend FFI::Library
       ffi_lib "/usr/lib/x86_64-linux-gnu/libcuda.so"
+
       attach_function :cuDeviceGetGraphMemAttribute, %i[pointer pointer pointer], :CUresult
       attach_function :cuDeviceGraphMemTrim, [:pointer], :CUresult
       attach_function :cuDeviceSetGraphMemAttribute, %i[pointer pointer pointer], :CUresult

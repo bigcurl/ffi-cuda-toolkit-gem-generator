@@ -3,8 +3,11 @@
 module Cuda
   module DriverApi
     module StreamOrderedMemoryAllocator
+      include Cuda::DriverApi :Enums
+
       extend FFI::Library
       ffi_lib "/usr/lib/x86_64-linux-gnu/libcuda.so"
+
       attach_function :cuMemAllocAsync, %i[pointer size_t pointer], :CUresult
       attach_function :cuMemAllocFromPoolAsync, %i[pointer size_t pointer pointer], :CUresult
       attach_function :cuMemFreeAsync, %i[pointer pointer], :CUresult

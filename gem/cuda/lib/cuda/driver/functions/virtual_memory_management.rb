@@ -3,8 +3,11 @@
 module Cuda
   module DriverApi
     module VirtualMemoryManagement
+      include Cuda::DriverApi :Enums
+
       extend FFI::Library
       ffi_lib "/usr/lib/x86_64-linux-gnu/libcuda.so"
+
       attach_function :cuMemAddressFree, %i[pointer size_t], :CUresult
       attach_function :cuMemAddressReserve, %i[pointer size_t size_t pointer ulong_long], :CUresult
       attach_function :cuMemCreate, %i[pointer size_t pointer ulong_long], :CUresult

@@ -3,8 +3,11 @@
 module Cuda
   module DriverApi
     module EglInteroperability
+      include Cuda::DriverApi :Enums
+
       extend FFI::Library
       ffi_lib "/usr/lib/x86_64-linux-gnu/libcuda.so"
+
       attach_function :cuEGLStreamConsumerAcquireFrame, %i[pointer pointer pointer uint], :CUresult
       attach_function :cuEGLStreamConsumerConnect, %i[pointer pointer], :CUresult
       attach_function :cuEGLStreamConsumerConnectWithFlags, %i[pointer pointer uint], :CUresult

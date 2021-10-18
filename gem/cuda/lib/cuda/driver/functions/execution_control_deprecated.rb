@@ -3,8 +3,11 @@
 module Cuda
   module DriverApi
     module ExecutionControlDeprecated
+      include Cuda::DriverApi :Enums
+
       extend FFI::Library
       ffi_lib "/usr/lib/x86_64-linux-gnu/libcuda.so"
+
       attach_function :cuFuncSetBlockShape, %i[pointer int int int], :CUresult
       attach_function :cuFuncSetSharedSize, %i[pointer uint], :CUresult
       attach_function :cuLaunch, [:pointer], :CUresult

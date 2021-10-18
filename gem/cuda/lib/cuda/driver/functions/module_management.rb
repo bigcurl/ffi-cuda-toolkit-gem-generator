@@ -3,8 +3,11 @@
 module Cuda
   module DriverApi
     module ModuleManagement
+      include Cuda::DriverApi :Enums
+
       extend FFI::Library
       ffi_lib "/usr/lib/x86_64-linux-gnu/libcuda.so"
+
       attach_function :cuLinkAddData,
                       %i[pointer CUjitInputType pointer size_t pointer uint pointer pointer], :CUresult
       attach_function :cuLinkAddFile, %i[pointer CUjitInputType pointer uint pointer pointer], :CUresult

@@ -3,8 +3,11 @@
 module Cuda
   module DriverApi
     module ExecutionControl
+      include Cuda::DriverApi :Enums
+
       extend FFI::Library
       ffi_lib "/usr/lib/x86_64-linux-gnu/libcuda.so"
+
       attach_function :cuFuncGetAttribute, %i[pointer CUfunction_attribute pointer], :CUresult
       attach_function :cuFuncGetModule, %i[pointer pointer], :CUresult
       attach_function :cuFuncSetAttribute, %i[pointer CUfunction_attribute int], :CUresult

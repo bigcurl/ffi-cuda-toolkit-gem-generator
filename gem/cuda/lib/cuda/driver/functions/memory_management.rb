@@ -3,8 +3,11 @@
 module Cuda
   module DriverApi
     module MemoryManagement
+      include Cuda::DriverApi :Enums
+
       extend FFI::Library
       ffi_lib "/usr/lib/x86_64-linux-gnu/libcuda.so"
+
       attach_function :cuArray3DCreate, %i[pointer pointer], :CUresult
       attach_function :cuArray3DGetDescriptor, %i[pointer pointer], :CUresult
       attach_function :cuArrayCreate, %i[pointer pointer], :CUresult

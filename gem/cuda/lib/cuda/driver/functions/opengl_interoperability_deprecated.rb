@@ -3,8 +3,11 @@
 module Cuda
   module DriverApi
     module OpenglInteroperabilityDeprecated
+      include Cuda::DriverApi :Enums
+
       extend FFI::Library
       ffi_lib "/usr/lib/x86_64-linux-gnu/libcuda.so"
+
       attach_function :cuGLCtxCreate, %i[pointer uint pointer], :CUresult
       attach_function :cuGLInit, [], :CUresult
       attach_function :cuGLMapBufferObject, %i[pointer pointer pointer], :CUresult

@@ -3,8 +3,11 @@
 module Cuda
   module DriverApi
     module GraphicsInteroperability
+      include Cuda::DriverApi :Enums
+
       extend FFI::Library
       ffi_lib "/usr/lib/x86_64-linux-gnu/libcuda.so"
+
       attach_function :cuGraphicsMapResources, %i[uint pointer pointer], :CUresult
       attach_function :cuGraphicsResourceGetMappedMipmappedArray, %i[pointer pointer], :CUresult
       attach_function :cuGraphicsResourceGetMappedPointer, %i[pointer pointer pointer], :CUresult
