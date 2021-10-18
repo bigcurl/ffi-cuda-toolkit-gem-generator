@@ -5,8 +5,8 @@ module Cuda
     module ErrorHandling
       extend FFI::Library
       ffi_lib "/usr/lib/x86_64-linux-gnu/libcuda.so"
-      attach_function :cuGetErrorName, %i[int pointer], :int
-      attach_function :cuGetErrorString, %i[int pointer], :int
+      attach_function :cuGetErrorName, %i[CUresult pointer], :CUresult
+      attach_function :cuGetErrorString, %i[CUresult pointer], :CUresult
     end
   end
 end

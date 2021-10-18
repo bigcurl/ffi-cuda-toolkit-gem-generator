@@ -5,11 +5,11 @@ module Cuda
     module TextureObjectManagement
       extend FFI::Library
       ffi_lib "/usr/lib/x86_64-linux-gnu/libcuda.so"
-      attach_function :cuTexObjectCreate, %i[pointer pointer pointer pointer], :int
-      attach_function :cuTexObjectDestroy, [:pointer], :int
-      attach_function :cuTexObjectGetResourceDesc, %i[pointer pointer], :int
-      attach_function :cuTexObjectGetResourceViewDesc, %i[pointer pointer], :int
-      attach_function :cuTexObjectGetTextureDesc, %i[pointer pointer], :int
+      attach_function :cuTexObjectCreate, %i[pointer pointer pointer pointer], :CUresult
+      attach_function :cuTexObjectDestroy, [:pointer], :CUresult
+      attach_function :cuTexObjectGetResourceDesc, %i[pointer pointer], :CUresult
+      attach_function :cuTexObjectGetResourceViewDesc, %i[pointer pointer], :CUresult
+      attach_function :cuTexObjectGetTextureDesc, %i[pointer pointer], :CUresult
     end
   end
 end

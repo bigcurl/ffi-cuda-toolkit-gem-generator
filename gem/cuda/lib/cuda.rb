@@ -14,6 +14,10 @@ unless File.exist? "/usr/lib/x86_64-linux-gnu/libcuda.so"
   exit(-1)
 end
 
+# Enums
+require_relative "cuda/driver/enums/enums"
+
+# Functions
 require_relative "cuda/driver/functions/context_management_deprecated"
 require_relative "cuda/driver/functions/context_management"
 require_relative "cuda/driver/functions/device_management_deprecated"

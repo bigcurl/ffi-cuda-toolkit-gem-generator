@@ -5,8 +5,8 @@ module Cuda
     module ProfilerControl
       extend FFI::Library
       ffi_lib "/usr/lib/x86_64-linux-gnu/libcuda.so"
-      attach_function :cuProfilerStart, [], :int
-      attach_function :cuProfilerStop, [], :int
+      attach_function :cuProfilerStart, [], :CUresult
+      attach_function :cuProfilerStop, [], :CUresult
     end
   end
 end

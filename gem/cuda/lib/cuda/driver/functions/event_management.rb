@@ -5,13 +5,13 @@ module Cuda
     module EventManagement
       extend FFI::Library
       ffi_lib "/usr/lib/x86_64-linux-gnu/libcuda.so"
-      attach_function :cuEventCreate, %i[pointer uint], :int
-      attach_function :cuEventDestroy, [:pointer], :int
-      attach_function :cuEventElapsedTime, %i[pointer pointer pointer], :int
-      attach_function :cuEventQuery, [:pointer], :int
-      attach_function :cuEventRecord, %i[pointer pointer], :int
-      attach_function :cuEventRecordWithFlags, %i[pointer pointer uint], :int
-      attach_function :cuEventSynchronize, [:pointer], :int
+      attach_function :cuEventCreate, %i[pointer uint], :CUresult
+      attach_function :cuEventDestroy, [:pointer], :CUresult
+      attach_function :cuEventElapsedTime, %i[pointer pointer pointer], :CUresult
+      attach_function :cuEventQuery, [:pointer], :CUresult
+      attach_function :cuEventRecord, %i[pointer pointer], :CUresult
+      attach_function :cuEventRecordWithFlags, %i[pointer pointer uint], :CUresult
+      attach_function :cuEventSynchronize, [:pointer], :CUresult
     end
   end
 end

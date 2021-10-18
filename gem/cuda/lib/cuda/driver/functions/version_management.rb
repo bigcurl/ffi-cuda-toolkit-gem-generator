@@ -5,7 +5,7 @@ module Cuda
     module VersionManagement
       extend FFI::Library
       ffi_lib "/usr/lib/x86_64-linux-gnu/libcuda.so"
-      attach_function :cuDriverGetVersion, [:pointer], :int
+      attach_function :cuDriverGetVersion, [:pointer], :CUresult
     end
   end
 end

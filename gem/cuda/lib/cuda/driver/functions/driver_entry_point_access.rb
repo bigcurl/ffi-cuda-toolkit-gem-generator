@@ -5,7 +5,7 @@ module Cuda
     module DriverEntryPointAccess
       extend FFI::Library
       ffi_lib "/usr/lib/x86_64-linux-gnu/libcuda.so"
-      attach_function :cuGetProcAddress, %i[pointer pointer int pointer], :int
+      attach_function :cuGetProcAddress, %i[pointer pointer int pointer], :CUresult
     end
   end
 end
