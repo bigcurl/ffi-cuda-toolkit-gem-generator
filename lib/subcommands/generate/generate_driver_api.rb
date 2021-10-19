@@ -100,6 +100,12 @@ class GenerateDriverApi < ApplicationSubcommand
     function_html_pages_paths = Dir[File.join(cuda_docu_path, 'group__CUDA__*')].sort
     function_html_pages_paths.reject! { |name| name.include? 'group__CUDA__TYPES.html' }
 
+    # Filtered out until the lib has been found where this is in
+    # Seems to be different from the driver lib binary
+    function_html_pages_paths.reject! { |name| name.include? 'group__CUDA__GRAPHICS.html' }
+    function_html_pages_paths.reject! { |name| name.include? 'group__CUDA__EGL.html' }
+    function_html_pages_paths.reject! { |name| name.include? 'group__CUDA__GL.html' }
+
     # struct = {module_name: "", functions: [{function_name: "", return_type: "type", arguments: ["type"]}]}
     c_type_functions = parse_function_html_pages(function_html_pages_paths)
     ffi_type_functions = transform_function_c_types_into_ffi_types(c_type_functions)

@@ -784,18 +784,6 @@ module Cuda
     attach_function :cuDeviceComputeCapability, %i[pointer pointer pointer], :CUresult
     attach_function :cuDeviceGetProperties, %i[pointer pointer], :CUresult
     attach_function :cuGetProcAddress, %i[pointer pointer int pointer], :CUresult
-    attach_function :cuEGLStreamConsumerAcquireFrame, %i[pointer pointer pointer uint], :CUresult
-    attach_function :cuEGLStreamConsumerConnect, %i[pointer pointer], :CUresult
-    attach_function :cuEGLStreamConsumerConnectWithFlags, %i[pointer pointer uint], :CUresult
-    attach_function :cuEGLStreamConsumerDisconnect, [:pointer], :CUresult
-    attach_function :cuEGLStreamConsumerReleaseFrame, %i[pointer pointer pointer], :CUresult
-    attach_function :cuEGLStreamProducerConnect, %i[pointer pointer pointer pointer], :CUresult
-    attach_function :cuEGLStreamProducerDisconnect, [:pointer], :CUresult
-    attach_function :cuEGLStreamProducerPresentFrame, %i[pointer pointer pointer], :CUresult
-    attach_function :cuEGLStreamProducerReturnFrame, %i[pointer pointer pointer], :CUresult
-    attach_function :cuEventCreateFromEGLSync, %i[pointer pointer uint], :CUresult
-    attach_function :cuGraphicsEGLRegisterImage, %i[pointer pointer uint], :CUresult
-    attach_function :cuGraphicsResourceGetMappedEglFrame, %i[pointer pointer uint uint], :CUresult
     attach_function :cuGetErrorName, %i[CUresult pointer], :CUresult
     attach_function :cuGetErrorString, %i[CUresult pointer], :CUresult
     attach_function :cuEventCreate, %i[pointer uint], :CUresult
@@ -834,9 +822,6 @@ module Cuda
     attach_function :cuImportExternalSemaphore, %i[pointer pointer], :CUresult
     attach_function :cuSignalExternalSemaphoresAsync, %i[pointer pointer uint pointer], :CUresult
     attach_function :cuWaitExternalSemaphoresAsync, %i[pointer pointer uint pointer], :CUresult
-    attach_function :cuGLGetDevices, %i[pointer pointer uint pointer], :CUresult
-    attach_function :cuGraphicsGLRegisterBuffer, %i[pointer pointer uint], :CUresult
-    attach_function :cuWGLGetDevice, %i[pointer pointer], :CUresult
     attach_function :cuGLCtxCreate, %i[pointer uint pointer], :CUresult
     attach_function :cuGLInit, [], :CUresult
     attach_function :cuGLMapBufferObject, %i[pointer pointer pointer], :CUresult
@@ -921,13 +906,6 @@ module Cuda
     attach_function :cuUserObjectCreate, %i[pointer pointer pointer uint uint], :CUresult
     attach_function :cuUserObjectRelease, %i[pointer uint], :CUresult
     attach_function :cuUserObjectRetain, %i[pointer uint], :CUresult
-    attach_function :cuGraphicsMapResources, %i[uint pointer pointer], :CUresult
-    attach_function :cuGraphicsResourceGetMappedMipmappedArray, %i[pointer pointer], :CUresult
-    attach_function :cuGraphicsResourceGetMappedPointer, %i[pointer pointer pointer], :CUresult
-    attach_function :cuGraphicsResourceSetMapFlags, %i[pointer uint], :CUresult
-    attach_function :cuGraphicsSubResourceGetMappedArray, %i[pointer pointer uint uint], :CUresult
-    attach_function :cuGraphicsUnmapResources, %i[uint pointer pointer], :CUresult
-    attach_function :cuGraphicsUnregisterResource, [:pointer], :CUresult
     attach_function :cuInit, [:uint], :CUresult
     attach_function :cuMemAllocAsync, %i[pointer size_t pointer], :CUresult
     attach_function :cuMemAllocFromPoolAsync, %i[pointer size_t pointer pointer], :CUresult
