@@ -13,9 +13,10 @@ gem 'typhoeus'
 group :development do
   gem 'byebug'
   gem 'irb'
-
-  gem 'rubocop'
-  gem 'rubocop-minitest'
-  gem 'rubocop-rake'
+  gem 'rake', '~> 13.0'
   gem 'solargraph'
+
+  gem 'rubocop', '~> 1.21'
+  gem 'rubocop-minitest', require: false
+  gem 'rubocop-rake', require: false
 end
