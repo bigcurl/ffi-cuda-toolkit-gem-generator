@@ -89,7 +89,7 @@ class GenerateDriverApi < ApplicationSubcommand
             extend FFI::Library
             ffi_lib '/usr/lib/x86_64-linux-gnu/libcuda.so'
 
-            # Enums
+            # Structs
             # TODO
 
             # Typedefs
@@ -99,12 +99,15 @@ class GenerateDriverApi < ApplicationSubcommand
             typedef :ulong_long, :unsigned_long_long
             typedef :uint64, :cuuint64_t
             typedef :pointer, :CUhostFn
+            typedef :uint, :GLuint
 
             <% for typedef in typedefs %>
             typedef :<%= typedef[:ffi_type] %>, :<%= typedef[:cuda_type] %>
             <% end %>
 
             # Enums
+            enum :CUgraphMem_attribute, [CU_GRAPH_MEM_ATTR_USED_MEM_CURRENT, CU_GRAPH_MEM_ATTR_USED_MEM_HIGH, CU_GRAPH_MEM_ATTR_RESERVED_MEM_CURRENT, CU_GRAPH_MEM_ATTR_RESERVED_MEM_HIGH]
+
             <% for enum in enums %>
             enum :<%= enum[:enum_name] %>, [<%= enum[:values] %>]
 

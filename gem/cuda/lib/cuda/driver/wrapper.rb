@@ -8,7 +8,7 @@ module Cuda
     extend FFI::Library
     ffi_lib "/usr/lib/x86_64-linux-gnu/libcuda.so"
 
-    # Enums
+    # Structs
     # TODO
 
     # Typedefs
@@ -18,6 +18,7 @@ module Cuda
     typedef :ulong_long, :unsigned_long_long
     typedef :uint64, :cuuint64_t
     typedef :pointer, :CUhostFn
+    typedef :uint, :GLuint
 
     typedef :pointer, :CUuserObject
     typedef :pointer, :CUtexref
@@ -47,6 +48,10 @@ module Cuda
     typedef :pointer, :CUarray
 
     # Enums
+    enum :CUgraphMem_attribute,
+         [CU_GRAPH_MEM_ATTR_USED_MEM_CURRENT, CU_GRAPH_MEM_ATTR_USED_MEM_HIGH, CU_GRAPH_MEM_ATTR_RESERVED_MEM_CURRENT,
+          CU_GRAPH_MEM_ATTR_RESERVED_MEM_HIGH]
+
     enum :CUDA_POINTER_ATTRIBUTE_ACCESS_FLAGS, [:CU_POINTER_ATTRIBUTE_ACCESS_FLAG_NONE, 0x0,
                                                 :CU_POINTER_ATTRIBUTE_ACCESS_FLAG_READ, 0x1,
                                                 :CU_POINTER_ATTRIBUTE_ACCESS_FLAG_READWRITE, 0x3]
