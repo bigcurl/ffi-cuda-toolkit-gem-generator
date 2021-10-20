@@ -97,6 +97,7 @@ class GenerateDriverApi < ApplicationSubcommand
             typedef :uchar, :unsigned_char
             typedef :uint, :unsigned_int
             typedef :ulong_long, :unsigned_long_long
+            typedef :uint64, :cuuint64_t
 
             <% for typedef in typedefs %>
             typedef :<%= typedef[:ffi_type] %>, :<%= typedef[:cuda_type] %>
