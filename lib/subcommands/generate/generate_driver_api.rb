@@ -305,7 +305,10 @@ class GenerateDriverApi < ApplicationSubcommand
       module Cuda
         module DriverApi
             extend FFI::Library
-            ffi_lib '/usr/lib/x86_64-linux-gnu/libcuda.so'
+            binary_list = `whereis -b libcuda`.strip.split('libcuda: ')
+            binary_path = '/usr/lib/x86_64-linux-gnu/libcuda.so'
+            binary_path = binary_list[1] unless binary_list[1].nil?
+            ffi_lib binary_path
 
             # Enums
             <% for enum in enums %>
