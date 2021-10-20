@@ -17,32 +17,32 @@ module Cuda
     typedef :uint, :unsigned_int
     typedef :ulong_long, :unsigned_long_long
 
-    typedef :pointer, :CUarray
-    typedef :pointer, :CUcontext
-    typedef :CUdevice_v1, :CUdevice
-    typedef :int, :CUdevice_v1
-    typedef :CUdeviceptr_v2, :CUdeviceptr
-    typedef :unsigned_int, :CUdeviceptr_v2
-    typedef :pointer, :CUeglStreamConnection
-    typedef :pointer, :CUevent
-    typedef :pointer, :CUexternalMemory
-    typedef :pointer, :CUexternalSemaphore
-    typedef :pointer, :CUfunction
-    typedef :pointer, :CUgraph
-    typedef :pointer, :CUgraphExec
-    typedef :pointer, :CUgraphNode
-    typedef :pointer, :CUgraphicsResource
-    typedef :pointer, :CUmemoryPool
-    typedef :pointer, :CUmipmappedArray
-    typedef :pointer, :CUmodule
-    typedef :pointer, :CUstream
-    typedef :CUsurfObject_v1, :CUsurfObject
-    typedef :unsigned_long_long, :CUsurfObject_v1
-    typedef :pointer, :CUsurfref
-    typedef :CUtexObject_v1, :CUtexObject
-    typedef :unsigned_long_long, :CUtexObject_v1
-    typedef :pointer, :CUtexref
     typedef :pointer, :CUuserObject
+    typedef :pointer, :CUtexref
+    typedef :unsigned_long_long, :CUtexObject_v1
+    typedef :CUtexObject_v1, :CUtexObject
+    typedef :pointer, :CUsurfref
+    typedef :unsigned_long_long, :CUsurfObject_v1
+    typedef :CUsurfObject_v1, :CUsurfObject
+    typedef :pointer, :CUstream
+    typedef :pointer, :CUmodule
+    typedef :pointer, :CUmipmappedArray
+    typedef :pointer, :CUmemoryPool
+    typedef :pointer, :CUgraphicsResource
+    typedef :pointer, :CUgraphNode
+    typedef :pointer, :CUgraphExec
+    typedef :pointer, :CUgraph
+    typedef :pointer, :CUfunction
+    typedef :pointer, :CUexternalSemaphore
+    typedef :pointer, :CUexternalMemory
+    typedef :pointer, :CUevent
+    typedef :pointer, :CUeglStreamConnection
+    typedef :unsigned_int, :CUdeviceptr_v2
+    typedef :CUdeviceptr_v2, :CUdeviceptr
+    typedef :int, :CUdevice_v1
+    typedef :CUdevice_v1, :CUdevice
+    typedef :pointer, :CUcontext
+    typedef :pointer, :CUarray
 
     # Enums
     enum :CUDA_POINTER_ATTRIBUTE_ACCESS_FLAGS, [:CU_POINTER_ATTRIBUTE_ACCESS_FLAG_NONE, 0x0,

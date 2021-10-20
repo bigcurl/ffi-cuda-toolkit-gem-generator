@@ -25,6 +25,6 @@ module Parser
         c_type_typedefs << { ffi_type: target, cuda_type: type }
       end
     end
-    c_type_typedefs
+    c_type_typedefs.reverse
   end
 end
