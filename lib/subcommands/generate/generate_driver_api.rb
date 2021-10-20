@@ -106,7 +106,7 @@ class GenerateDriverApi < ApplicationSubcommand
             <% end %>
 
             # Enums
-            enum :CUgraphMem_attribute, [CU_GRAPH_MEM_ATTR_USED_MEM_CURRENT, CU_GRAPH_MEM_ATTR_USED_MEM_HIGH, CU_GRAPH_MEM_ATTR_RESERVED_MEM_CURRENT, CU_GRAPH_MEM_ATTR_RESERVED_MEM_HIGH]
+            enum :CUgraphMem_attribute, [:CU_GRAPH_MEM_ATTR_USED_MEM_CURRENT, :CU_GRAPH_MEM_ATTR_USED_MEM_HIGH, :CU_GRAPH_MEM_ATTR_RESERVED_MEM_CURRENT, :CU_GRAPH_MEM_ATTR_RESERVED_MEM_HIGH]
 
             <% for enum in enums %>
             enum :<%= enum[:enum_name] %>, [<%= enum[:values] %>]
