@@ -3,6 +3,10 @@
 require "test_helper"
 
 class CudaVersionManagementTest < Minitest::Test
+  def setup
+    Cuda::DriverApi.cuInit(0)
+  end
+
   def test_cu_driver_get_version
     version_pointer = FFI::MemoryPointer.new(:int, 1)
     Cuda::DriverApi.cuDriverGetVersion(version_pointer)

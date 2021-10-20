@@ -9,6 +9,42 @@ module Cuda
     ffi_lib "/usr/lib/x86_64-linux-gnu/libcuda.so"
 
     # Enums
+    # TODO
+
+    # Typedefs
+    typedef :ushort, :unsigned_short
+    typedef :uchar, :unsigned_char
+    typedef :uint, :unsigned_int
+    typedef :ulong_long, :unsigned_long_long
+
+    typedef :pointer, :CUarray
+    typedef :pointer, :CUcontext
+    typedef :CUdevice_v1, :CUdevice
+    typedef :int, :CUdevice_v1
+    typedef :CUdeviceptr_v2, :CUdeviceptr
+    typedef :unsigned_int, :CUdeviceptr_v2
+    typedef :pointer, :CUeglStreamConnection
+    typedef :pointer, :CUevent
+    typedef :pointer, :CUexternalMemory
+    typedef :pointer, :CUexternalSemaphore
+    typedef :pointer, :CUfunction
+    typedef :pointer, :CUgraph
+    typedef :pointer, :CUgraphExec
+    typedef :pointer, :CUgraphNode
+    typedef :pointer, :CUgraphicsResource
+    typedef :pointer, :CUmemoryPool
+    typedef :pointer, :CUmipmappedArray
+    typedef :pointer, :CUmodule
+    typedef :pointer, :CUstream
+    typedef :CUsurfObject_v1, :CUsurfObject
+    typedef :unsigned_long_long, :CUsurfObject_v1
+    typedef :pointer, :CUsurfref
+    typedef :CUtexObject_v1, :CUtexObject
+    typedef :unsigned_long_long, :CUtexObject_v1
+    typedef :pointer, :CUtexref
+    typedef :pointer, :CUuserObject
+
+    # Enums
     enum :CUDA_POINTER_ATTRIBUTE_ACCESS_FLAGS, [:CU_POINTER_ATTRIBUTE_ACCESS_FLAG_NONE, 0x0,
                                                 :CU_POINTER_ATTRIBUTE_ACCESS_FLAG_READ, 0x1,
                                                 :CU_POINTER_ATTRIBUTE_ACCESS_FLAG_READWRITE, 0x3]
@@ -743,10 +779,10 @@ module Cuda
 
     # Functions
 
-    attach_function :cuCtxCreate, %i[pointer uint pointer], :CUresult
-    attach_function :cuCtxCreate_v3, %i[pointer pointer int uint pointer], :CUresult
-    attach_function :cuCtxDestroy, [:pointer], :CUresult
-    attach_function :cuCtxGetApiVersion, %i[pointer pointer], :CUresult
+    attach_function :cuCtxCreate, %i[pointer unsigned_int CUdevice], :CUresult
+    attach_function :cuCtxCreate_v3, %i[pointer pointer int unsigned_int CUdevice], :CUresult
+    attach_function :cuCtxDestroy, [:CUcontext], :CUresult
+    attach_function :cuCtxGetApiVersion, %i[CUcontext pointer], :CUresult
     attach_function :cuCtxGetCacheConfig, [:pointer], :CUresult
     attach_function :cuCtxGetCurrent, [:pointer], :CUresult
     attach_function :cuCtxGetDevice, [:pointer], :CUresult
@@ -756,367 +792,384 @@ module Cuda
     attach_function :cuCtxGetSharedMemConfig, [:pointer], :CUresult
     attach_function :cuCtxGetStreamPriorityRange, %i[pointer pointer], :CUresult
     attach_function :cuCtxPopCurrent, [:pointer], :CUresult
-    attach_function :cuCtxPushCurrent, [:pointer], :CUresult
+    attach_function :cuCtxPushCurrent, [:CUcontext], :CUresult
     attach_function :cuCtxResetPersistingL2Cache, [], :CUresult
     attach_function :cuCtxSetCacheConfig, [:CUfunc_cache], :CUresult
-    attach_function :cuCtxSetCurrent, [:pointer], :CUresult
+    attach_function :cuCtxSetCurrent, [:CUcontext], :CUresult
     attach_function :cuCtxSetLimit, %i[CUlimit size_t], :CUresult
     attach_function :cuCtxSetSharedMemConfig, [:CUsharedconfig], :CUresult
     attach_function :cuCtxSynchronize, [], :CUresult
-    attach_function :cuCtxAttach, %i[pointer uint], :CUresult
-    attach_function :cuCtxDetach, [:pointer], :CUresult
+    attach_function :cuCtxAttach, %i[pointer unsigned_int], :CUresult
+    attach_function :cuCtxDetach, [:CUcontext], :CUresult
     attach_function :cuDeviceGet, %i[pointer int], :CUresult
-    attach_function :cuDeviceGetAttribute, %i[pointer CUdevice_attribute pointer], :CUresult
+    attach_function :cuDeviceGetAttribute, %i[pointer CUdevice_attribute CUdevice], :CUresult
     attach_function :cuDeviceGetCount, [:pointer], :CUresult
-    attach_function :cuDeviceGetDefaultMemPool, %i[pointer pointer], :CUresult
-    attach_function :cuDeviceGetLuid, %i[pointer pointer pointer], :CUresult
-    attach_function :cuDeviceGetMemPool, %i[pointer pointer], :CUresult
-    attach_function :cuDeviceGetName, %i[pointer int pointer], :CUresult
-    attach_function :cuDeviceGetNvSciSyncAttributes, %i[pointer pointer int], :CUresult
-    attach_function :cuDeviceGetTexture1DLinearMaxWidth, %i[pointer CUarray_format pointer pointer],
+    attach_function :cuDeviceGetDefaultMemPool, %i[pointer CUdevice], :CUresult
+    attach_function :cuDeviceGetLuid, %i[pointer pointer CUdevice], :CUresult
+    attach_function :cuDeviceGetMemPool, %i[pointer CUdevice], :CUresult
+    attach_function :cuDeviceGetName, %i[pointer int CUdevice], :CUresult
+    attach_function :cuDeviceGetNvSciSyncAttributes, %i[pointer CUdevice int], :CUresult
+    attach_function :cuDeviceGetTexture1DLinearMaxWidth, %i[pointer CUarray_format unsigned CUdevice],
                     :CUresult
-    attach_function :cuDeviceGetUuid, %i[pointer pointer], :CUresult
-    attach_function :cuDeviceGetUuid_v2, %i[pointer pointer], :CUresult
-    attach_function :cuDeviceSetMemPool, %i[pointer pointer], :CUresult
-    attach_function :cuDeviceTotalMem, %i[pointer pointer], :CUresult
+    attach_function :cuDeviceGetUuid, %i[pointer CUdevice], :CUresult
+    attach_function :cuDeviceGetUuid_v2, %i[pointer CUdevice], :CUresult
+    attach_function :cuDeviceSetMemPool, %i[CUdevice CUmemoryPool], :CUresult
+    attach_function :cuDeviceTotalMem, %i[pointer CUdevice], :CUresult
     attach_function :cuFlushGPUDirectRDMAWrites,
                     %i[CUflushGPUDirectRDMAWritesTarget CUflushGPUDirectRDMAWritesScope], :CUresult
-    attach_function :cuDeviceComputeCapability, %i[pointer pointer pointer], :CUresult
-    attach_function :cuDeviceGetProperties, %i[pointer pointer], :CUresult
-    attach_function :cuGetProcAddress, %i[pointer pointer int pointer], :CUresult
+    attach_function :cuDeviceComputeCapability, %i[pointer pointer CUdevice], :CUresult
+    attach_function :cuDeviceGetProperties, %i[pointer CUdevice], :CUresult
+    attach_function :cuGetProcAddress, %i[pointer pointer int cuuint64_t], :CUresult
     attach_function :cuGetErrorName, %i[CUresult pointer], :CUresult
     attach_function :cuGetErrorString, %i[CUresult pointer], :CUresult
-    attach_function :cuEventCreate, %i[pointer uint], :CUresult
-    attach_function :cuEventDestroy, [:pointer], :CUresult
-    attach_function :cuEventElapsedTime, %i[pointer pointer pointer], :CUresult
-    attach_function :cuEventQuery, [:pointer], :CUresult
-    attach_function :cuEventRecord, %i[pointer pointer], :CUresult
-    attach_function :cuEventRecordWithFlags, %i[pointer pointer uint], :CUresult
-    attach_function :cuEventSynchronize, [:pointer], :CUresult
-    attach_function :cuFuncGetAttribute, %i[pointer CUfunction_attribute pointer], :CUresult
-    attach_function :cuFuncGetModule, %i[pointer pointer], :CUresult
-    attach_function :cuFuncSetAttribute, %i[pointer CUfunction_attribute int], :CUresult
-    attach_function :cuFuncSetCacheConfig, %i[pointer CUfunc_cache], :CUresult
-    attach_function :cuFuncSetSharedMemConfig, %i[pointer CUsharedconfig], :CUresult
+    attach_function :cuEventCreate, %i[pointer unsigned_int], :CUresult
+    attach_function :cuEventDestroy, [:CUevent], :CUresult
+    attach_function :cuEventElapsedTime, %i[pointer CUevent CUevent], :CUresult
+    attach_function :cuEventQuery, [:CUevent], :CUresult
+    attach_function :cuEventRecord, %i[CUevent CUstream], :CUresult
+    attach_function :cuEventRecordWithFlags, %i[CUevent CUstream unsigned_int], :CUresult
+    attach_function :cuEventSynchronize, [:CUevent], :CUresult
+    attach_function :cuFuncGetAttribute, %i[pointer CUfunction_attribute CUfunction], :CUresult
+    attach_function :cuFuncGetModule, %i[pointer CUfunction], :CUresult
+    attach_function :cuFuncSetAttribute, %i[CUfunction CUfunction_attribute int], :CUresult
+    attach_function :cuFuncSetCacheConfig, %i[CUfunction CUfunc_cache], :CUresult
+    attach_function :cuFuncSetSharedMemConfig, %i[CUfunction CUsharedconfig], :CUresult
     attach_function :cuLaunchCooperativeKernel,
-                    %i[pointer uint uint uint uint uint uint uint pointer pointer], :CUresult
-    attach_function :cuLaunchCooperativeKernelMultiDevice, %i[pointer uint uint], :CUresult
-    attach_function :cuLaunchHostFunc, %i[pointer pointer pointer], :CUresult
+                    %i[CUfunction unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int CUstream pointer], :CUresult
+    attach_function :cuLaunchCooperativeKernelMultiDevice, %i[pointer unsigned_int unsigned_int], :CUresult
+    attach_function :cuLaunchHostFunc, %i[CUstream CUhostFn pointer], :CUresult
     attach_function :cuLaunchKernel,
-                    %i[pointer uint uint uint uint uint uint uint pointer pointer pointer], :CUresult
-    attach_function :cuFuncSetBlockShape, %i[pointer int int int], :CUresult
-    attach_function :cuFuncSetSharedSize, %i[pointer uint], :CUresult
-    attach_function :cuLaunch, [:pointer], :CUresult
-    attach_function :cuLaunchGrid, %i[pointer int int], :CUresult
-    attach_function :cuLaunchGridAsync, %i[pointer int int pointer], :CUresult
-    attach_function :cuParamSetSize, %i[pointer uint], :CUresult
-    attach_function :cuParamSetTexRef, %i[pointer int pointer], :CUresult
-    attach_function :cuParamSetf, %i[pointer int float], :CUresult
-    attach_function :cuParamSeti, %i[pointer int uint], :CUresult
-    attach_function :cuParamSetv, %i[pointer int pointer uint], :CUresult
-    attach_function :cuDestroyExternalMemory, [:pointer], :CUresult
-    attach_function :cuDestroyExternalSemaphore, [:pointer], :CUresult
-    attach_function :cuExternalMemoryGetMappedBuffer, %i[pointer pointer pointer], :CUresult
-    attach_function :cuExternalMemoryGetMappedMipmappedArray, %i[pointer pointer pointer], :CUresult
+                    %i[CUfunction unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int CUstream pointer pointer], :CUresult
+    attach_function :cuFuncSetBlockShape, %i[CUfunction int int int], :CUresult
+    attach_function :cuFuncSetSharedSize, %i[CUfunction unsigned_int], :CUresult
+    attach_function :cuLaunch, [:CUfunction], :CUresult
+    attach_function :cuLaunchGrid, %i[CUfunction int int], :CUresult
+    attach_function :cuLaunchGridAsync, %i[CUfunction int int CUstream], :CUresult
+    attach_function :cuParamSetSize, %i[CUfunction unsigned_int], :CUresult
+    attach_function :cuParamSetTexRef, %i[CUfunction int CUtexref], :CUresult
+    attach_function :cuParamSetf, %i[CUfunction int float], :CUresult
+    attach_function :cuParamSeti, %i[CUfunction int unsigned_int], :CUresult
+    attach_function :cuParamSetv, %i[CUfunction int pointer unsigned_int], :CUresult
+    attach_function :cuDestroyExternalMemory, [:CUexternalMemory], :CUresult
+    attach_function :cuDestroyExternalSemaphore, [:CUexternalSemaphore], :CUresult
+    attach_function :cuExternalMemoryGetMappedBuffer, %i[pointer CUexternalMemory pointer], :CUresult
+    attach_function :cuExternalMemoryGetMappedMipmappedArray, %i[pointer CUexternalMemory pointer], :CUresult
     attach_function :cuImportExternalMemory, %i[pointer pointer], :CUresult
     attach_function :cuImportExternalSemaphore, %i[pointer pointer], :CUresult
-    attach_function :cuSignalExternalSemaphoresAsync, %i[pointer pointer uint pointer], :CUresult
-    attach_function :cuWaitExternalSemaphoresAsync, %i[pointer pointer uint pointer], :CUresult
-    attach_function :cuGLCtxCreate, %i[pointer uint pointer], :CUresult
+    attach_function :cuSignalExternalSemaphoresAsync, %i[pointer pointer unsigned_int CUstream], :CUresult
+    attach_function :cuWaitExternalSemaphoresAsync, %i[pointer pointer unsigned_int CUstream], :CUresult
+    attach_function :cuGLCtxCreate, %i[pointer unsigned_int CUdevice], :CUresult
     attach_function :cuGLInit, [], :CUresult
-    attach_function :cuGLMapBufferObject, %i[pointer pointer pointer], :CUresult
-    attach_function :cuGLMapBufferObjectAsync, %i[pointer pointer pointer pointer], :CUresult
-    attach_function :cuGLRegisterBufferObject, [:pointer], :CUresult
-    attach_function :cuGLSetBufferObjectMapFlags, %i[pointer uint], :CUresult
-    attach_function :cuGLUnmapBufferObject, [:pointer], :CUresult
-    attach_function :cuGLUnmapBufferObjectAsync, %i[pointer pointer], :CUresult
-    attach_function :cuGLUnregisterBufferObject, [:pointer], :CUresult
-    attach_function :cuDeviceGetGraphMemAttribute, %i[pointer pointer pointer], :CUresult
-    attach_function :cuDeviceGraphMemTrim, [:pointer], :CUresult
-    attach_function :cuDeviceSetGraphMemAttribute, %i[pointer pointer pointer], :CUresult
-    attach_function :cuGraphAddChildGraphNode, %i[pointer pointer pointer size_t pointer], :CUresult
-    attach_function :cuGraphAddDependencies, %i[pointer pointer pointer size_t], :CUresult
-    attach_function :cuGraphAddEmptyNode, %i[pointer pointer pointer size_t], :CUresult
-    attach_function :cuGraphAddEventRecordNode, %i[pointer pointer pointer size_t pointer], :CUresult
-    attach_function :cuGraphAddEventWaitNode, %i[pointer pointer pointer size_t pointer], :CUresult
-    attach_function :cuGraphAddExternalSemaphoresSignalNode, %i[pointer pointer pointer size_t pointer],
+    attach_function :cuGLMapBufferObject, %i[pointer pointer GLuint], :CUresult
+    attach_function :cuGLMapBufferObjectAsync, %i[pointer pointer GLuint CUstream], :CUresult
+    attach_function :cuGLRegisterBufferObject, [:GLuint], :CUresult
+    attach_function :cuGLSetBufferObjectMapFlags, %i[GLuint unsigned_int], :CUresult
+    attach_function :cuGLUnmapBufferObject, [:GLuint], :CUresult
+    attach_function :cuGLUnmapBufferObjectAsync, %i[GLuint CUstream], :CUresult
+    attach_function :cuGLUnregisterBufferObject, [:GLuint], :CUresult
+    attach_function :cuDeviceGetGraphMemAttribute, %i[CUdevice CUgraphMem_attribute pointer], :CUresult
+    attach_function :cuDeviceGraphMemTrim, [:CUdevice], :CUresult
+    attach_function :cuDeviceSetGraphMemAttribute, %i[CUdevice CUgraphMem_attribute pointer], :CUresult
+    attach_function :cuGraphAddChildGraphNode, %i[pointer CUgraph pointer size_t CUgraph], :CUresult
+    attach_function :cuGraphAddDependencies, %i[CUgraph pointer pointer size_t], :CUresult
+    attach_function :cuGraphAddEmptyNode, %i[pointer CUgraph pointer size_t], :CUresult
+    attach_function :cuGraphAddEventRecordNode, %i[pointer CUgraph pointer size_t CUevent], :CUresult
+    attach_function :cuGraphAddEventWaitNode, %i[pointer CUgraph pointer size_t CUevent], :CUresult
+    attach_function :cuGraphAddExternalSemaphoresSignalNode, %i[pointer CUgraph pointer size_t pointer],
                     :CUresult
-    attach_function :cuGraphAddExternalSemaphoresWaitNode, %i[pointer pointer pointer size_t pointer],
+    attach_function :cuGraphAddExternalSemaphoresWaitNode, %i[pointer CUgraph pointer size_t pointer],
                     :CUresult
-    attach_function :cuGraphAddHostNode, %i[pointer pointer pointer size_t pointer], :CUresult
-    attach_function :cuGraphAddKernelNode, %i[pointer pointer pointer size_t pointer], :CUresult
-    attach_function :cuGraphAddMemAllocNode, %i[pointer pointer pointer size_t pointer], :CUresult
-    attach_function :cuGraphAddMemFreeNode, %i[pointer pointer pointer size_t pointer], :CUresult
-    attach_function :cuGraphAddMemcpyNode, %i[pointer pointer pointer size_t pointer pointer],
+    attach_function :cuGraphAddHostNode, %i[pointer CUgraph pointer size_t pointer], :CUresult
+    attach_function :cuGraphAddKernelNode, %i[pointer CUgraph pointer size_t pointer], :CUresult
+    attach_function :cuGraphAddMemAllocNode, %i[pointer CUgraph pointer size_t pointer], :CUresult
+    attach_function :cuGraphAddMemFreeNode, %i[pointer CUgraph pointer size_t CUdeviceptr], :CUresult
+    attach_function :cuGraphAddMemcpyNode, %i[pointer CUgraph pointer size_t pointer CUcontext],
                     :CUresult
-    attach_function :cuGraphAddMemsetNode, %i[pointer pointer pointer size_t pointer pointer],
+    attach_function :cuGraphAddMemsetNode, %i[pointer CUgraph pointer size_t pointer CUcontext],
                     :CUresult
-    attach_function :cuGraphChildGraphNodeGetGraph, %i[pointer pointer], :CUresult
-    attach_function :cuGraphClone, %i[pointer pointer], :CUresult
-    attach_function :cuGraphCreate, %i[pointer uint], :CUresult
-    attach_function :cuGraphDebugDotPrint, %i[pointer pointer uint], :CUresult
-    attach_function :cuGraphDestroy, [:pointer], :CUresult
-    attach_function :cuGraphDestroyNode, [:pointer], :CUresult
-    attach_function :cuGraphEventRecordNodeGetEvent, %i[pointer pointer], :CUresult
-    attach_function :cuGraphEventRecordNodeSetEvent, %i[pointer pointer], :CUresult
-    attach_function :cuGraphEventWaitNodeGetEvent, %i[pointer pointer], :CUresult
-    attach_function :cuGraphEventWaitNodeSetEvent, %i[pointer pointer], :CUresult
-    attach_function :cuGraphExecChildGraphNodeSetParams, %i[pointer pointer pointer], :CUresult
-    attach_function :cuGraphExecDestroy, [:pointer], :CUresult
-    attach_function :cuGraphExecEventRecordNodeSetEvent, %i[pointer pointer pointer], :CUresult
-    attach_function :cuGraphExecEventWaitNodeSetEvent, %i[pointer pointer pointer], :CUresult
-    attach_function :cuGraphExecExternalSemaphoresSignalNodeSetParams, %i[pointer pointer pointer], :CUresult
-    attach_function :cuGraphExecExternalSemaphoresWaitNodeSetParams, %i[pointer pointer pointer], :CUresult
-    attach_function :cuGraphExecHostNodeSetParams, %i[pointer pointer pointer], :CUresult
-    attach_function :cuGraphExecKernelNodeSetParams, %i[pointer pointer pointer], :CUresult
-    attach_function :cuGraphExecMemcpyNodeSetParams, %i[pointer pointer pointer pointer], :CUresult
-    attach_function :cuGraphExecMemsetNodeSetParams, %i[pointer pointer pointer pointer], :CUresult
-    attach_function :cuGraphExecUpdate, %i[pointer pointer pointer pointer], :CUresult
-    attach_function :cuGraphExternalSemaphoresSignalNodeGetParams, %i[pointer pointer], :CUresult
-    attach_function :cuGraphExternalSemaphoresSignalNodeSetParams, %i[pointer pointer], :CUresult
-    attach_function :cuGraphExternalSemaphoresWaitNodeGetParams, %i[pointer pointer], :CUresult
-    attach_function :cuGraphExternalSemaphoresWaitNodeSetParams, %i[pointer pointer], :CUresult
-    attach_function :cuGraphGetEdges, %i[pointer pointer pointer pointer], :CUresult
-    attach_function :cuGraphGetNodes, %i[pointer pointer pointer], :CUresult
-    attach_function :cuGraphGetRootNodes, %i[pointer pointer pointer], :CUresult
-    attach_function :cuGraphHostNodeGetParams, %i[pointer pointer], :CUresult
-    attach_function :cuGraphHostNodeSetParams, %i[pointer pointer], :CUresult
-    attach_function :cuGraphInstantiate, %i[pointer pointer pointer pointer size_t], :CUresult
-    attach_function :cuGraphInstantiateWithFlags, %i[pointer pointer ulong_long], :CUresult
-    attach_function :cuGraphKernelNodeCopyAttributes, %i[pointer pointer], :CUresult
-    attach_function :cuGraphKernelNodeGetAttribute, %i[pointer CUkernelNodeAttrID pointer], :CUresult
-    attach_function :cuGraphKernelNodeGetParams, %i[pointer pointer], :CUresult
-    attach_function :cuGraphKernelNodeSetAttribute, %i[pointer CUkernelNodeAttrID pointer], :CUresult
-    attach_function :cuGraphKernelNodeSetParams, %i[pointer pointer], :CUresult
-    attach_function :cuGraphLaunch, %i[pointer pointer], :CUresult
-    attach_function :cuGraphMemAllocNodeGetParams, %i[pointer pointer], :CUresult
-    attach_function :cuGraphMemFreeNodeGetParams, %i[pointer pointer], :CUresult
-    attach_function :cuGraphMemcpyNodeGetParams, %i[pointer pointer], :CUresult
-    attach_function :cuGraphMemcpyNodeSetParams, %i[pointer pointer], :CUresult
-    attach_function :cuGraphMemsetNodeGetParams, %i[pointer pointer], :CUresult
-    attach_function :cuGraphMemsetNodeSetParams, %i[pointer pointer], :CUresult
-    attach_function :cuGraphNodeFindInClone, %i[pointer pointer pointer], :CUresult
-    attach_function :cuGraphNodeGetDependencies, %i[pointer pointer pointer], :CUresult
-    attach_function :cuGraphNodeGetDependentNodes, %i[pointer pointer pointer], :CUresult
-    attach_function :cuGraphNodeGetType, %i[pointer pointer], :CUresult
-    attach_function :cuGraphReleaseUserObject, %i[pointer pointer uint], :CUresult
-    attach_function :cuGraphRemoveDependencies, %i[pointer pointer pointer size_t], :CUresult
-    attach_function :cuGraphRetainUserObject, %i[pointer pointer uint uint], :CUresult
-    attach_function :cuGraphUpload, %i[pointer pointer], :CUresult
-    attach_function :cuUserObjectCreate, %i[pointer pointer pointer uint uint], :CUresult
-    attach_function :cuUserObjectRelease, %i[pointer uint], :CUresult
-    attach_function :cuUserObjectRetain, %i[pointer uint], :CUresult
-    attach_function :cuInit, [:uint], :CUresult
-    attach_function :cuMemAllocAsync, %i[pointer size_t pointer], :CUresult
-    attach_function :cuMemAllocFromPoolAsync, %i[pointer size_t pointer pointer], :CUresult
-    attach_function :cuMemFreeAsync, %i[pointer pointer], :CUresult
+    attach_function :cuGraphChildGraphNodeGetGraph, %i[CUgraphNode pointer], :CUresult
+    attach_function :cuGraphClone, %i[pointer CUgraph], :CUresult
+    attach_function :cuGraphCreate, %i[pointer unsigned_int], :CUresult
+    attach_function :cuGraphDebugDotPrint, %i[CUgraph pointer unsigned_int], :CUresult
+    attach_function :cuGraphDestroy, [:CUgraph], :CUresult
+    attach_function :cuGraphDestroyNode, [:CUgraphNode], :CUresult
+    attach_function :cuGraphEventRecordNodeGetEvent, %i[CUgraphNode pointer], :CUresult
+    attach_function :cuGraphEventRecordNodeSetEvent, %i[CUgraphNode CUevent], :CUresult
+    attach_function :cuGraphEventWaitNodeGetEvent, %i[CUgraphNode pointer], :CUresult
+    attach_function :cuGraphEventWaitNodeSetEvent, %i[CUgraphNode CUevent], :CUresult
+    attach_function :cuGraphExecChildGraphNodeSetParams, %i[CUgraphExec CUgraphNode CUgraph], :CUresult
+    attach_function :cuGraphExecDestroy, [:CUgraphExec], :CUresult
+    attach_function :cuGraphExecEventRecordNodeSetEvent, %i[CUgraphExec CUgraphNode CUevent], :CUresult
+    attach_function :cuGraphExecEventWaitNodeSetEvent, %i[CUgraphExec CUgraphNode CUevent], :CUresult
+    attach_function :cuGraphExecExternalSemaphoresSignalNodeSetParams, %i[CUgraphExec CUgraphNode pointer],
+                    :CUresult
+    attach_function :cuGraphExecExternalSemaphoresWaitNodeSetParams, %i[CUgraphExec CUgraphNode pointer],
+                    :CUresult
+    attach_function :cuGraphExecHostNodeSetParams, %i[CUgraphExec CUgraphNode pointer], :CUresult
+    attach_function :cuGraphExecKernelNodeSetParams, %i[CUgraphExec CUgraphNode pointer], :CUresult
+    attach_function :cuGraphExecMemcpyNodeSetParams, %i[CUgraphExec CUgraphNode pointer CUcontext],
+                    :CUresult
+    attach_function :cuGraphExecMemsetNodeSetParams, %i[CUgraphExec CUgraphNode pointer CUcontext],
+                    :CUresult
+    attach_function :cuGraphExecUpdate, %i[CUgraphExec CUgraph pointer pointer], :CUresult
+    attach_function :cuGraphExternalSemaphoresSignalNodeGetParams, %i[CUgraphNode pointer], :CUresult
+    attach_function :cuGraphExternalSemaphoresSignalNodeSetParams, %i[CUgraphNode pointer], :CUresult
+    attach_function :cuGraphExternalSemaphoresWaitNodeGetParams, %i[CUgraphNode pointer], :CUresult
+    attach_function :cuGraphExternalSemaphoresWaitNodeSetParams, %i[CUgraphNode pointer], :CUresult
+    attach_function :cuGraphGetEdges, %i[CUgraph pointer pointer pointer], :CUresult
+    attach_function :cuGraphGetNodes, %i[CUgraph pointer pointer], :CUresult
+    attach_function :cuGraphGetRootNodes, %i[CUgraph pointer pointer], :CUresult
+    attach_function :cuGraphHostNodeGetParams, %i[CUgraphNode pointer], :CUresult
+    attach_function :cuGraphHostNodeSetParams, %i[CUgraphNode pointer], :CUresult
+    attach_function :cuGraphInstantiate, %i[pointer CUgraph pointer pointer size_t], :CUresult
+    attach_function :cuGraphInstantiateWithFlags, %i[pointer CUgraph unsigned_long_long], :CUresult
+    attach_function :cuGraphKernelNodeCopyAttributes, %i[CUgraphNode CUgraphNode], :CUresult
+    attach_function :cuGraphKernelNodeGetAttribute, %i[CUgraphNode CUkernelNodeAttrID pointer], :CUresult
+    attach_function :cuGraphKernelNodeGetParams, %i[CUgraphNode pointer], :CUresult
+    attach_function :cuGraphKernelNodeSetAttribute, %i[CUgraphNode CUkernelNodeAttrID pointer], :CUresult
+    attach_function :cuGraphKernelNodeSetParams, %i[CUgraphNode pointer], :CUresult
+    attach_function :cuGraphLaunch, %i[CUgraphExec CUstream], :CUresult
+    attach_function :cuGraphMemAllocNodeGetParams, %i[CUgraphNode pointer], :CUresult
+    attach_function :cuGraphMemFreeNodeGetParams, %i[CUgraphNode pointer], :CUresult
+    attach_function :cuGraphMemcpyNodeGetParams, %i[CUgraphNode pointer], :CUresult
+    attach_function :cuGraphMemcpyNodeSetParams, %i[CUgraphNode pointer], :CUresult
+    attach_function :cuGraphMemsetNodeGetParams, %i[CUgraphNode pointer], :CUresult
+    attach_function :cuGraphMemsetNodeSetParams, %i[CUgraphNode pointer], :CUresult
+    attach_function :cuGraphNodeFindInClone, %i[pointer CUgraphNode CUgraph], :CUresult
+    attach_function :cuGraphNodeGetDependencies, %i[CUgraphNode pointer pointer], :CUresult
+    attach_function :cuGraphNodeGetDependentNodes, %i[CUgraphNode pointer pointer], :CUresult
+    attach_function :cuGraphNodeGetType, %i[CUgraphNode pointer], :CUresult
+    attach_function :cuGraphReleaseUserObject, %i[CUgraph CUuserObject unsigned_int], :CUresult
+    attach_function :cuGraphRemoveDependencies, %i[CUgraph pointer pointer size_t], :CUresult
+    attach_function :cuGraphRetainUserObject, %i[CUgraph CUuserObject unsigned_int unsigned_int], :CUresult
+    attach_function :cuGraphUpload, %i[CUgraphExec CUstream], :CUresult
+    attach_function :cuUserObjectCreate, %i[pointer pointer CUhostFn unsigned_int unsigned_int],
+                    :CUresult
+    attach_function :cuUserObjectRelease, %i[CUuserObject unsigned_int], :CUresult
+    attach_function :cuUserObjectRetain, %i[CUuserObject unsigned_int], :CUresult
+    attach_function :cuInit, [:unsigned_int], :CUresult
+    attach_function :cuMemAllocAsync, %i[pointer size_t CUstream], :CUresult
+    attach_function :cuMemAllocFromPoolAsync, %i[pointer size_t CUmemoryPool CUstream], :CUresult
+    attach_function :cuMemFreeAsync, %i[CUdeviceptr CUstream], :CUresult
     attach_function :cuMemPoolCreate, %i[pointer pointer], :CUresult
-    attach_function :cuMemPoolDestroy, [:pointer], :CUresult
-    attach_function :cuMemPoolExportPointer, %i[pointer pointer], :CUresult
+    attach_function :cuMemPoolDestroy, [:CUmemoryPool], :CUresult
+    attach_function :cuMemPoolExportPointer, %i[pointer CUdeviceptr], :CUresult
     attach_function :cuMemPoolExportToShareableHandle,
-                    %i[pointer pointer CUmemAllocationHandleType ulong_long], :CUresult
-    attach_function :cuMemPoolGetAccess, %i[pointer pointer pointer], :CUresult
-    attach_function :cuMemPoolGetAttribute, %i[pointer CUmemPool_attribute pointer], :CUresult
+                    %i[pointer CUmemoryPool CUmemAllocationHandleType unsigned_long_long], :CUresult
+    attach_function :cuMemPoolGetAccess, %i[pointer CUmemoryPool pointer], :CUresult
+    attach_function :cuMemPoolGetAttribute, %i[CUmemoryPool CUmemPool_attribute pointer], :CUresult
     attach_function :cuMemPoolImportFromShareableHandle,
-                    %i[pointer pointer CUmemAllocationHandleType ulong_long], :CUresult
-    attach_function :cuMemPoolImportPointer, %i[pointer pointer pointer], :CUresult
-    attach_function :cuMemPoolSetAccess, %i[pointer pointer size_t], :CUresult
-    attach_function :cuMemPoolSetAttribute, %i[pointer CUmemPool_attribute pointer], :CUresult
-    attach_function :cuMemPoolTrimTo, %i[pointer size_t], :CUresult
+                    %i[pointer pointer CUmemAllocationHandleType unsigned_long_long], :CUresult
+    attach_function :cuMemPoolImportPointer, %i[pointer CUmemoryPool pointer], :CUresult
+    attach_function :cuMemPoolSetAccess, %i[CUmemoryPool pointer size_t], :CUresult
+    attach_function :cuMemPoolSetAttribute, %i[CUmemoryPool CUmemPool_attribute pointer], :CUresult
+    attach_function :cuMemPoolTrimTo, %i[CUmemoryPool size_t], :CUresult
     attach_function :cuArray3DCreate, %i[pointer pointer], :CUresult
-    attach_function :cuArray3DGetDescriptor, %i[pointer pointer], :CUresult
+    attach_function :cuArray3DGetDescriptor, %i[pointer CUarray], :CUresult
     attach_function :cuArrayCreate, %i[pointer pointer], :CUresult
-    attach_function :cuArrayDestroy, [:pointer], :CUresult
-    attach_function :cuArrayGetDescriptor, %i[pointer pointer], :CUresult
-    attach_function :cuArrayGetPlane, %i[pointer pointer uint], :CUresult
-    attach_function :cuArrayGetSparseProperties, %i[pointer pointer], :CUresult
+    attach_function :cuArrayDestroy, [:CUarray], :CUresult
+    attach_function :cuArrayGetDescriptor, %i[pointer CUarray], :CUresult
+    attach_function :cuArrayGetPlane, %i[pointer CUarray unsigned_int], :CUresult
+    attach_function :cuArrayGetSparseProperties, %i[pointer CUarray], :CUresult
     attach_function :cuDeviceGetByPCIBusId, %i[pointer pointer], :CUresult
-    attach_function :cuDeviceGetPCIBusId, %i[pointer int pointer], :CUresult
-    attach_function :cuIpcCloseMemHandle, [:pointer], :CUresult
-    attach_function :cuIpcGetEventHandle, %i[pointer pointer], :CUresult
-    attach_function :cuIpcGetMemHandle, %i[pointer pointer], :CUresult
-    attach_function :cuIpcOpenEventHandle, %i[pointer pointer], :CUresult
-    attach_function :cuIpcOpenMemHandle, %i[pointer pointer uint], :CUresult
+    attach_function :cuDeviceGetPCIBusId, %i[pointer int CUdevice], :CUresult
+    attach_function :cuIpcCloseMemHandle, [:CUdeviceptr], :CUresult
+    attach_function :cuIpcGetEventHandle, %i[pointer CUevent], :CUresult
+    attach_function :cuIpcGetMemHandle, %i[pointer CUdeviceptr], :CUresult
+    attach_function :cuIpcOpenEventHandle, %i[pointer CUipcEventHandle], :CUresult
+    attach_function :cuIpcOpenMemHandle, %i[pointer CUipcMemHandle unsigned_int], :CUresult
     attach_function :cuMemAlloc, %i[pointer size_t], :CUresult
     attach_function :cuMemAllocHost, %i[pointer size_t], :CUresult
-    attach_function :cuMemAllocManaged, %i[pointer size_t uint], :CUresult
-    attach_function :cuMemAllocPitch, %i[pointer pointer size_t size_t uint], :CUresult
-    attach_function :cuMemFree, [:pointer], :CUresult
+    attach_function :cuMemAllocManaged, %i[pointer size_t unsigned_int], :CUresult
+    attach_function :cuMemAllocPitch, %i[pointer pointer size_t size_t unsigned_int], :CUresult
+    attach_function :cuMemFree, [:CUdeviceptr], :CUresult
     attach_function :cuMemFreeHost, [:pointer], :CUresult
-    attach_function :cuMemGetAddressRange, %i[pointer pointer pointer], :CUresult
+    attach_function :cuMemGetAddressRange, %i[pointer pointer CUdeviceptr], :CUresult
     attach_function :cuMemGetInfo, %i[pointer pointer], :CUresult
-    attach_function :cuMemHostAlloc, %i[pointer size_t uint], :CUresult
-    attach_function :cuMemHostGetDevicePointer, %i[pointer pointer uint], :CUresult
+    attach_function :cuMemHostAlloc, %i[pointer size_t unsigned_int], :CUresult
+    attach_function :cuMemHostGetDevicePointer, %i[pointer pointer unsigned_int], :CUresult
     attach_function :cuMemHostGetFlags, %i[pointer pointer], :CUresult
-    attach_function :cuMemHostRegister, %i[pointer size_t uint], :CUresult
+    attach_function :cuMemHostRegister, %i[pointer size_t unsigned_int], :CUresult
     attach_function :cuMemHostUnregister, [:pointer], :CUresult
-    attach_function :cuMemcpy, %i[pointer pointer size_t], :CUresult
+    attach_function :cuMemcpy, %i[CUdeviceptr CUdeviceptr size_t], :CUresult
     attach_function :cuMemcpy2D, [:pointer], :CUresult
-    attach_function :cuMemcpy2DAsync, %i[pointer pointer], :CUresult
+    attach_function :cuMemcpy2DAsync, %i[pointer CUstream], :CUresult
     attach_function :cuMemcpy2DUnaligned, [:pointer], :CUresult
     attach_function :cuMemcpy3D, [:pointer], :CUresult
-    attach_function :cuMemcpy3DAsync, %i[pointer pointer], :CUresult
+    attach_function :cuMemcpy3DAsync, %i[pointer CUstream], :CUresult
     attach_function :cuMemcpy3DPeer, [:pointer], :CUresult
-    attach_function :cuMemcpy3DPeerAsync, %i[pointer pointer], :CUresult
-    attach_function :cuMemcpyAsync, %i[pointer pointer size_t pointer], :CUresult
-    attach_function :cuMemcpyAtoA, %i[pointer size_t pointer size_t size_t], :CUresult
-    attach_function :cuMemcpyAtoD, %i[pointer pointer size_t size_t], :CUresult
-    attach_function :cuMemcpyAtoH, %i[pointer pointer size_t size_t], :CUresult
-    attach_function :cuMemcpyAtoHAsync, %i[pointer pointer size_t size_t pointer], :CUresult
-    attach_function :cuMemcpyDtoA, %i[pointer size_t pointer size_t], :CUresult
-    attach_function :cuMemcpyDtoD, %i[pointer pointer size_t], :CUresult
-    attach_function :cuMemcpyDtoDAsync, %i[pointer pointer size_t pointer], :CUresult
-    attach_function :cuMemcpyDtoH, %i[pointer pointer size_t], :CUresult
-    attach_function :cuMemcpyDtoHAsync, %i[pointer pointer size_t pointer], :CUresult
-    attach_function :cuMemcpyHtoA, %i[pointer size_t pointer size_t], :CUresult
-    attach_function :cuMemcpyHtoAAsync, %i[pointer size_t pointer size_t pointer], :CUresult
-    attach_function :cuMemcpyHtoD, %i[pointer pointer size_t], :CUresult
-    attach_function :cuMemcpyHtoDAsync, %i[pointer pointer size_t pointer], :CUresult
-    attach_function :cuMemcpyPeer, %i[pointer pointer pointer pointer size_t], :CUresult
-    attach_function :cuMemcpyPeerAsync, %i[pointer pointer pointer pointer size_t pointer], :CUresult
-    attach_function :cuMemsetD16, %i[pointer ushort size_t], :CUresult
-    attach_function :cuMemsetD16Async, %i[pointer ushort size_t pointer], :CUresult
-    attach_function :cuMemsetD2D16, %i[pointer size_t ushort size_t size_t], :CUresult
-    attach_function :cuMemsetD2D16Async, %i[pointer size_t ushort size_t size_t pointer], :CUresult
-    attach_function :cuMemsetD2D32, %i[pointer size_t uint size_t size_t], :CUresult
-    attach_function :cuMemsetD2D32Async, %i[pointer size_t uint size_t size_t pointer], :CUresult
-    attach_function :cuMemsetD2D8, %i[pointer size_t uchar size_t size_t], :CUresult
-    attach_function :cuMemsetD2D8Async, %i[pointer size_t uchar size_t size_t pointer], :CUresult
-    attach_function :cuMemsetD32, %i[pointer uint size_t], :CUresult
-    attach_function :cuMemsetD32Async, %i[pointer uint size_t pointer], :CUresult
-    attach_function :cuMemsetD8, %i[pointer uchar size_t], :CUresult
-    attach_function :cuMemsetD8Async, %i[pointer uchar size_t pointer], :CUresult
-    attach_function :cuMipmappedArrayCreate, %i[pointer pointer uint], :CUresult
-    attach_function :cuMipmappedArrayDestroy, [:pointer], :CUresult
-    attach_function :cuMipmappedArrayGetLevel, %i[pointer pointer uint], :CUresult
-    attach_function :cuMipmappedArrayGetSparseProperties, %i[pointer pointer], :CUresult
-    attach_function :cuStreamBatchMemOp, %i[pointer uint pointer uint], :CUresult
-    attach_function :cuStreamWaitValue32, %i[pointer pointer pointer uint], :CUresult
-    attach_function :cuStreamWaitValue64, %i[pointer pointer pointer uint], :CUresult
-    attach_function :cuStreamWriteValue32, %i[pointer pointer pointer uint], :CUresult
-    attach_function :cuStreamWriteValue64, %i[pointer pointer pointer uint], :CUresult
+    attach_function :cuMemcpy3DPeerAsync, %i[pointer CUstream], :CUresult
+    attach_function :cuMemcpyAsync, %i[CUdeviceptr CUdeviceptr size_t CUstream], :CUresult
+    attach_function :cuMemcpyAtoA, %i[CUarray size_t CUarray size_t size_t], :CUresult
+    attach_function :cuMemcpyAtoD, %i[CUdeviceptr CUarray size_t size_t], :CUresult
+    attach_function :cuMemcpyAtoH, %i[pointer CUarray size_t size_t], :CUresult
+    attach_function :cuMemcpyAtoHAsync, %i[pointer CUarray size_t size_t CUstream], :CUresult
+    attach_function :cuMemcpyDtoA, %i[CUarray size_t CUdeviceptr size_t], :CUresult
+    attach_function :cuMemcpyDtoD, %i[CUdeviceptr CUdeviceptr size_t], :CUresult
+    attach_function :cuMemcpyDtoDAsync, %i[CUdeviceptr CUdeviceptr size_t CUstream], :CUresult
+    attach_function :cuMemcpyDtoH, %i[pointer CUdeviceptr size_t], :CUresult
+    attach_function :cuMemcpyDtoHAsync, %i[pointer CUdeviceptr size_t CUstream], :CUresult
+    attach_function :cuMemcpyHtoA, %i[CUarray size_t pointer size_t], :CUresult
+    attach_function :cuMemcpyHtoAAsync, %i[CUarray size_t pointer size_t CUstream], :CUresult
+    attach_function :cuMemcpyHtoD, %i[CUdeviceptr pointer size_t], :CUresult
+    attach_function :cuMemcpyHtoDAsync, %i[CUdeviceptr pointer size_t CUstream], :CUresult
+    attach_function :cuMemcpyPeer, %i[CUdeviceptr CUcontext CUdeviceptr CUcontext size_t], :CUresult
+    attach_function :cuMemcpyPeerAsync,
+                    %i[CUdeviceptr CUcontext CUdeviceptr CUcontext size_t CUstream], :CUresult
+    attach_function :cuMemsetD16, %i[CUdeviceptr unsigned_short size_t], :CUresult
+    attach_function :cuMemsetD16Async, %i[CUdeviceptr unsigned_short size_t CUstream], :CUresult
+    attach_function :cuMemsetD2D16, %i[CUdeviceptr size_t unsigned_short size_t size_t], :CUresult
+    attach_function :cuMemsetD2D16Async, %i[CUdeviceptr size_t unsigned_short size_t size_t CUstream],
+                    :CUresult
+    attach_function :cuMemsetD2D32, %i[CUdeviceptr size_t unsigned_int size_t size_t], :CUresult
+    attach_function :cuMemsetD2D32Async, %i[CUdeviceptr size_t unsigned_int size_t size_t CUstream],
+                    :CUresult
+    attach_function :cuMemsetD2D8, %i[CUdeviceptr size_t unsigned_char size_t size_t], :CUresult
+    attach_function :cuMemsetD2D8Async, %i[CUdeviceptr size_t unsigned_char size_t size_t CUstream],
+                    :CUresult
+    attach_function :cuMemsetD32, %i[CUdeviceptr unsigned_int size_t], :CUresult
+    attach_function :cuMemsetD32Async, %i[CUdeviceptr unsigned_int size_t CUstream], :CUresult
+    attach_function :cuMemsetD8, %i[CUdeviceptr unsigned_char size_t], :CUresult
+    attach_function :cuMemsetD8Async, %i[CUdeviceptr unsigned_char size_t CUstream], :CUresult
+    attach_function :cuMipmappedArrayCreate, %i[pointer pointer unsigned_int], :CUresult
+    attach_function :cuMipmappedArrayDestroy, [:CUmipmappedArray], :CUresult
+    attach_function :cuMipmappedArrayGetLevel, %i[pointer CUmipmappedArray unsigned_int], :CUresult
+    attach_function :cuMipmappedArrayGetSparseProperties, %i[pointer CUmipmappedArray], :CUresult
+    attach_function :cuStreamBatchMemOp, %i[CUstream unsigned_int pointer unsigned_int], :CUresult
+    attach_function :cuStreamWaitValue32, %i[CUstream CUdeviceptr cuuint32_t unsigned_int], :CUresult
+    attach_function :cuStreamWaitValue64, %i[CUstream CUdeviceptr cuuint64_t unsigned_int], :CUresult
+    attach_function :cuStreamWriteValue32, %i[CUstream CUdeviceptr cuuint32_t unsigned_int], :CUresult
+    attach_function :cuStreamWriteValue64, %i[CUstream CUdeviceptr cuuint64_t unsigned_int], :CUresult
     attach_function :cuLinkAddData,
-                    %i[pointer CUjitInputType pointer size_t pointer uint pointer pointer], :CUresult
-    attach_function :cuLinkAddFile, %i[pointer CUjitInputType pointer uint pointer pointer], :CUresult
-    attach_function :cuLinkComplete, %i[pointer pointer pointer], :CUresult
-    attach_function :cuLinkCreate, %i[uint pointer pointer pointer], :CUresult
-    attach_function :cuLinkDestroy, [:pointer], :CUresult
-    attach_function :cuModuleGetFunction, %i[pointer pointer pointer], :CUresult
-    attach_function :cuModuleGetGlobal, %i[pointer pointer pointer pointer], :CUresult
-    attach_function :cuModuleGetSurfRef, %i[pointer pointer pointer], :CUresult
-    attach_function :cuModuleGetTexRef, %i[pointer pointer pointer], :CUresult
+                    %i[CUlinkState CUjitInputType pointer size_t pointer unsigned_int pointer pointer], :CUresult
+    attach_function :cuLinkAddFile,
+                    %i[CUlinkState CUjitInputType pointer unsigned_int pointer pointer], :CUresult
+    attach_function :cuLinkComplete, %i[CUlinkState pointer pointer], :CUresult
+    attach_function :cuLinkCreate, %i[unsigned_int pointer pointer pointer], :CUresult
+    attach_function :cuLinkDestroy, [:CUlinkState], :CUresult
+    attach_function :cuModuleGetFunction, %i[pointer CUmodule pointer], :CUresult
+    attach_function :cuModuleGetGlobal, %i[pointer pointer CUmodule pointer], :CUresult
+    attach_function :cuModuleGetSurfRef, %i[pointer CUmodule pointer], :CUresult
+    attach_function :cuModuleGetTexRef, %i[pointer CUmodule pointer], :CUresult
     attach_function :cuModuleLoad, %i[pointer pointer], :CUresult
     attach_function :cuModuleLoadData, %i[pointer pointer], :CUresult
-    attach_function :cuModuleLoadDataEx, %i[pointer pointer uint pointer pointer], :CUresult
+    attach_function :cuModuleLoadDataEx, %i[pointer pointer unsigned_int pointer pointer], :CUresult
     attach_function :cuModuleLoadFatBinary, %i[pointer pointer], :CUresult
-    attach_function :cuModuleUnload, [:pointer], :CUresult
-    attach_function :cuOccupancyAvailableDynamicSMemPerBlock, %i[pointer pointer int int], :CUresult
-    attach_function :cuOccupancyMaxActiveBlocksPerMultiprocessor, %i[pointer pointer int size_t], :CUresult
-    attach_function :cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags,
-                    %i[pointer pointer int size_t uint], :CUresult
-    attach_function :cuOccupancyMaxPotentialBlockSize, %i[pointer pointer pointer pointer size_t int],
+    attach_function :cuModuleUnload, [:CUmodule], :CUresult
+    attach_function :cuOccupancyAvailableDynamicSMemPerBlock, %i[pointer CUfunction int int], :CUresult
+    attach_function :cuOccupancyMaxActiveBlocksPerMultiprocessor, %i[pointer CUfunction int size_t],
                     :CUresult
+    attach_function :cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags,
+                    %i[pointer CUfunction int size_t unsigned_int], :CUresult
+    attach_function :cuOccupancyMaxPotentialBlockSize,
+                    %i[pointer pointer CUfunction CUoccupancyB2DSize size_t int], :CUresult
     attach_function :cuOccupancyMaxPotentialBlockSizeWithFlags,
-                    %i[pointer pointer pointer pointer size_t int uint], :CUresult
-    attach_function :cuCtxDisablePeerAccess, [:pointer], :CUresult
-    attach_function :cuCtxEnablePeerAccess, %i[pointer uint], :CUresult
-    attach_function :cuDeviceCanAccessPeer, %i[pointer pointer pointer], :CUresult
-    attach_function :cuDeviceGetP2PAttribute, %i[pointer CUdevice_P2PAttribute pointer pointer], :CUresult
-    attach_function :cuDevicePrimaryCtxGetState, %i[pointer pointer pointer], :CUresult
-    attach_function :cuDevicePrimaryCtxRelease, [:pointer], :CUresult
-    attach_function :cuDevicePrimaryCtxReset, [:pointer], :CUresult
-    attach_function :cuDevicePrimaryCtxRetain, %i[pointer pointer], :CUresult
-    attach_function :cuDevicePrimaryCtxSetFlags, %i[pointer uint], :CUresult
+                    %i[pointer pointer CUfunction CUoccupancyB2DSize size_t int unsigned_int], :CUresult
+    attach_function :cuCtxDisablePeerAccess, [:CUcontext], :CUresult
+    attach_function :cuCtxEnablePeerAccess, %i[CUcontext unsigned_int], :CUresult
+    attach_function :cuDeviceCanAccessPeer, %i[pointer CUdevice CUdevice], :CUresult
+    attach_function :cuDeviceGetP2PAttribute, %i[pointer CUdevice_P2PAttribute CUdevice CUdevice],
+                    :CUresult
+    attach_function :cuDevicePrimaryCtxGetState, %i[CUdevice pointer pointer], :CUresult
+    attach_function :cuDevicePrimaryCtxRelease, [:CUdevice], :CUresult
+    attach_function :cuDevicePrimaryCtxReset, [:CUdevice], :CUresult
+    attach_function :cuDevicePrimaryCtxRetain, %i[pointer CUdevice], :CUresult
+    attach_function :cuDevicePrimaryCtxSetFlags, %i[CUdevice unsigned_int], :CUresult
     attach_function :cuProfilerStart, [], :CUresult
     attach_function :cuProfilerStop, [], :CUresult
-    attach_function :cuProfilerInitialize, %i[pointer pointer pointer], :CUresult
-    attach_function :cuStreamAddCallback, %i[pointer pointer pointer uint], :CUresult
-    attach_function :cuStreamAttachMemAsync, %i[pointer pointer size_t uint], :CUresult
-    attach_function :cuStreamBeginCapture, %i[pointer CUstreamCaptureMode], :CUresult
-    attach_function :cuStreamCopyAttributes, %i[pointer pointer], :CUresult
-    attach_function :cuStreamCreate, %i[pointer uint], :CUresult
-    attach_function :cuStreamCreateWithPriority, %i[pointer uint int], :CUresult
-    attach_function :cuStreamDestroy, [:pointer], :CUresult
-    attach_function :cuStreamEndCapture, %i[pointer pointer], :CUresult
-    attach_function :cuStreamGetAttribute, %i[pointer CUstreamAttrID pointer], :CUresult
-    attach_function :cuStreamGetCaptureInfo, %i[pointer pointer pointer], :CUresult
-    attach_function :cuStreamGetCaptureInfo_v2, %i[pointer pointer pointer pointer pointer pointer],
+    attach_function :cuProfilerInitialize, %i[pointer pointer CUoutput_mode], :CUresult
+    attach_function :cuStreamAddCallback, %i[CUstream CUstreamCallback pointer unsigned_int], :CUresult
+    attach_function :cuStreamAttachMemAsync, %i[CUstream CUdeviceptr size_t unsigned_int], :CUresult
+    attach_function :cuStreamBeginCapture, %i[CUstream CUstreamCaptureMode], :CUresult
+    attach_function :cuStreamCopyAttributes, %i[CUstream CUstream], :CUresult
+    attach_function :cuStreamCreate, %i[pointer unsigned_int], :CUresult
+    attach_function :cuStreamCreateWithPriority, %i[pointer unsigned_int int], :CUresult
+    attach_function :cuStreamDestroy, [:CUstream], :CUresult
+    attach_function :cuStreamEndCapture, %i[CUstream pointer], :CUresult
+    attach_function :cuStreamGetAttribute, %i[CUstream CUstreamAttrID pointer], :CUresult
+    attach_function :cuStreamGetCaptureInfo, %i[CUstream pointer pointer], :CUresult
+    attach_function :cuStreamGetCaptureInfo_v2, %i[CUstream pointer pointer pointer pointer pointer],
                     :CUresult
-    attach_function :cuStreamGetCtx, %i[pointer pointer], :CUresult
-    attach_function :cuStreamGetFlags, %i[pointer pointer], :CUresult
-    attach_function :cuStreamGetPriority, %i[pointer pointer], :CUresult
-    attach_function :cuStreamIsCapturing, %i[pointer pointer], :CUresult
-    attach_function :cuStreamQuery, [:pointer], :CUresult
-    attach_function :cuStreamSetAttribute, %i[pointer CUstreamAttrID pointer], :CUresult
-    attach_function :cuStreamSynchronize, [:pointer], :CUresult
-    attach_function :cuStreamUpdateCaptureDependencies, %i[pointer pointer size_t uint], :CUresult
-    attach_function :cuStreamWaitEvent, %i[pointer pointer uint], :CUresult
+    attach_function :cuStreamGetCtx, %i[CUstream pointer], :CUresult
+    attach_function :cuStreamGetFlags, %i[CUstream pointer], :CUresult
+    attach_function :cuStreamGetPriority, %i[CUstream pointer], :CUresult
+    attach_function :cuStreamIsCapturing, %i[CUstream pointer], :CUresult
+    attach_function :cuStreamQuery, [:CUstream], :CUresult
+    attach_function :cuStreamSetAttribute, %i[CUstream CUstreamAttrID pointer], :CUresult
+    attach_function :cuStreamSynchronize, [:CUstream], :CUresult
+    attach_function :cuStreamUpdateCaptureDependencies, %i[CUstream pointer size_t unsigned_int], :CUresult
+    attach_function :cuStreamWaitEvent, %i[CUstream CUevent unsigned_int], :CUresult
     attach_function :cuThreadExchangeStreamCaptureMode, [:pointer], :CUresult
     attach_function :cuSurfObjectCreate, %i[pointer pointer], :CUresult
-    attach_function :cuSurfObjectDestroy, [:pointer], :CUresult
-    attach_function :cuSurfObjectGetResourceDesc, %i[pointer pointer], :CUresult
-    attach_function :cuSurfRefGetArray, %i[pointer pointer], :CUresult
-    attach_function :cuSurfRefSetArray, %i[pointer pointer uint], :CUresult
+    attach_function :cuSurfObjectDestroy, [:CUsurfObject], :CUresult
+    attach_function :cuSurfObjectGetResourceDesc, %i[pointer CUsurfObject], :CUresult
+    attach_function :cuSurfRefGetArray, %i[pointer CUsurfref], :CUresult
+    attach_function :cuSurfRefSetArray, %i[CUsurfref CUarray unsigned_int], :CUresult
     attach_function :cuTexObjectCreate, %i[pointer pointer pointer pointer], :CUresult
-    attach_function :cuTexObjectDestroy, [:pointer], :CUresult
-    attach_function :cuTexObjectGetResourceDesc, %i[pointer pointer], :CUresult
-    attach_function :cuTexObjectGetResourceViewDesc, %i[pointer pointer], :CUresult
-    attach_function :cuTexObjectGetTextureDesc, %i[pointer pointer], :CUresult
+    attach_function :cuTexObjectDestroy, [:CUtexObject], :CUresult
+    attach_function :cuTexObjectGetResourceDesc, %i[pointer CUtexObject], :CUresult
+    attach_function :cuTexObjectGetResourceViewDesc, %i[pointer CUtexObject], :CUresult
+    attach_function :cuTexObjectGetTextureDesc, %i[pointer CUtexObject], :CUresult
     attach_function :cuTexRefCreate, [:pointer], :CUresult
-    attach_function :cuTexRefDestroy, [:pointer], :CUresult
-    attach_function :cuTexRefGetAddress, %i[pointer pointer], :CUresult
-    attach_function :cuTexRefGetAddressMode, %i[pointer pointer int], :CUresult
-    attach_function :cuTexRefGetArray, %i[pointer pointer], :CUresult
-    attach_function :cuTexRefGetBorderColor, %i[pointer pointer], :CUresult
-    attach_function :cuTexRefGetFilterMode, %i[pointer pointer], :CUresult
-    attach_function :cuTexRefGetFlags, %i[pointer pointer], :CUresult
-    attach_function :cuTexRefGetFormat, %i[pointer pointer pointer], :CUresult
-    attach_function :cuTexRefGetMaxAnisotropy, %i[pointer pointer], :CUresult
-    attach_function :cuTexRefGetMipmapFilterMode, %i[pointer pointer], :CUresult
-    attach_function :cuTexRefGetMipmapLevelBias, %i[pointer pointer], :CUresult
-    attach_function :cuTexRefGetMipmapLevelClamp, %i[pointer pointer pointer], :CUresult
-    attach_function :cuTexRefGetMipmappedArray, %i[pointer pointer], :CUresult
-    attach_function :cuTexRefSetAddress, %i[pointer pointer pointer size_t], :CUresult
-    attach_function :cuTexRefSetAddress2D, %i[pointer pointer pointer size_t], :CUresult
-    attach_function :cuTexRefSetAddressMode, %i[pointer int CUaddress_mode], :CUresult
-    attach_function :cuTexRefSetArray, %i[pointer pointer uint], :CUresult
-    attach_function :cuTexRefSetBorderColor, %i[pointer pointer], :CUresult
-    attach_function :cuTexRefSetFilterMode, %i[pointer CUfilter_mode], :CUresult
-    attach_function :cuTexRefSetFlags, %i[pointer uint], :CUresult
-    attach_function :cuTexRefSetFormat, %i[pointer CUarray_format int], :CUresult
-    attach_function :cuTexRefSetMaxAnisotropy, %i[pointer uint], :CUresult
-    attach_function :cuTexRefSetMipmapFilterMode, %i[pointer CUfilter_mode], :CUresult
-    attach_function :cuTexRefSetMipmapLevelBias, %i[pointer float], :CUresult
-    attach_function :cuTexRefSetMipmapLevelClamp, %i[pointer float float], :CUresult
-    attach_function :cuTexRefSetMipmappedArray, %i[pointer pointer uint], :CUresult
-    attach_function :cuMemAdvise, %i[pointer size_t CUmem_advise pointer], :CUresult
-    attach_function :cuMemPrefetchAsync, %i[pointer size_t pointer pointer], :CUresult
-    attach_function :cuMemRangeGetAttribute, %i[pointer size_t pointer pointer size_t], :CUresult
-    attach_function :cuMemRangeGetAttributes, %i[pointer pointer pointer size_t pointer size_t],
+    attach_function :cuTexRefDestroy, [:CUtexref], :CUresult
+    attach_function :cuTexRefGetAddress, %i[pointer CUtexref], :CUresult
+    attach_function :cuTexRefGetAddressMode, %i[pointer CUtexref int], :CUresult
+    attach_function :cuTexRefGetArray, %i[pointer CUtexref], :CUresult
+    attach_function :cuTexRefGetBorderColor, %i[pointer CUtexref], :CUresult
+    attach_function :cuTexRefGetFilterMode, %i[pointer CUtexref], :CUresult
+    attach_function :cuTexRefGetFlags, %i[pointer CUtexref], :CUresult
+    attach_function :cuTexRefGetFormat, %i[pointer pointer CUtexref], :CUresult
+    attach_function :cuTexRefGetMaxAnisotropy, %i[pointer CUtexref], :CUresult
+    attach_function :cuTexRefGetMipmapFilterMode, %i[pointer CUtexref], :CUresult
+    attach_function :cuTexRefGetMipmapLevelBias, %i[pointer CUtexref], :CUresult
+    attach_function :cuTexRefGetMipmapLevelClamp, %i[pointer pointer CUtexref], :CUresult
+    attach_function :cuTexRefGetMipmappedArray, %i[pointer CUtexref], :CUresult
+    attach_function :cuTexRefSetAddress, %i[pointer CUtexref CUdeviceptr size_t], :CUresult
+    attach_function :cuTexRefSetAddress2D, %i[CUtexref pointer CUdeviceptr size_t], :CUresult
+    attach_function :cuTexRefSetAddressMode, %i[CUtexref int CUaddress_mode], :CUresult
+    attach_function :cuTexRefSetArray, %i[CUtexref CUarray unsigned_int], :CUresult
+    attach_function :cuTexRefSetBorderColor, %i[CUtexref pointer], :CUresult
+    attach_function :cuTexRefSetFilterMode, %i[CUtexref CUfilter_mode], :CUresult
+    attach_function :cuTexRefSetFlags, %i[CUtexref unsigned_int], :CUresult
+    attach_function :cuTexRefSetFormat, %i[CUtexref CUarray_format int], :CUresult
+    attach_function :cuTexRefSetMaxAnisotropy, %i[CUtexref unsigned_int], :CUresult
+    attach_function :cuTexRefSetMipmapFilterMode, %i[CUtexref CUfilter_mode], :CUresult
+    attach_function :cuTexRefSetMipmapLevelBias, %i[CUtexref float], :CUresult
+    attach_function :cuTexRefSetMipmapLevelClamp, %i[CUtexref float float], :CUresult
+    attach_function :cuTexRefSetMipmappedArray, %i[CUtexref CUmipmappedArray unsigned_int], :CUresult
+    attach_function :cuMemAdvise, %i[CUdeviceptr size_t CUmem_advise CUdevice], :CUresult
+    attach_function :cuMemPrefetchAsync, %i[CUdeviceptr size_t CUdevice CUstream], :CUresult
+    attach_function :cuMemRangeGetAttribute,
+                    %i[pointer size_t CUmem_range_attribute CUdeviceptr size_t], :CUresult
+    attach_function :cuMemRangeGetAttributes, %i[pointer pointer pointer size_t CUdeviceptr size_t],
                     :CUresult
-    attach_function :cuPointerGetAttribute, %i[pointer CUpointer_attribute pointer], :CUresult
-    attach_function :cuPointerGetAttributes, %i[uint pointer pointer pointer], :CUresult
-    attach_function :cuPointerSetAttribute, %i[pointer CUpointer_attribute pointer], :CUresult
-    attach_function :cuMemAddressFree, %i[pointer size_t], :CUresult
-    attach_function :cuMemAddressReserve, %i[pointer size_t size_t pointer ulong_long], :CUresult
-    attach_function :cuMemCreate, %i[pointer size_t pointer ulong_long], :CUresult
+    attach_function :cuPointerGetAttribute, %i[pointer CUpointer_attribute CUdeviceptr], :CUresult
+    attach_function :cuPointerGetAttributes, %i[unsigned_int pointer pointer CUdeviceptr], :CUresult
+    attach_function :cuPointerSetAttribute, %i[pointer CUpointer_attribute CUdeviceptr], :CUresult
+    attach_function :cuMemAddressFree, %i[CUdeviceptr size_t], :CUresult
+    attach_function :cuMemAddressReserve, %i[pointer size_t size_t CUdeviceptr unsigned_long_long],
+                    :CUresult
+    attach_function :cuMemCreate, %i[pointer size_t pointer unsigned_long_long], :CUresult
     attach_function :cuMemExportToShareableHandle,
-                    %i[pointer pointer CUmemAllocationHandleType ulong_long], :CUresult
-    attach_function :cuMemGetAccess, %i[pointer pointer pointer], :CUresult
+                    %i[pointer CUmemGenericAllocationHandle CUmemAllocationHandleType unsigned_long_long], :CUresult
+    attach_function :cuMemGetAccess, %i[pointer pointer CUdeviceptr], :CUresult
     attach_function :cuMemGetAllocationGranularity, %i[pointer pointer CUmemAllocationGranularity_flags],
                     :CUresult
-    attach_function :cuMemGetAllocationPropertiesFromHandle, %i[pointer pointer], :CUresult
+    attach_function :cuMemGetAllocationPropertiesFromHandle, %i[pointer CUmemGenericAllocationHandle],
+                    :CUresult
     attach_function :cuMemImportFromShareableHandle, %i[pointer pointer CUmemAllocationHandleType], :CUresult
-    attach_function :cuMemMap, %i[pointer size_t size_t pointer ulong_long], :CUresult
-    attach_function :cuMemMapArrayAsync, %i[pointer uint pointer], :CUresult
-    attach_function :cuMemRelease, [:pointer], :CUresult
+    attach_function :cuMemMap,
+                    %i[CUdeviceptr size_t size_t CUmemGenericAllocationHandle unsigned_long_long], :CUresult
+    attach_function :cuMemMapArrayAsync, %i[pointer unsigned_int CUstream], :CUresult
+    attach_function :cuMemRelease, [:CUmemGenericAllocationHandle], :CUresult
     attach_function :cuMemRetainAllocationHandle, %i[pointer pointer], :CUresult
-    attach_function :cuMemSetAccess, %i[pointer size_t pointer size_t], :CUresult
-    attach_function :cuMemUnmap, %i[pointer size_t], :CUresult
-    attach_function :cuGraphicsVDPAURegisterOutputSurface, %i[pointer pointer uint], :CUresult
-    attach_function :cuGraphicsVDPAURegisterVideoSurface, %i[pointer pointer uint], :CUresult
-    attach_function :cuVDPAUCtxCreate, %i[pointer uint pointer pointer pointer], :CUresult
-    attach_function :cuVDPAUGetDevice, %i[pointer pointer pointer], :CUresult
+    attach_function :cuMemSetAccess, %i[CUdeviceptr size_t pointer size_t], :CUresult
+    attach_function :cuMemUnmap, %i[CUdeviceptr size_t], :CUresult
+    attach_function :cuGraphicsVDPAURegisterOutputSurface, %i[pointer VdpOutputSurface unsigned_int],
+                    :CUresult
+    attach_function :cuGraphicsVDPAURegisterVideoSurface, %i[pointer VdpVideoSurface unsigned_int], :CUresult
+    attach_function :cuVDPAUCtxCreate, %i[pointer unsigned_int CUdevice VdpDevice pointer], :CUresult
+    attach_function :cuVDPAUGetDevice, %i[pointer VdpDevice pointer], :CUresult
     attach_function :cuDriverGetVersion, [:pointer], :CUresult
   end
 end
