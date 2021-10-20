@@ -17,6 +17,7 @@ module Cuda
     typedef :uint, :unsigned_int
     typedef :ulong_long, :unsigned_long_long
     typedef :uint64, :cuuint64_t
+    typedef :pointer, :CUhostFn
 
     typedef :pointer, :CUuserObject
     typedef :pointer, :CUtexref
