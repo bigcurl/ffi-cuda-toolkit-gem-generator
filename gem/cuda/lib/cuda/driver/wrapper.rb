@@ -809,7 +809,7 @@ module Cuda
     attach_function :cuDeviceGetMemPool, %i[pointer CUdevice], :CUresult
     attach_function :cuDeviceGetName, %i[pointer int CUdevice], :CUresult
     attach_function :cuDeviceGetNvSciSyncAttributes, %i[pointer CUdevice int], :CUresult
-    attach_function :cuDeviceGetTexture1DLinearMaxWidth, %i[pointer CUarray_format unsigned CUdevice],
+    attach_function :cuDeviceGetTexture1DLinearMaxWidth, %i[pointer CUarray_format unsigned_int CUdevice],
                     :CUresult
     attach_function :cuDeviceGetUuid, %i[pointer CUdevice], :CUresult
     attach_function :cuDeviceGetUuid_v2, %i[pointer CUdevice], :CUresult

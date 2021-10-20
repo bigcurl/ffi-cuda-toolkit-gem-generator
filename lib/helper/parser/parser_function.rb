@@ -38,6 +38,8 @@ module Parser
 
           next if name.include?('void') && type.empty? # skip when no args
 
+          type = 'unsigned int' if type == 'unsigned'
+
           args << { type: type, name: name }
         end
 
