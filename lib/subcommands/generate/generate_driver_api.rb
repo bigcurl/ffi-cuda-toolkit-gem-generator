@@ -4,7 +4,7 @@ class GenerateDriverApi < ApplicationSubcommand
   option ['--cuda-version'],
          'N',
          'version of cuda to parse',
-         default: '11.4.2'
+         default: '11.5.0'
 
   def execute
     @logger = Logger.new($stdout)
