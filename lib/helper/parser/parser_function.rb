@@ -33,8 +33,16 @@ module Parser
 
         args = []
         description.text.strip.split('(')[1].split(')')[0].split(',').each do |arg|
-          name = arg.split(' ')[-1].strip # special blank character
-          type = arg.split(' ')[0..-2].join(' ').strip # special blank character
+          name = ''
+          type = ''
+
+          if arg.include? '*'
+            name = arg.split('*')[-1].strip
+            type = "#{arg.split('*')[0..-2].join(' ').strip} *"
+          else
+            name = arg.split(' ')[-1].strip # special blank character
+            type = arg.split(' ')[0..-2].join(' ').strip # special blank character
+          end
 
           next if name.include?('void') && type.empty? # skip when no args
 

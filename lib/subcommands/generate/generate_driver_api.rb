@@ -101,6 +101,22 @@ class GenerateDriverApi < ApplicationSubcommand
             typedef :pointer, :CUhostFn
             typedef :uint, :GLuint
 
+            typedef :pointer, :CUipcEventHandle
+            typedef :CUipcEventHandle, :CUipcEventHandle_v1
+            typedef :pointer, :CUipcMemHandle
+            typedef :CUipcMemHandle, :CUipcMemHandle_v1
+            typedef :uint32, :cuuint32_t
+            typedef :pointer, :CUlinkState
+            typedef :pointer, :CUoccupancyB2DSize
+            typedef :int, :CUoutput_mode
+            typedef :pointer, :CUstreamCallback
+            typedef :pointer, :CUmem_range_attribute
+            typedef :unsigned_long_long, :CUmemGenericAllocationHandle_v1
+            typedef :CUmemGenericAllocationHandle_v1, :CUmemGenericAllocationHandle
+            typedef :pointer, :VdpOutputSurface
+            typedef :pointer, :VdpVideoSurface
+            typedef :int, :VdpDevice
+
             <% for typedef in typedefs %>
             typedef :<%= typedef[:ffi_type] %>, :<%= typedef[:cuda_type] %>
             <% end %>

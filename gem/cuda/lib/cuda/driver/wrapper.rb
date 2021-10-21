@@ -20,6 +20,22 @@ module Cuda
     typedef :pointer, :CUhostFn
     typedef :uint, :GLuint
 
+    typedef :pointer, :CUipcEventHandle
+    typedef :CUipcEventHandle, :CUipcEventHandle_v1
+    typedef :pointer, :CUipcMemHandle
+    typedef :CUipcMemHandle, :CUipcMemHandle_v1
+    typedef :uint32, :cuuint32_t
+    typedef :pointer, :CUlinkState
+    typedef :pointer, :CUoccupancyB2DSize
+    typedef :int, :CUoutput_mode
+    typedef :pointer, :CUstreamCallback
+    typedef :pointer, :CUmem_range_attribute
+    typedef :unsigned_long_long, :CUmemGenericAllocationHandle_v1
+    typedef :CUmemGenericAllocationHandle_v1, :CUmemGenericAllocationHandle
+    typedef :pointer, :VdpOutputSurface
+    typedef :pointer, :VdpVideoSurface
+    typedef :int, :VdpDevice
+
     typedef :pointer, :CUuserObject
     typedef :pointer, :CUtexref
     typedef :unsigned_long_long, :CUtexObject_v1
