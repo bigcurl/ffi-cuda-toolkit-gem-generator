@@ -67,9 +67,7 @@ module Cuda
     typedef :pointer, :CUarray
 
     # Enums
-    enum :CUgraphMem_attribute,
-         %i[CU_GRAPH_MEM_ATTR_USED_MEM_CURRENT CU_GRAPH_MEM_ATTR_USED_MEM_HIGH CU_GRAPH_MEM_ATTR_RESERVED_MEM_CURRENT
-            CU_GRAPH_MEM_ATTR_RESERVED_MEM_HIGH]
+    enum :CUgraphMem_attribute, %i[CU_GRAPH_MEM_ATTR_USED_MEM_CURRENT CU_GRAPH_MEM_ATTR_USED_MEM_HIGH CU_GRAPH_MEM_ATTR_RESERVED_MEM_CURRENT CU_GRAPH_MEM_ATTR_RESERVED_MEM_HIGH]
 
     enum :CUDA_POINTER_ATTRIBUTE_ACCESS_FLAGS, [:CU_POINTER_ATTRIBUTE_ACCESS_FLAG_NONE, 0x0,
                                                 :CU_POINTER_ATTRIBUTE_ACCESS_FLAG_READ, 0x1,
@@ -85,53 +83,53 @@ module Cuda
 
     enum :CUaddress_mode, [:CU_TR_ADDRESS_MODE_WRAP, 0,
                            :CU_TR_ADDRESS_MODE_CLAMP, 1,
-                           :CU_TR_ADDRESS_MODE_MIRROR,  2,
-                           :CU_TR_ADDRESS_MODE_BORDER,  3]
+                           :CU_TR_ADDRESS_MODE_MIRROR, 2,
+                           :CU_TR_ADDRESS_MODE_BORDER, 3]
 
     enum :CUarraySparseSubresourceType, [:CU_ARRAY_SPARSE_SUBRESOURCE_TYPE_SPARSE_LEVEL, 0,
                                          :CU_ARRAY_SPARSE_SUBRESOURCE_TYPE_MIPTAIL, 1]
 
     enum :CUarray_cubemap_face, [:CU_CUBEMAP_FACE_POSITIVE_X, 0x00,
-                                 :CU_CUBEMAP_FACE_NEGATIVE_X,  0x01,
-                                 :CU_CUBEMAP_FACE_POSITIVE_Y,  0x02,
-                                 :CU_CUBEMAP_FACE_NEGATIVE_Y,  0x03,
-                                 :CU_CUBEMAP_FACE_POSITIVE_Z,  0x04,
-                                 :CU_CUBEMAP_FACE_NEGATIVE_Z,  0x05]
+                                 :CU_CUBEMAP_FACE_NEGATIVE_X, 0x01,
+                                 :CU_CUBEMAP_FACE_POSITIVE_Y, 0x02,
+                                 :CU_CUBEMAP_FACE_NEGATIVE_Y, 0x03,
+                                 :CU_CUBEMAP_FACE_POSITIVE_Z, 0x04,
+                                 :CU_CUBEMAP_FACE_NEGATIVE_Z, 0x05]
 
     enum :CUarray_format, [:CU_AD_FORMAT_UNSIGNED_INT8, 0x01,
-                           :CU_AD_FORMAT_UNSIGNED_INT16,  0x02,
-                           :CU_AD_FORMAT_UNSIGNED_INT32,  0x03,
+                           :CU_AD_FORMAT_UNSIGNED_INT16, 0x02,
+                           :CU_AD_FORMAT_UNSIGNED_INT32, 0x03,
                            :CU_AD_FORMAT_SIGNED_INT8, 0x08,
-                           :CU_AD_FORMAT_SIGNED_INT16,  0x09,
-                           :CU_AD_FORMAT_SIGNED_INT32,  0x0a,
+                           :CU_AD_FORMAT_SIGNED_INT16, 0x09,
+                           :CU_AD_FORMAT_SIGNED_INT32, 0x0a,
                            :CU_AD_FORMAT_HALF, 0x10,
                            :CU_AD_FORMAT_FLOAT, 0x20,
                            :CU_AD_FORMAT_NV12, 0xb0,
-                           :CU_AD_FORMAT_UNORM_INT8X1,  0xc0,
-                           :CU_AD_FORMAT_UNORM_INT8X2,  0xc1,
-                           :CU_AD_FORMAT_UNORM_INT8X4,  0xc2,
-                           :CU_AD_FORMAT_UNORM_INT16X1,  0xc3,
-                           :CU_AD_FORMAT_UNORM_INT16X2,  0xc4,
-                           :CU_AD_FORMAT_UNORM_INT16X4,  0xc5,
-                           :CU_AD_FORMAT_SNORM_INT8X1,  0xc6,
-                           :CU_AD_FORMAT_SNORM_INT8X2,  0xc7,
-                           :CU_AD_FORMAT_SNORM_INT8X4,  0xc8,
-                           :CU_AD_FORMAT_SNORM_INT16X1,  0xc9,
-                           :CU_AD_FORMAT_SNORM_INT16X2,  0xca,
-                           :CU_AD_FORMAT_SNORM_INT16X4,  0xcb,
+                           :CU_AD_FORMAT_UNORM_INT8X1, 0xc0,
+                           :CU_AD_FORMAT_UNORM_INT8X2, 0xc1,
+                           :CU_AD_FORMAT_UNORM_INT8X4, 0xc2,
+                           :CU_AD_FORMAT_UNORM_INT16X1, 0xc3,
+                           :CU_AD_FORMAT_UNORM_INT16X2, 0xc4,
+                           :CU_AD_FORMAT_UNORM_INT16X4, 0xc5,
+                           :CU_AD_FORMAT_SNORM_INT8X1, 0xc6,
+                           :CU_AD_FORMAT_SNORM_INT8X2, 0xc7,
+                           :CU_AD_FORMAT_SNORM_INT8X4, 0xc8,
+                           :CU_AD_FORMAT_SNORM_INT16X1, 0xc9,
+                           :CU_AD_FORMAT_SNORM_INT16X2, 0xca,
+                           :CU_AD_FORMAT_SNORM_INT16X4, 0xcb,
                            :CU_AD_FORMAT_BC1_UNORM, 0x91,
                            :CU_AD_FORMAT_BC1_UNORM_SRGB, 0x92,
                            :CU_AD_FORMAT_BC2_UNORM, 0x93,
                            :CU_AD_FORMAT_BC2_UNORM_SRGB, 0x94,
                            :CU_AD_FORMAT_BC3_UNORM, 0x95,
                            :CU_AD_FORMAT_BC3_UNORM_SRGB, 0x96,
-                           :CU_AD_FORMAT_BC4_UNORM,  0x97,
-                           :CU_AD_FORMAT_BC4_SNORM,  0x98,
-                           :CU_AD_FORMAT_BC5_UNORM,  0x99,
-                           :CU_AD_FORMAT_BC5_SNORM,  0x9a,
-                           :CU_AD_FORMAT_BC6H_UF16,  0x9b,
-                           :CU_AD_FORMAT_BC6H_SF16,  0x9c,
-                           :CU_AD_FORMAT_BC7_UNORM,  0x9d,
+                           :CU_AD_FORMAT_BC4_UNORM, 0x97,
+                           :CU_AD_FORMAT_BC4_SNORM, 0x98,
+                           :CU_AD_FORMAT_BC5_UNORM, 0x99,
+                           :CU_AD_FORMAT_BC5_SNORM, 0x9a,
+                           :CU_AD_FORMAT_BC6H_UF16, 0x9b,
+                           :CU_AD_FORMAT_BC6H_SF16, 0x9c,
+                           :CU_AD_FORMAT_BC7_UNORM, 0x9d,
                            :CU_AD_FORMAT_BC7_UNORM_SRGB, 0x9e]
 
     enum :CUcomputemode, [:CU_COMPUTEMODE_DEFAULT, 0,
@@ -150,22 +148,22 @@ module Cuda
 
     enum :CUdevice_P2PAttribute, [:CU_DEVICE_P2P_ATTRIBUTE_PERFORMANCE_RANK, 0x01,
                                   :CU_DEVICE_P2P_ATTRIBUTE_ACCESS_SUPPORTED, 0x02,
-                                  :CU_DEVICE_P2P_ATTRIBUTE_NATIVE_ATOMIC_SUPPORTED,  0x03,
-                                  :CU_DEVICE_P2P_ATTRIBUTE_ACCESS_ACCESS_SUPPORTED,  0x04,
+                                  :CU_DEVICE_P2P_ATTRIBUTE_NATIVE_ATOMIC_SUPPORTED, 0x03,
+                                  :CU_DEVICE_P2P_ATTRIBUTE_ACCESS_ACCESS_SUPPORTED, 0x04,
                                   :CU_DEVICE_P2P_ATTRIBUTE_CUDA_ARRAY_ACCESS_SUPPORTED, 0x04]
 
     enum :CUdevice_attribute, [:CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK, 1,
-                               :CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_X,  2,
-                               :CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_Y,  3,
-                               :CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_Z,  4,
-                               :CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_X,  5,
-                               :CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_Y,  6,
-                               :CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_Z,  7,
+                               :CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_X, 2,
+                               :CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_Y, 3,
+                               :CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_Z, 4,
+                               :CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_X, 5,
+                               :CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_Y, 6,
+                               :CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_Z, 7,
                                :CU_DEVICE_ATTRIBUTE_MAX_SHARED_MEMORY_PER_BLOCK, 8,
                                :CU_DEVICE_ATTRIBUTE_SHARED_MEMORY_PER_BLOCK, 8,
                                :CU_DEVICE_ATTRIBUTE_TOTAL_CONSTANT_MEMORY, 9,
-                               :CU_DEVICE_ATTRIBUTE_WARP_SIZE,  10,
-                               :CU_DEVICE_ATTRIBUTE_MAX_PITCH,  11,
+                               :CU_DEVICE_ATTRIBUTE_WARP_SIZE, 10,
+                               :CU_DEVICE_ATTRIBUTE_MAX_PITCH, 11,
                                :CU_DEVICE_ATTRIBUTE_MAX_REGISTERS_PER_BLOCK, 12,
                                :CU_DEVICE_ATTRIBUTE_REGISTERS_PER_BLOCK, 12,
                                :CU_DEVICE_ATTRIBUTE_CLOCK_RATE, 13,
@@ -176,15 +174,15 @@ module Cuda
                                :CU_DEVICE_ATTRIBUTE_INTEGRATED, 18,
                                :CU_DEVICE_ATTRIBUTE_CAN_MAP_HOST_MEMORY, 19,
                                :CU_DEVICE_ATTRIBUTE_COMPUTE_MODE, 20,
-                               :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE1D_WIDTH,  21,
-                               :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_WIDTH,  22,
-                               :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_HEIGHT,  23,
+                               :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE1D_WIDTH, 21,
+                               :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_WIDTH, 22,
+                               :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_HEIGHT, 23,
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE3D_WIDTH, 24,
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE3D_HEIGHT, 25,
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE3D_DEPTH, 26,
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_LAYERED_WIDTH, 27,
-                               :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_LAYERED_HEIGHT,  28,
-                               :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_LAYERED_LAYERS,  29,
+                               :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_LAYERED_HEIGHT, 28,
+                               :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_LAYERED_LAYERS, 29,
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_ARRAY_WIDTH, 27,
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_ARRAY_HEIGHT, 28,
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_ARRAY_NUMSLICES, 29,
@@ -198,8 +196,8 @@ module Cuda
                                :CU_DEVICE_ATTRIBUTE_GLOBAL_MEMORY_BUS_WIDTH, 37,
                                :CU_DEVICE_ATTRIBUTE_L2_CACHE_SIZE, 38,
                                :CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_MULTIPROCESSOR, 39,
-                               :CU_DEVICE_ATTRIBUTE_ASYNC_ENGINE_COUNT,  40,
-                               :CU_DEVICE_ATTRIBUTE_UNIFIED_ADDRESSING,  41,
+                               :CU_DEVICE_ATTRIBUTE_ASYNC_ENGINE_COUNT, 40,
+                               :CU_DEVICE_ATTRIBUTE_UNIFIED_ADDRESSING, 41,
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE1D_LAYERED_WIDTH, 42,
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE1D_LAYERED_LAYERS, 43,
                                :CU_DEVICE_ATTRIBUTE_CAN_TEX2D_GATHER, 44,
@@ -213,8 +211,8 @@ module Cuda
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURECUBEMAP_WIDTH, 52,
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURECUBEMAP_LAYERED_WIDTH, 53,
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURECUBEMAP_LAYERED_LAYERS, 54,
-                               :CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE1D_WIDTH,  55,
-                               :CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE2D_WIDTH,  56,
+                               :CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE1D_WIDTH, 55,
+                               :CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE2D_WIDTH, 56,
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE2D_HEIGHT, 57,
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE3D_WIDTH, 58,
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE3D_HEIGHT, 59,
@@ -222,19 +220,19 @@ module Cuda
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE1D_LAYERED_WIDTH, 61,
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE1D_LAYERED_LAYERS, 62,
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE2D_LAYERED_WIDTH, 63,
-                               :CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE2D_LAYERED_HEIGHT,  64,
-                               :CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE2D_LAYERED_LAYERS,  65,
+                               :CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE2D_LAYERED_HEIGHT, 64,
+                               :CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACE2D_LAYERED_LAYERS, 65,
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACECUBEMAP_WIDTH, 66,
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACECUBEMAP_LAYERED_WIDTH, 67,
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_SURFACECUBEMAP_LAYERED_LAYERS, 68,
-                               :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE1D_LINEAR_WIDTH,  69,
-                               :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_LINEAR_WIDTH,  70,
+                               :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE1D_LINEAR_WIDTH, 69,
+                               :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_LINEAR_WIDTH, 70,
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_LINEAR_HEIGHT, 71,
-                               :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_LINEAR_PITCH,  72,
+                               :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_LINEAR_PITCH, 72,
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_MIPMAPPED_WIDTH, 73,
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_MIPMAPPED_HEIGHT, 74,
-                               :CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR,  75,
-                               :CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR,  76,
+                               :CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR, 75,
+                               :CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR, 76,
                                :CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE1D_MIPMAPPED_WIDTH, 77,
                                :CU_DEVICE_ATTRIBUTE_STREAM_PRIORITIES_SUPPORTED, 78,
                                :CU_DEVICE_ATTRIBUTE_GLOBAL_L1_CACHE_SUPPORTED, 79,
@@ -251,13 +249,13 @@ module Cuda
                                :CU_DEVICE_ATTRIBUTE_COMPUTE_PREEMPTION_SUPPORTED, 90,
                                :CU_DEVICE_ATTRIBUTE_CAN_USE_HOST_POINTER_FOR_REGISTERED_MEM, 91,
                                :CU_DEVICE_ATTRIBUTE_CAN_USE_STREAM_MEM_OPS, 92,
-                               :CU_DEVICE_ATTRIBUTE_CAN_USE_64_BIT_STREAM_MEM_OPS,  93,
-                               :CU_DEVICE_ATTRIBUTE_CAN_USE_STREAM_WAIT_VALUE_NOR,  94,
+                               :CU_DEVICE_ATTRIBUTE_CAN_USE_64_BIT_STREAM_MEM_OPS, 93,
+                               :CU_DEVICE_ATTRIBUTE_CAN_USE_STREAM_WAIT_VALUE_NOR, 94,
                                :CU_DEVICE_ATTRIBUTE_COOPERATIVE_LAUNCH, 95,
                                :CU_DEVICE_ATTRIBUTE_COOPERATIVE_MULTI_DEVICE_LAUNCH, 96,
                                :CU_DEVICE_ATTRIBUTE_MAX_SHARED_MEMORY_PER_BLOCK_OPTIN, 97,
-                               :CU_DEVICE_ATTRIBUTE_CAN_FLUSH_REMOTE_WRITES,  98,
-                               :CU_DEVICE_ATTRIBUTE_HOST_REGISTER_SUPPORTED,  99,
+                               :CU_DEVICE_ATTRIBUTE_CAN_FLUSH_REMOTE_WRITES, 98,
+                               :CU_DEVICE_ATTRIBUTE_HOST_REGISTER_SUPPORTED, 99,
                                :CU_DEVICE_ATTRIBUTE_PAGEABLE_MEMORY_ACCESS_USES_HOST_PAGE_TABLES, 100,
                                :CU_DEVICE_ATTRIBUTE_DIRECT_MANAGED_MEM_ACCESS_FROM_HOST, 101,
                                :CU_DEVICE_ATTRIBUTE_VIRTUAL_ADDRESS_MANAGEMENT_SUPPORTED, 102,
@@ -265,8 +263,8 @@ module Cuda
                                :CU_DEVICE_ATTRIBUTE_HANDLE_TYPE_POSIX_FILE_DESCRIPTOR_SUPPORTED, 103,
                                :CU_DEVICE_ATTRIBUTE_HANDLE_TYPE_WIN32_HANDLE_SUPPORTED, 104,
                                :CU_DEVICE_ATTRIBUTE_HANDLE_TYPE_WIN32_KMT_HANDLE_SUPPORTED, 105,
-                               :CU_DEVICE_ATTRIBUTE_MAX_BLOCKS_PER_MULTIPROCESSOR,  106,
-                               :CU_DEVICE_ATTRIBUTE_GENERIC_COMPRESSION_SUPPORTED,  107,
+                               :CU_DEVICE_ATTRIBUTE_MAX_BLOCKS_PER_MULTIPROCESSOR, 106,
+                               :CU_DEVICE_ATTRIBUTE_GENERIC_COMPRESSION_SUPPORTED, 107,
                                :CU_DEVICE_ATTRIBUTE_MAX_PERSISTING_L2_CACHE_SIZE, 108,
                                :CU_DEVICE_ATTRIBUTE_MAX_ACCESS_POLICY_WINDOW_SIZE, 109,
                                :CU_DEVICE_ATTRIBUTE_GPU_DIRECT_RDMA_WITH_CUDA_VMM_SUPPORTED, 110,
@@ -289,96 +287,96 @@ module Cuda
                              :CU_EGL_COLOR_FORMAT_YUV420_SEMIPLANAR, 0x01,
                              :CU_EGL_COLOR_FORMAT_YUV422_PLANAR, 0x02,
                              :CU_EGL_COLOR_FORMAT_YUV422_SEMIPLANAR, 0x03,
-                             :CU_EGL_COLOR_FORMAT_RGB,  0x04,
-                             :CU_EGL_COLOR_FORMAT_BGR,  0x05,
-                             :CU_EGL_COLOR_FORMAT_ARGB,  0x06,
-                             :CU_EGL_COLOR_FORMAT_RGBA,  0x07,
-                             :CU_EGL_COLOR_FORMAT_L,  0x08,
-                             :CU_EGL_COLOR_FORMAT_R,  0x09,
+                             :CU_EGL_COLOR_FORMAT_RGB, 0x04,
+                             :CU_EGL_COLOR_FORMAT_BGR, 0x05,
+                             :CU_EGL_COLOR_FORMAT_ARGB, 0x06,
+                             :CU_EGL_COLOR_FORMAT_RGBA, 0x07,
+                             :CU_EGL_COLOR_FORMAT_L, 0x08,
+                             :CU_EGL_COLOR_FORMAT_R, 0x09,
                              :CU_EGL_COLOR_FORMAT_YUV444_PLANAR, 0x0A,
                              :CU_EGL_COLOR_FORMAT_YUV444_SEMIPLANAR, 0x0B,
-                             :CU_EGL_COLOR_FORMAT_YUYV_422,  0x0C,
-                             :CU_EGL_COLOR_FORMAT_UYVY_422,  0x0D,
-                             :CU_EGL_COLOR_FORMAT_ABGR,  0x0E,
-                             :CU_EGL_COLOR_FORMAT_BGRA,  0x0F,
-                             :CU_EGL_COLOR_FORMAT_A,  0x10,
+                             :CU_EGL_COLOR_FORMAT_YUYV_422, 0x0C,
+                             :CU_EGL_COLOR_FORMAT_UYVY_422, 0x0D,
+                             :CU_EGL_COLOR_FORMAT_ABGR, 0x0E,
+                             :CU_EGL_COLOR_FORMAT_BGRA, 0x0F,
+                             :CU_EGL_COLOR_FORMAT_A, 0x10,
                              :CU_EGL_COLOR_FORMAT_RG, 0x11,
                              :CU_EGL_COLOR_FORMAT_AYUV, 0x12,
-                             :CU_EGL_COLOR_FORMAT_YVU444_SEMIPLANAR,  0x13,
-                             :CU_EGL_COLOR_FORMAT_YVU422_SEMIPLANAR,  0x14,
-                             :CU_EGL_COLOR_FORMAT_YVU420_SEMIPLANAR,  0x15,
-                             :CU_EGL_COLOR_FORMAT_Y10V10U10_444_SEMIPLANAR,  0x16,
-                             :CU_EGL_COLOR_FORMAT_Y10V10U10_420_SEMIPLANAR,  0x17,
-                             :CU_EGL_COLOR_FORMAT_Y12V12U12_444_SEMIPLANAR,  0x18,
-                             :CU_EGL_COLOR_FORMAT_Y12V12U12_420_SEMIPLANAR,  0x19,
-                             :CU_EGL_COLOR_FORMAT_VYUY_ER,  0x1A,
-                             :CU_EGL_COLOR_FORMAT_UYVY_ER,  0x1B,
-                             :CU_EGL_COLOR_FORMAT_YUYV_ER,  0x1C,
-                             :CU_EGL_COLOR_FORMAT_YVYU_ER,  0x1D,
+                             :CU_EGL_COLOR_FORMAT_YVU444_SEMIPLANAR, 0x13,
+                             :CU_EGL_COLOR_FORMAT_YVU422_SEMIPLANAR, 0x14,
+                             :CU_EGL_COLOR_FORMAT_YVU420_SEMIPLANAR, 0x15,
+                             :CU_EGL_COLOR_FORMAT_Y10V10U10_444_SEMIPLANAR, 0x16,
+                             :CU_EGL_COLOR_FORMAT_Y10V10U10_420_SEMIPLANAR, 0x17,
+                             :CU_EGL_COLOR_FORMAT_Y12V12U12_444_SEMIPLANAR, 0x18,
+                             :CU_EGL_COLOR_FORMAT_Y12V12U12_420_SEMIPLANAR, 0x19,
+                             :CU_EGL_COLOR_FORMAT_VYUY_ER, 0x1A,
+                             :CU_EGL_COLOR_FORMAT_UYVY_ER, 0x1B,
+                             :CU_EGL_COLOR_FORMAT_YUYV_ER, 0x1C,
+                             :CU_EGL_COLOR_FORMAT_YVYU_ER, 0x1D,
                              :CU_EGL_COLOR_FORMAT_YUV_ER, 0x1E,
-                             :CU_EGL_COLOR_FORMAT_YUVA_ER,  0x1F,
-                             :CU_EGL_COLOR_FORMAT_AYUV_ER,  0x20,
-                             :CU_EGL_COLOR_FORMAT_YUV444_PLANAR_ER,  0x21,
-                             :CU_EGL_COLOR_FORMAT_YUV422_PLANAR_ER,  0x22,
-                             :CU_EGL_COLOR_FORMAT_YUV420_PLANAR_ER,  0x23,
-                             :CU_EGL_COLOR_FORMAT_YUV444_SEMIPLANAR_ER,  0x24,
-                             :CU_EGL_COLOR_FORMAT_YUV422_SEMIPLANAR_ER,  0x25,
-                             :CU_EGL_COLOR_FORMAT_YUV420_SEMIPLANAR_ER,  0x26,
-                             :CU_EGL_COLOR_FORMAT_YVU444_PLANAR_ER,  0x27,
-                             :CU_EGL_COLOR_FORMAT_YVU422_PLANAR_ER,  0x28,
-                             :CU_EGL_COLOR_FORMAT_YVU420_PLANAR_ER,  0x29,
-                             :CU_EGL_COLOR_FORMAT_YVU444_SEMIPLANAR_ER,  0x2A,
-                             :CU_EGL_COLOR_FORMAT_YVU422_SEMIPLANAR_ER,  0x2B,
-                             :CU_EGL_COLOR_FORMAT_YVU420_SEMIPLANAR_ER,  0x2C,
-                             :CU_EGL_COLOR_FORMAT_BAYER_RGGB,  0x2D,
-                             :CU_EGL_COLOR_FORMAT_BAYER_BGGR,  0x2E,
-                             :CU_EGL_COLOR_FORMAT_BAYER_GRBG,  0x2F,
-                             :CU_EGL_COLOR_FORMAT_BAYER_GBRG,  0x30,
-                             :CU_EGL_COLOR_FORMAT_BAYER10_RGGB,  0x31,
-                             :CU_EGL_COLOR_FORMAT_BAYER10_BGGR,  0x32,
-                             :CU_EGL_COLOR_FORMAT_BAYER10_GRBG,  0x33,
-                             :CU_EGL_COLOR_FORMAT_BAYER10_GBRG,  0x34,
-                             :CU_EGL_COLOR_FORMAT_BAYER12_RGGB,  0x35,
-                             :CU_EGL_COLOR_FORMAT_BAYER12_BGGR,  0x36,
-                             :CU_EGL_COLOR_FORMAT_BAYER12_GRBG,  0x37,
-                             :CU_EGL_COLOR_FORMAT_BAYER12_GBRG,  0x38,
-                             :CU_EGL_COLOR_FORMAT_BAYER14_RGGB,  0x39,
-                             :CU_EGL_COLOR_FORMAT_BAYER14_BGGR,  0x3A,
-                             :CU_EGL_COLOR_FORMAT_BAYER14_GRBG,  0x3B,
-                             :CU_EGL_COLOR_FORMAT_BAYER14_GBRG,  0x3C,
-                             :CU_EGL_COLOR_FORMAT_BAYER20_RGGB,  0x3D,
-                             :CU_EGL_COLOR_FORMAT_BAYER20_BGGR,  0x3E,
-                             :CU_EGL_COLOR_FORMAT_BAYER20_GRBG,  0x3F,
-                             :CU_EGL_COLOR_FORMAT_BAYER20_GBRG,  0x40,
-                             :CU_EGL_COLOR_FORMAT_YVU444_PLANAR,  0x41,
-                             :CU_EGL_COLOR_FORMAT_YVU422_PLANAR,  0x42,
-                             :CU_EGL_COLOR_FORMAT_YVU420_PLANAR,  0x43,
-                             :CU_EGL_COLOR_FORMAT_BAYER_ISP_RGGB,  0x44,
-                             :CU_EGL_COLOR_FORMAT_BAYER_ISP_BGGR,  0x45,
-                             :CU_EGL_COLOR_FORMAT_BAYER_ISP_GRBG,  0x46,
-                             :CU_EGL_COLOR_FORMAT_BAYER_ISP_GBRG,  0x47,
-                             :CU_EGL_COLOR_FORMAT_BAYER_BCCR,  0x48,
-                             :CU_EGL_COLOR_FORMAT_BAYER_RCCB,  0x49,
-                             :CU_EGL_COLOR_FORMAT_BAYER_CRBC,  0x4A,
-                             :CU_EGL_COLOR_FORMAT_BAYER_CBRC,  0x4B,
-                             :CU_EGL_COLOR_FORMAT_BAYER10_CCCC,  0x4C,
-                             :CU_EGL_COLOR_FORMAT_BAYER12_BCCR,  0x4D,
-                             :CU_EGL_COLOR_FORMAT_BAYER12_RCCB,  0x4E,
-                             :CU_EGL_COLOR_FORMAT_BAYER12_CRBC,  0x4F,
-                             :CU_EGL_COLOR_FORMAT_BAYER12_CBRC,  0x50,
-                             :CU_EGL_COLOR_FORMAT_BAYER12_CCCC,  0x51,
+                             :CU_EGL_COLOR_FORMAT_YUVA_ER, 0x1F,
+                             :CU_EGL_COLOR_FORMAT_AYUV_ER, 0x20,
+                             :CU_EGL_COLOR_FORMAT_YUV444_PLANAR_ER, 0x21,
+                             :CU_EGL_COLOR_FORMAT_YUV422_PLANAR_ER, 0x22,
+                             :CU_EGL_COLOR_FORMAT_YUV420_PLANAR_ER, 0x23,
+                             :CU_EGL_COLOR_FORMAT_YUV444_SEMIPLANAR_ER, 0x24,
+                             :CU_EGL_COLOR_FORMAT_YUV422_SEMIPLANAR_ER, 0x25,
+                             :CU_EGL_COLOR_FORMAT_YUV420_SEMIPLANAR_ER, 0x26,
+                             :CU_EGL_COLOR_FORMAT_YVU444_PLANAR_ER, 0x27,
+                             :CU_EGL_COLOR_FORMAT_YVU422_PLANAR_ER, 0x28,
+                             :CU_EGL_COLOR_FORMAT_YVU420_PLANAR_ER, 0x29,
+                             :CU_EGL_COLOR_FORMAT_YVU444_SEMIPLANAR_ER, 0x2A,
+                             :CU_EGL_COLOR_FORMAT_YVU422_SEMIPLANAR_ER, 0x2B,
+                             :CU_EGL_COLOR_FORMAT_YVU420_SEMIPLANAR_ER, 0x2C,
+                             :CU_EGL_COLOR_FORMAT_BAYER_RGGB, 0x2D,
+                             :CU_EGL_COLOR_FORMAT_BAYER_BGGR, 0x2E,
+                             :CU_EGL_COLOR_FORMAT_BAYER_GRBG, 0x2F,
+                             :CU_EGL_COLOR_FORMAT_BAYER_GBRG, 0x30,
+                             :CU_EGL_COLOR_FORMAT_BAYER10_RGGB, 0x31,
+                             :CU_EGL_COLOR_FORMAT_BAYER10_BGGR, 0x32,
+                             :CU_EGL_COLOR_FORMAT_BAYER10_GRBG, 0x33,
+                             :CU_EGL_COLOR_FORMAT_BAYER10_GBRG, 0x34,
+                             :CU_EGL_COLOR_FORMAT_BAYER12_RGGB, 0x35,
+                             :CU_EGL_COLOR_FORMAT_BAYER12_BGGR, 0x36,
+                             :CU_EGL_COLOR_FORMAT_BAYER12_GRBG, 0x37,
+                             :CU_EGL_COLOR_FORMAT_BAYER12_GBRG, 0x38,
+                             :CU_EGL_COLOR_FORMAT_BAYER14_RGGB, 0x39,
+                             :CU_EGL_COLOR_FORMAT_BAYER14_BGGR, 0x3A,
+                             :CU_EGL_COLOR_FORMAT_BAYER14_GRBG, 0x3B,
+                             :CU_EGL_COLOR_FORMAT_BAYER14_GBRG, 0x3C,
+                             :CU_EGL_COLOR_FORMAT_BAYER20_RGGB, 0x3D,
+                             :CU_EGL_COLOR_FORMAT_BAYER20_BGGR, 0x3E,
+                             :CU_EGL_COLOR_FORMAT_BAYER20_GRBG, 0x3F,
+                             :CU_EGL_COLOR_FORMAT_BAYER20_GBRG, 0x40,
+                             :CU_EGL_COLOR_FORMAT_YVU444_PLANAR, 0x41,
+                             :CU_EGL_COLOR_FORMAT_YVU422_PLANAR, 0x42,
+                             :CU_EGL_COLOR_FORMAT_YVU420_PLANAR, 0x43,
+                             :CU_EGL_COLOR_FORMAT_BAYER_ISP_RGGB, 0x44,
+                             :CU_EGL_COLOR_FORMAT_BAYER_ISP_BGGR, 0x45,
+                             :CU_EGL_COLOR_FORMAT_BAYER_ISP_GRBG, 0x46,
+                             :CU_EGL_COLOR_FORMAT_BAYER_ISP_GBRG, 0x47,
+                             :CU_EGL_COLOR_FORMAT_BAYER_BCCR, 0x48,
+                             :CU_EGL_COLOR_FORMAT_BAYER_RCCB, 0x49,
+                             :CU_EGL_COLOR_FORMAT_BAYER_CRBC, 0x4A,
+                             :CU_EGL_COLOR_FORMAT_BAYER_CBRC, 0x4B,
+                             :CU_EGL_COLOR_FORMAT_BAYER10_CCCC, 0x4C,
+                             :CU_EGL_COLOR_FORMAT_BAYER12_BCCR, 0x4D,
+                             :CU_EGL_COLOR_FORMAT_BAYER12_RCCB, 0x4E,
+                             :CU_EGL_COLOR_FORMAT_BAYER12_CRBC, 0x4F,
+                             :CU_EGL_COLOR_FORMAT_BAYER12_CBRC, 0x50,
+                             :CU_EGL_COLOR_FORMAT_BAYER12_CCCC, 0x51,
                              :CU_EGL_COLOR_FORMAT_Y, 0x52,
-                             :CU_EGL_COLOR_FORMAT_YUV420_SEMIPLANAR_2020,  0x53,
-                             :CU_EGL_COLOR_FORMAT_YVU420_SEMIPLANAR_2020,  0x54,
-                             :CU_EGL_COLOR_FORMAT_YUV420_PLANAR_2020,  0x55,
-                             :CU_EGL_COLOR_FORMAT_YVU420_PLANAR_2020,  0x56,
-                             :CU_EGL_COLOR_FORMAT_YUV420_SEMIPLANAR_709,  0x57,
-                             :CU_EGL_COLOR_FORMAT_YVU420_SEMIPLANAR_709,  0x58,
-                             :CU_EGL_COLOR_FORMAT_YUV420_PLANAR_709,  0x59,
-                             :CU_EGL_COLOR_FORMAT_YVU420_PLANAR_709,  0x5A,
+                             :CU_EGL_COLOR_FORMAT_YUV420_SEMIPLANAR_2020, 0x53,
+                             :CU_EGL_COLOR_FORMAT_YVU420_SEMIPLANAR_2020, 0x54,
+                             :CU_EGL_COLOR_FORMAT_YUV420_PLANAR_2020, 0x55,
+                             :CU_EGL_COLOR_FORMAT_YVU420_PLANAR_2020, 0x56,
+                             :CU_EGL_COLOR_FORMAT_YUV420_SEMIPLANAR_709, 0x57,
+                             :CU_EGL_COLOR_FORMAT_YVU420_SEMIPLANAR_709, 0x58,
+                             :CU_EGL_COLOR_FORMAT_YUV420_PLANAR_709, 0x59,
+                             :CU_EGL_COLOR_FORMAT_YVU420_PLANAR_709, 0x5A,
                              :CU_EGL_COLOR_FORMAT_Y10V10U10_420_SEMIPLANAR_709, 0x5B,
-                             :CU_EGL_COLOR_FORMAT_Y10V10U10_420_SEMIPLANAR_2020,  0x5C,
-                             :CU_EGL_COLOR_FORMAT_Y10V10U10_422_SEMIPLANAR_2020,  0x5D,
+                             :CU_EGL_COLOR_FORMAT_Y10V10U10_420_SEMIPLANAR_2020, 0x5C,
+                             :CU_EGL_COLOR_FORMAT_Y10V10U10_422_SEMIPLANAR_2020, 0x5D,
                              :CU_EGL_COLOR_FORMAT_Y10V10U10_422_SEMIPLANAR, 0x5E,
                              :CU_EGL_COLOR_FORMAT_Y10V10U10_422_SEMIPLANAR_709, 0x5F,
                              :CU_EGL_COLOR_FORMAT_Y_ER, 0x60,
@@ -389,8 +387,8 @@ module Cuda
                              :CU_EGL_COLOR_FORMAT_Y12_709_ER, 0x65,
                              :CU_EGL_COLOR_FORMAT_YUVA, 0x66,
                              :CU_EGL_COLOR_FORMAT_YUV, 0x67,
-                             :CU_EGL_COLOR_FORMAT_YVYU,  0x68,
-                             :CU_EGL_COLOR_FORMAT_VYUY,  0x69,
+                             :CU_EGL_COLOR_FORMAT_YVYU, 0x68,
+                             :CU_EGL_COLOR_FORMAT_VYUY, 0x69,
                              :CU_EGL_COLOR_FORMAT_Y10V10U10_420_SEMIPLANAR_ER, 0x6A,
                              :CU_EGL_COLOR_FORMAT_Y10V10U10_420_SEMIPLANAR_709_ER, 0x6B,
                              :CU_EGL_COLOR_FORMAT_Y10V10U10_444_SEMIPLANAR_ER, 0x6C,
@@ -425,20 +423,20 @@ module Cuda
                                        :CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32, 2,
                                        :CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT, 3,
                                        :CU_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_HEAP, 4,
-                                       :CU_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_RESOURCE,  5,
-                                       :CU_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_RESOURCE,  6,
+                                       :CU_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_RESOURCE, 5,
+                                       :CU_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_RESOURCE, 6,
                                        :CU_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_RESOURCE_KMT, 7,
                                        :CU_EXTERNAL_MEMORY_HANDLE_TYPE_NVSCIBUF, 8]
 
     enum :CUexternalSemaphoreHandleType, [:CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD, 1,
                                           :CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32, 2,
                                           :CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_KMT, 3,
-                                          :CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D12_FENCE,  4,
-                                          :CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D11_FENCE,  5,
+                                          :CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D12_FENCE, 4,
+                                          :CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D11_FENCE, 5,
                                           :CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_NVSCISYNC, 6,
                                           :CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D11_KEYED_MUTEX, 7,
-                                          :CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D11_KEYED_MUTEX_KMT,  8,
-                                          :CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_TIMELINE_SEMAPHORE_FD,  9,
+                                          :CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D11_KEYED_MUTEX_KMT, 8,
+                                          :CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_TIMELINE_SEMAPHORE_FD, 9,
                                           :CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_TIMELINE_SEMAPHORE_WIN32, 10]
 
     enum :CUfilter_mode, [:CU_TR_FILTER_MODE_POINT, 0,
@@ -459,8 +457,8 @@ module Cuda
 
     enum :CUfunction_attribute, [:CU_FUNC_ATTRIBUTE_MAX_THREADS_PER_BLOCK, 0,
                                  :CU_FUNC_ATTRIBUTE_SHARED_SIZE_BYTES, 1,
-                                 :CU_FUNC_ATTRIBUTE_CONST_SIZE_BYTES,  2,
-                                 :CU_FUNC_ATTRIBUTE_LOCAL_SIZE_BYTES,  3,
+                                 :CU_FUNC_ATTRIBUTE_CONST_SIZE_BYTES, 2,
+                                 :CU_FUNC_ATTRIBUTE_LOCAL_SIZE_BYTES, 3,
                                  :CU_FUNC_ATTRIBUTE_NUM_REGS, 4,
                                  :CU_FUNC_ATTRIBUTE_PTX_VERSION, 5,
                                  :CU_FUNC_ATTRIBUTE_BINARY_VERSION, 6,
@@ -471,9 +469,9 @@ module Cuda
 
     enum :CUgraphDebugDot_flags, [:CU_GRAPH_DEBUG_DOT_FLAGS_VERBOSE, 1 << 0,
                                   :CU_GRAPH_DEBUG_DOT_FLAGS_RUNTIME_TYPES, 1 << 1,
-                                  :CU_GRAPH_DEBUG_DOT_FLAGS_KERNEL_NODE_PARAMS,  1 << 2,
-                                  :CU_GRAPH_DEBUG_DOT_FLAGS_MEMCPY_NODE_PARAMS,  1 << 3,
-                                  :CU_GRAPH_DEBUG_DOT_FLAGS_MEMSET_NODE_PARAMS,  1 << 4,
+                                  :CU_GRAPH_DEBUG_DOT_FLAGS_KERNEL_NODE_PARAMS, 1 << 2,
+                                  :CU_GRAPH_DEBUG_DOT_FLAGS_MEMCPY_NODE_PARAMS, 1 << 3,
+                                  :CU_GRAPH_DEBUG_DOT_FLAGS_MEMSET_NODE_PARAMS, 1 << 4,
                                   :CU_GRAPH_DEBUG_DOT_FLAGS_HOST_NODE_PARAMS, 1 << 5,
                                   :CU_GRAPH_DEBUG_DOT_FLAGS_EVENT_NODE_PARAMS, 1 << 6,
                                   :CU_GRAPH_DEBUG_DOT_FLAGS_EXT_SEMAS_SIGNAL_NODE_PARAMS, 1 << 7,
@@ -486,11 +484,11 @@ module Cuda
     enum :CUgraphInstantiate_flags, [:CUDA_GRAPH_INSTANTIATE_FLAG_AUTO_FREE_ON_LAUNCH, 1]
 
     enum :CUgraphNodeType, [:CU_GRAPH_NODE_TYPE_KERNEL, 0,
-                            :CU_GRAPH_NODE_TYPE_MEMCPY,  1,
-                            :CU_GRAPH_NODE_TYPE_MEMSET,  2,
+                            :CU_GRAPH_NODE_TYPE_MEMCPY, 1,
+                            :CU_GRAPH_NODE_TYPE_MEMSET, 2,
                             :CU_GRAPH_NODE_TYPE_HOST, 3,
-                            :CU_GRAPH_NODE_TYPE_GRAPH,  4,
-                            :CU_GRAPH_NODE_TYPE_EMPTY,  5,
+                            :CU_GRAPH_NODE_TYPE_GRAPH, 4,
+                            :CU_GRAPH_NODE_TYPE_EMPTY, 5,
                             :CU_GRAPH_NODE_TYPE_WAIT_EVENT, 6,
                             :CU_GRAPH_NODE_TYPE_EVENT_RECORD, 7,
                             :CU_GRAPH_NODE_TYPE_EXT_SEMAS_SIGNAL, 8,
@@ -525,7 +523,7 @@ module Cuda
     enum :CUjit_fallback, [:CU_PREFER_PTX, 0,
                            :CU_PREFER_BINARY]
 
-    enum :CUjit_option, [:CU_JIT_MAX_REGISTERS,  0,
+    enum :CUjit_option, [:CU_JIT_MAX_REGISTERS, 0,
                          :CU_JIT_THREADS_PER_BLOCK,
                          :CU_JIT_WALL_TIME,
                          :CU_JIT_INFO_LOG_BUFFER,
@@ -552,34 +550,34 @@ module Cuda
                          :CU_JIT_FMA,
                          :CU_JIT_NUM_OPTIONS]
 
-    enum :CUjit_target, [:CU_TARGET_COMPUTE_20,  20,
-                         :CU_TARGET_COMPUTE_21,  21,
-                         :CU_TARGET_COMPUTE_30,  30,
-                         :CU_TARGET_COMPUTE_32,  32,
-                         :CU_TARGET_COMPUTE_35,  35,
-                         :CU_TARGET_COMPUTE_37,  37,
-                         :CU_TARGET_COMPUTE_50,  50,
-                         :CU_TARGET_COMPUTE_52,  52,
-                         :CU_TARGET_COMPUTE_53,  53,
-                         :CU_TARGET_COMPUTE_60,  60,
-                         :CU_TARGET_COMPUTE_61,  61,
-                         :CU_TARGET_COMPUTE_62,  62,
-                         :CU_TARGET_COMPUTE_70,  70,
-                         :CU_TARGET_COMPUTE_72,  72,
-                         :CU_TARGET_COMPUTE_75,  75,
-                         :CU_TARGET_COMPUTE_80,  80,
-                         :CU_TARGET_COMPUTE_86,  86]
+    enum :CUjit_target, [:CU_TARGET_COMPUTE_20, 20,
+                         :CU_TARGET_COMPUTE_21, 21,
+                         :CU_TARGET_COMPUTE_30, 30,
+                         :CU_TARGET_COMPUTE_32, 32,
+                         :CU_TARGET_COMPUTE_35, 35,
+                         :CU_TARGET_COMPUTE_37, 37,
+                         :CU_TARGET_COMPUTE_50, 50,
+                         :CU_TARGET_COMPUTE_52, 52,
+                         :CU_TARGET_COMPUTE_53, 53,
+                         :CU_TARGET_COMPUTE_60, 60,
+                         :CU_TARGET_COMPUTE_61, 61,
+                         :CU_TARGET_COMPUTE_62, 62,
+                         :CU_TARGET_COMPUTE_70, 70,
+                         :CU_TARGET_COMPUTE_72, 72,
+                         :CU_TARGET_COMPUTE_75, 75,
+                         :CU_TARGET_COMPUTE_80, 80,
+                         :CU_TARGET_COMPUTE_86, 86]
 
     enum :CUkernelNodeAttrID, [:CU_KERNEL_NODE_ATTRIBUTE_ACCESS_POLICY_WINDOW, 1,
                                :CU_KERNEL_NODE_ATTRIBUTE_COOPERATIVE, 2]
 
     enum :CUlimit, [:CU_LIMIT_STACK_SIZE, 0x00,
-                    :CU_LIMIT_PRINTF_FIFO_SIZE,  0x01,
-                    :CU_LIMIT_MALLOC_HEAP_SIZE,  0x02,
+                    :CU_LIMIT_PRINTF_FIFO_SIZE, 0x01,
+                    :CU_LIMIT_MALLOC_HEAP_SIZE, 0x02,
                     :CU_LIMIT_DEV_RUNTIME_SYNC_DEPTH, 0x03,
                     :CU_LIMIT_DEV_RUNTIME_PENDING_LAUNCH_COUNT, 0x04,
-                    :CU_LIMIT_MAX_L2_FETCH_GRANULARITY,  0x05,
-                    :CU_LIMIT_PERSISTING_L2_CACHE_SIZE,  0x06,
+                    :CU_LIMIT_MAX_L2_FETCH_GRANULARITY, 0x05,
+                    :CU_LIMIT_PERSISTING_L2_CACHE_SIZE, 0x06,
                     :CU_LIMIT_MAX]
 
     enum :CUmemAccess_flags, [:CU_MEM_ACCESS_FLAGS_PROT_NONE, 0x0,
@@ -659,34 +657,34 @@ module Cuda
                                 :CU_POINTER_ATTRIBUTE_MEMPOOL_HANDLE, 17]
 
     enum :CUresourceViewFormat, [:CU_RES_VIEW_FORMAT_NONE, 0x00,
-                                 :CU_RES_VIEW_FORMAT_UINT_1X8,  0x01,
-                                 :CU_RES_VIEW_FORMAT_UINT_2X8,  0x02,
-                                 :CU_RES_VIEW_FORMAT_UINT_4X8,  0x03,
-                                 :CU_RES_VIEW_FORMAT_SINT_1X8,  0x04,
-                                 :CU_RES_VIEW_FORMAT_SINT_2X8,  0x05,
-                                 :CU_RES_VIEW_FORMAT_SINT_4X8,  0x06,
-                                 :CU_RES_VIEW_FORMAT_UINT_1X16,  0x07,
-                                 :CU_RES_VIEW_FORMAT_UINT_2X16,  0x08,
-                                 :CU_RES_VIEW_FORMAT_UINT_4X16,  0x09,
-                                 :CU_RES_VIEW_FORMAT_SINT_1X16,  0x0a,
-                                 :CU_RES_VIEW_FORMAT_SINT_2X16,  0x0b,
-                                 :CU_RES_VIEW_FORMAT_SINT_4X16,  0x0c,
-                                 :CU_RES_VIEW_FORMAT_UINT_1X32,  0x0d,
-                                 :CU_RES_VIEW_FORMAT_UINT_2X32,  0x0e,
-                                 :CU_RES_VIEW_FORMAT_UINT_4X32,  0x0f,
-                                 :CU_RES_VIEW_FORMAT_SINT_1X32,  0x10,
-                                 :CU_RES_VIEW_FORMAT_SINT_2X32,  0x11,
-                                 :CU_RES_VIEW_FORMAT_SINT_4X32,  0x12,
-                                 :CU_RES_VIEW_FORMAT_FLOAT_1X16,  0x13,
-                                 :CU_RES_VIEW_FORMAT_FLOAT_2X16,  0x14,
-                                 :CU_RES_VIEW_FORMAT_FLOAT_4X16,  0x15,
-                                 :CU_RES_VIEW_FORMAT_FLOAT_1X32,  0x16,
-                                 :CU_RES_VIEW_FORMAT_FLOAT_2X32,  0x17,
-                                 :CU_RES_VIEW_FORMAT_FLOAT_4X32,  0x18,
-                                 :CU_RES_VIEW_FORMAT_UNSIGNED_BC1,  0x19,
-                                 :CU_RES_VIEW_FORMAT_UNSIGNED_BC2,  0x1a,
-                                 :CU_RES_VIEW_FORMAT_UNSIGNED_BC3,  0x1b,
-                                 :CU_RES_VIEW_FORMAT_UNSIGNED_BC4,  0x1c,
+                                 :CU_RES_VIEW_FORMAT_UINT_1X8, 0x01,
+                                 :CU_RES_VIEW_FORMAT_UINT_2X8, 0x02,
+                                 :CU_RES_VIEW_FORMAT_UINT_4X8, 0x03,
+                                 :CU_RES_VIEW_FORMAT_SINT_1X8, 0x04,
+                                 :CU_RES_VIEW_FORMAT_SINT_2X8, 0x05,
+                                 :CU_RES_VIEW_FORMAT_SINT_4X8, 0x06,
+                                 :CU_RES_VIEW_FORMAT_UINT_1X16, 0x07,
+                                 :CU_RES_VIEW_FORMAT_UINT_2X16, 0x08,
+                                 :CU_RES_VIEW_FORMAT_UINT_4X16, 0x09,
+                                 :CU_RES_VIEW_FORMAT_SINT_1X16, 0x0a,
+                                 :CU_RES_VIEW_FORMAT_SINT_2X16, 0x0b,
+                                 :CU_RES_VIEW_FORMAT_SINT_4X16, 0x0c,
+                                 :CU_RES_VIEW_FORMAT_UINT_1X32, 0x0d,
+                                 :CU_RES_VIEW_FORMAT_UINT_2X32, 0x0e,
+                                 :CU_RES_VIEW_FORMAT_UINT_4X32, 0x0f,
+                                 :CU_RES_VIEW_FORMAT_SINT_1X32, 0x10,
+                                 :CU_RES_VIEW_FORMAT_SINT_2X32, 0x11,
+                                 :CU_RES_VIEW_FORMAT_SINT_4X32, 0x12,
+                                 :CU_RES_VIEW_FORMAT_FLOAT_1X16, 0x13,
+                                 :CU_RES_VIEW_FORMAT_FLOAT_2X16, 0x14,
+                                 :CU_RES_VIEW_FORMAT_FLOAT_4X16, 0x15,
+                                 :CU_RES_VIEW_FORMAT_FLOAT_1X32, 0x16,
+                                 :CU_RES_VIEW_FORMAT_FLOAT_2X32, 0x17,
+                                 :CU_RES_VIEW_FORMAT_FLOAT_4X32, 0x18,
+                                 :CU_RES_VIEW_FORMAT_UNSIGNED_BC1, 0x19,
+                                 :CU_RES_VIEW_FORMAT_UNSIGNED_BC2, 0x1a,
+                                 :CU_RES_VIEW_FORMAT_UNSIGNED_BC3, 0x1b,
+                                 :CU_RES_VIEW_FORMAT_UNSIGNED_BC4, 0x1c,
                                  :CU_RES_VIEW_FORMAT_SIGNED_BC4, 0x1d,
                                  :CU_RES_VIEW_FORMAT_UNSIGNED_BC5, 0x1e,
                                  :CU_RES_VIEW_FORMAT_SIGNED_BC5, 0x1f,
@@ -697,17 +695,17 @@ module Cuda
     enum :CUresourcetype, [:CU_RESOURCE_TYPE_ARRAY, 0x00,
                            :CU_RESOURCE_TYPE_MIPMAPPED_ARRAY, 0x01,
                            :CU_RESOURCE_TYPE_LINEAR, 0x02,
-                           :CU_RESOURCE_TYPE_PITCH2D,  0x03]
+                           :CU_RESOURCE_TYPE_PITCH2D, 0x03]
 
     enum :CUresult, [:CUDA_SUCCESS, 0,
-                     :CUDA_ERROR_INVALID_VALUE,  1,
-                     :CUDA_ERROR_OUT_OF_MEMORY,  2,
+                     :CUDA_ERROR_INVALID_VALUE, 1,
+                     :CUDA_ERROR_OUT_OF_MEMORY, 2,
                      :CUDA_ERROR_NOT_INITIALIZED, 3,
                      :CUDA_ERROR_DEINITIALIZED, 4,
                      :CUDA_ERROR_PROFILER_DISABLED, 5,
-                     :CUDA_ERROR_PROFILER_NOT_INITIALIZED,  6,
-                     :CUDA_ERROR_PROFILER_ALREADY_STARTED,  7,
-                     :CUDA_ERROR_PROFILER_ALREADY_STOPPED,  8,
+                     :CUDA_ERROR_PROFILER_NOT_INITIALIZED, 6,
+                     :CUDA_ERROR_PROFILER_ALREADY_STARTED, 7,
+                     :CUDA_ERROR_PROFILER_ALREADY_STOPPED, 8,
                      :CUDA_ERROR_STUB_LIBRARY, 34,
                      :CUDA_ERROR_NO_DEVICE, 100,
                      :CUDA_ERROR_INVALID_DEVICE, 101,
@@ -718,14 +716,14 @@ module Cuda
                      :CUDA_ERROR_MAP_FAILED, 205,
                      :CUDA_ERROR_UNMAP_FAILED, 206,
                      :CUDA_ERROR_ARRAY_IS_MAPPED, 207,
-                     :CUDA_ERROR_ALREADY_MAPPED,  208,
+                     :CUDA_ERROR_ALREADY_MAPPED, 208,
                      :CUDA_ERROR_NO_BINARY_FOR_GPU, 209,
                      :CUDA_ERROR_ALREADY_ACQUIRED, 210,
                      :CUDA_ERROR_NOT_MAPPED, 211,
                      :CUDA_ERROR_NOT_MAPPED_AS_ARRAY, 212,
                      :CUDA_ERROR_NOT_MAPPED_AS_POINTER, 213,
-                     :CUDA_ERROR_ECC_UNCORRECTABLE,  214,
-                     :CUDA_ERROR_UNSUPPORTED_LIMIT,  215,
+                     :CUDA_ERROR_ECC_UNCORRECTABLE, 214,
+                     :CUDA_ERROR_UNSUPPORTED_LIMIT, 215,
                      :CUDA_ERROR_CONTEXT_ALREADY_IN_USE, 216,
                      :CUDA_ERROR_PEER_ACCESS_UNSUPPORTED, 217,
                      :CUDA_ERROR_INVALID_PTX, 218,
@@ -733,17 +731,17 @@ module Cuda
                      :CUDA_ERROR_NVLINK_UNCORRECTABLE, 220,
                      :CUDA_ERROR_JIT_COMPILER_NOT_FOUND, 221,
                      :CUDA_ERROR_UNSUPPORTED_PTX_VERSION, 222,
-                     :CUDA_ERROR_JIT_COMPILATION_DISABLED,  223,
-                     :CUDA_ERROR_UNSUPPORTED_EXEC_AFFINITY,  224,
-                     :CUDA_ERROR_INVALID_SOURCE,  300,
-                     :CUDA_ERROR_FILE_NOT_FOUND,  301,
+                     :CUDA_ERROR_JIT_COMPILATION_DISABLED, 223,
+                     :CUDA_ERROR_UNSUPPORTED_EXEC_AFFINITY, 224,
+                     :CUDA_ERROR_INVALID_SOURCE, 300,
+                     :CUDA_ERROR_FILE_NOT_FOUND, 301,
                      :CUDA_ERROR_SHARED_OBJECT_SYMBOL_NOT_FOUND, 302,
                      :CUDA_ERROR_SHARED_OBJECT_INIT_FAILED, 303,
                      :CUDA_ERROR_OPERATING_SYSTEM, 304,
                      :CUDA_ERROR_INVALID_HANDLE, 400,
                      :CUDA_ERROR_ILLEGAL_STATE, 401,
-                     :CUDA_ERROR_NOT_FOUND,  500,
-                     :CUDA_ERROR_NOT_READY,  600,
+                     :CUDA_ERROR_NOT_FOUND, 500,
+                     :CUDA_ERROR_NOT_READY, 600,
                      :CUDA_ERROR_ILLEGAL_ADDRESS, 700,
                      :CUDA_ERROR_LAUNCH_OUT_OF_RESOURCES, 701,
                      :CUDA_ERROR_LAUNCH_TIMEOUT, 702,
@@ -758,13 +756,13 @@ module Cuda
                      :CUDA_ERROR_HOST_MEMORY_NOT_REGISTERED, 713,
                      :CUDA_ERROR_HARDWARE_STACK_ERROR, 714,
                      :CUDA_ERROR_ILLEGAL_INSTRUCTION, 715,
-                     :CUDA_ERROR_MISALIGNED_ADDRESS,  716,
+                     :CUDA_ERROR_MISALIGNED_ADDRESS, 716,
                      :CUDA_ERROR_INVALID_ADDRESS_SPACE, 717,
                      :CUDA_ERROR_INVALID_PC, 718,
                      :CUDA_ERROR_LAUNCH_FAILED, 719,
                      :CUDA_ERROR_COOPERATIVE_LAUNCH_TOO_LARGE, 720,
-                     :CUDA_ERROR_NOT_PERMITTED,  800,
-                     :CUDA_ERROR_NOT_SUPPORTED,  801,
+                     :CUDA_ERROR_NOT_PERMITTED, 800,
+                     :CUDA_ERROR_NOT_SUPPORTED, 801,
                      :CUDA_ERROR_SYSTEM_NOT_READY, 802,
                      :CUDA_ERROR_SYSTEM_DRIVER_MISMATCH, 803,
                      :CUDA_ERROR_COMPAT_NOT_SUPPORTED_ON_DEVICE, 804,
@@ -773,8 +771,8 @@ module Cuda
                      :CUDA_ERROR_MPS_SERVER_NOT_READY, 807,
                      :CUDA_ERROR_MPS_MAX_CLIENTS_REACHED, 808,
                      :CUDA_ERROR_MPS_MAX_CONNECTIONS_REACHED, 809,
-                     :CUDA_ERROR_STREAM_CAPTURE_UNSUPPORTED,  900,
-                     :CUDA_ERROR_STREAM_CAPTURE_INVALIDATED,  901,
+                     :CUDA_ERROR_STREAM_CAPTURE_UNSUPPORTED, 900,
+                     :CUDA_ERROR_STREAM_CAPTURE_INVALIDATED, 901,
                      :CUDA_ERROR_STREAM_CAPTURE_MERGE, 902,
                      :CUDA_ERROR_STREAM_CAPTURE_UNMATCHED, 903,
                      :CUDA_ERROR_STREAM_CAPTURE_UNJOINED, 904,
@@ -817,8 +815,8 @@ module Cuda
 
     enum :CUstreamWaitValue_flags, [:CU_STREAM_WAIT_VALUE_GEQ, 0x0,
                                     :CU_STREAM_WAIT_VALUE_EQ, 0x1,
-                                    :CU_STREAM_WAIT_VALUE_AND,  0x2,
-                                    :CU_STREAM_WAIT_VALUE_NOR,  0x3,
+                                    :CU_STREAM_WAIT_VALUE_AND, 0x2,
+                                    :CU_STREAM_WAIT_VALUE_NOR, 0x3,
                                     :CU_STREAM_WAIT_VALUE_FLUSH, 1 << 30]
 
     enum :CUstreamWriteValue_flags, [:CU_STREAM_WRITE_VALUE_DEFAULT, 0x0,
@@ -828,6 +826,49 @@ module Cuda
                            :CU_STREAM_NON_BLOCKING, 0x1]
 
     enum :CUuserObjectRetain_flags, [:CU_GRAPH_USER_OBJECT_MOVE, 1]
+
+    # DEFINES
+    CUDA_ARRAY3D_2DARRAY = 0x01
+    CUDA_ARRAY3D_COLOR_ATTACHMENT = 0x20
+    CUDA_ARRAY3D_CUBEMAP = 0x04
+    CUDA_ARRAY3D_DEPTH_TEXTURE = 0x10
+    CUDA_ARRAY3D_LAYERED = 0x01
+    CUDA_ARRAY3D_SPARSE = 0x40
+    CUDA_ARRAY3D_SURFACE_LDST = 0x02
+    CUDA_ARRAY3D_TEXTURE_GATHER = 0x08
+    CUDA_COOPERATIVE_LAUNCH_MULTI_DEVICE_NO_POST_LAUNCH_SYNC = 0x02
+    CUDA_COOPERATIVE_LAUNCH_MULTI_DEVICE_NO_PRE_LAUNCH_SYNC = 0x01
+    CUDA_EGL_INFINITE_TIMEOUT = 0xFFFFFFFF
+    CUDA_EXTERNAL_MEMORY_DEDICATED = 0x1
+    CUDA_EXTERNAL_SEMAPHORE_SIGNAL_SKIP_NVSCIBUF_MEMSYNC = 0x01
+    CUDA_EXTERNAL_SEMAPHORE_WAIT_SKIP_NVSCIBUF_MEMSYNC = 0x02
+    CUDA_NVSCISYNC_ATTR_SIGNAL = 0x1
+    CUDA_NVSCISYNC_ATTR_WAIT = 0x2
+    CUDA_VERSION = 11050
+    CU_ARRAY_SPARSE_PROPERTIES_SINGLE_MIPTAIL = 0x1
+    CU_DEVICE_CPU = -1
+    CU_DEVICE_INVALID = -2
+    CU_IPC_HANDLE_SIZE = 64
+    CU_LAUNCH_PARAM_BUFFER_POINTER = 0x01
+    CU_LAUNCH_PARAM_BUFFER_SIZE = 0x02
+    CU_LAUNCH_PARAM_END = 0x00
+    CU_MEMHOSTALLOC_DEVICEMAP = 0x02
+    CU_MEMHOSTALLOC_PORTABLE = 0x01
+    CU_MEMHOSTALLOC_WRITECOMBINED = 0x04
+    CU_MEMHOSTREGISTER_DEVICEMAP = 0x02
+    CU_MEMHOSTREGISTER_IOMEMORY = 0x04
+    CU_MEMHOSTREGISTER_PORTABLE = 0x01
+    CU_MEMHOSTREGISTER_READ_ONLY = 0x08
+    CU_MEM_CREATE_USAGE_TILE_POOL = 0x1
+    CU_PARAM_TR_DEFAULT = -1
+    CU_STREAM_LEGACY = 0x1
+    CU_STREAM_PER_THREAD = 0x2
+    CU_TRSA_OVERRIDE_FORMAT = 0x01
+    CU_TRSF_DISABLE_TRILINEAR_OPTIMIZATION = 0x20
+    CU_TRSF_NORMALIZED_COORDINATES = 0x02
+    CU_TRSF_READ_AS_INTEGER = 0x01
+    CU_TRSF_SRGB = 0x10
+    MAX_PLANES = 3
 
     # Functions
 
@@ -861,14 +902,12 @@ module Cuda
     attach_function :cuDeviceGetMemPool, %i[pointer CUdevice], :CUresult
     attach_function :cuDeviceGetName, %i[pointer int CUdevice], :CUresult
     attach_function :cuDeviceGetNvSciSyncAttributes, %i[pointer CUdevice int], :CUresult
-    attach_function :cuDeviceGetTexture1DLinearMaxWidth, %i[pointer CUarray_format unsigned_int CUdevice],
-                    :CUresult
+    attach_function :cuDeviceGetTexture1DLinearMaxWidth, %i[pointer CUarray_format unsigned_int CUdevice], :CUresult
     attach_function :cuDeviceGetUuid, %i[pointer CUdevice], :CUresult
     attach_function :cuDeviceGetUuid_v2, %i[pointer CUdevice], :CUresult
     attach_function :cuDeviceSetMemPool, %i[CUdevice CUmemoryPool], :CUresult
     attach_function :cuDeviceTotalMem, %i[pointer CUdevice], :CUresult
-    attach_function :cuFlushGPUDirectRDMAWrites,
-                    %i[CUflushGPUDirectRDMAWritesTarget CUflushGPUDirectRDMAWritesScope], :CUresult
+    attach_function :cuFlushGPUDirectRDMAWrites, %i[CUflushGPUDirectRDMAWritesTarget CUflushGPUDirectRDMAWritesScope], :CUresult
     attach_function :cuDeviceComputeCapability, %i[pointer pointer CUdevice], :CUresult
     attach_function :cuDeviceGetProperties, %i[pointer CUdevice], :CUresult
     attach_function :cuGetProcAddress, %i[pointer pointer int cuuint64_t], :CUresult
@@ -886,12 +925,10 @@ module Cuda
     attach_function :cuFuncSetAttribute, %i[CUfunction CUfunction_attribute int], :CUresult
     attach_function :cuFuncSetCacheConfig, %i[CUfunction CUfunc_cache], :CUresult
     attach_function :cuFuncSetSharedMemConfig, %i[CUfunction CUsharedconfig], :CUresult
-    attach_function :cuLaunchCooperativeKernel,
-                    %i[CUfunction unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int CUstream pointer], :CUresult
+    attach_function :cuLaunchCooperativeKernel, %i[CUfunction unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int CUstream pointer], :CUresult
     attach_function :cuLaunchCooperativeKernelMultiDevice, %i[pointer unsigned_int unsigned_int], :CUresult
     attach_function :cuLaunchHostFunc, %i[CUstream CUhostFn pointer], :CUresult
-    attach_function :cuLaunchKernel,
-                    %i[CUfunction unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int CUstream pointer pointer], :CUresult
+    attach_function :cuLaunchKernel, %i[CUfunction unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int CUstream pointer pointer], :CUresult
     attach_function :cuFuncSetBlockShape, %i[CUfunction int int int], :CUresult
     attach_function :cuFuncSetSharedSize, %i[CUfunction unsigned_int], :CUresult
     attach_function :cuLaunch, [:CUfunction], :CUresult
@@ -927,18 +964,14 @@ module Cuda
     attach_function :cuGraphAddEmptyNode, %i[pointer CUgraph pointer size_t], :CUresult
     attach_function :cuGraphAddEventRecordNode, %i[pointer CUgraph pointer size_t CUevent], :CUresult
     attach_function :cuGraphAddEventWaitNode, %i[pointer CUgraph pointer size_t CUevent], :CUresult
-    attach_function :cuGraphAddExternalSemaphoresSignalNode, %i[pointer CUgraph pointer size_t pointer],
-                    :CUresult
-    attach_function :cuGraphAddExternalSemaphoresWaitNode, %i[pointer CUgraph pointer size_t pointer],
-                    :CUresult
+    attach_function :cuGraphAddExternalSemaphoresSignalNode, %i[pointer CUgraph pointer size_t pointer], :CUresult
+    attach_function :cuGraphAddExternalSemaphoresWaitNode, %i[pointer CUgraph pointer size_t pointer], :CUresult
     attach_function :cuGraphAddHostNode, %i[pointer CUgraph pointer size_t pointer], :CUresult
     attach_function :cuGraphAddKernelNode, %i[pointer CUgraph pointer size_t pointer], :CUresult
     attach_function :cuGraphAddMemAllocNode, %i[pointer CUgraph pointer size_t pointer], :CUresult
     attach_function :cuGraphAddMemFreeNode, %i[pointer CUgraph pointer size_t CUdeviceptr], :CUresult
-    attach_function :cuGraphAddMemcpyNode, %i[pointer CUgraph pointer size_t pointer CUcontext],
-                    :CUresult
-    attach_function :cuGraphAddMemsetNode, %i[pointer CUgraph pointer size_t pointer CUcontext],
-                    :CUresult
+    attach_function :cuGraphAddMemcpyNode, %i[pointer CUgraph pointer size_t pointer CUcontext], :CUresult
+    attach_function :cuGraphAddMemsetNode, %i[pointer CUgraph pointer size_t pointer CUcontext], :CUresult
     attach_function :cuGraphChildGraphNodeGetGraph, %i[CUgraphNode pointer], :CUresult
     attach_function :cuGraphClone, %i[pointer CUgraph], :CUresult
     attach_function :cuGraphCreate, %i[pointer unsigned_int], :CUresult
@@ -953,16 +986,12 @@ module Cuda
     attach_function :cuGraphExecDestroy, [:CUgraphExec], :CUresult
     attach_function :cuGraphExecEventRecordNodeSetEvent, %i[CUgraphExec CUgraphNode CUevent], :CUresult
     attach_function :cuGraphExecEventWaitNodeSetEvent, %i[CUgraphExec CUgraphNode CUevent], :CUresult
-    attach_function :cuGraphExecExternalSemaphoresSignalNodeSetParams, %i[CUgraphExec CUgraphNode pointer],
-                    :CUresult
-    attach_function :cuGraphExecExternalSemaphoresWaitNodeSetParams, %i[CUgraphExec CUgraphNode pointer],
-                    :CUresult
+    attach_function :cuGraphExecExternalSemaphoresSignalNodeSetParams, %i[CUgraphExec CUgraphNode pointer], :CUresult
+    attach_function :cuGraphExecExternalSemaphoresWaitNodeSetParams, %i[CUgraphExec CUgraphNode pointer], :CUresult
     attach_function :cuGraphExecHostNodeSetParams, %i[CUgraphExec CUgraphNode pointer], :CUresult
     attach_function :cuGraphExecKernelNodeSetParams, %i[CUgraphExec CUgraphNode pointer], :CUresult
-    attach_function :cuGraphExecMemcpyNodeSetParams, %i[CUgraphExec CUgraphNode pointer CUcontext],
-                    :CUresult
-    attach_function :cuGraphExecMemsetNodeSetParams, %i[CUgraphExec CUgraphNode pointer CUcontext],
-                    :CUresult
+    attach_function :cuGraphExecMemcpyNodeSetParams, %i[CUgraphExec CUgraphNode pointer CUcontext], :CUresult
+    attach_function :cuGraphExecMemsetNodeSetParams, %i[CUgraphExec CUgraphNode pointer CUcontext], :CUresult
     attach_function :cuGraphExecUpdate, %i[CUgraphExec CUgraph pointer pointer], :CUresult
     attach_function :cuGraphExternalSemaphoresSignalNodeGetParams, %i[CUgraphNode pointer], :CUresult
     attach_function :cuGraphExternalSemaphoresSignalNodeSetParams, %i[CUgraphNode pointer], :CUresult
@@ -995,8 +1024,7 @@ module Cuda
     attach_function :cuGraphRemoveDependencies, %i[CUgraph pointer pointer size_t], :CUresult
     attach_function :cuGraphRetainUserObject, %i[CUgraph CUuserObject unsigned_int unsigned_int], :CUresult
     attach_function :cuGraphUpload, %i[CUgraphExec CUstream], :CUresult
-    attach_function :cuUserObjectCreate, %i[pointer pointer CUhostFn unsigned_int unsigned_int],
-                    :CUresult
+    attach_function :cuUserObjectCreate, %i[pointer pointer CUhostFn unsigned_int unsigned_int], :CUresult
     attach_function :cuUserObjectRelease, %i[CUuserObject unsigned_int], :CUresult
     attach_function :cuUserObjectRetain, %i[CUuserObject unsigned_int], :CUresult
     attach_function :cuInit, [:unsigned_int], :CUresult
@@ -1006,12 +1034,10 @@ module Cuda
     attach_function :cuMemPoolCreate, %i[pointer pointer], :CUresult
     attach_function :cuMemPoolDestroy, [:CUmemoryPool], :CUresult
     attach_function :cuMemPoolExportPointer, %i[pointer CUdeviceptr], :CUresult
-    attach_function :cuMemPoolExportToShareableHandle,
-                    %i[pointer CUmemoryPool CUmemAllocationHandleType unsigned_long_long], :CUresult
+    attach_function :cuMemPoolExportToShareableHandle, %i[pointer CUmemoryPool CUmemAllocationHandleType unsigned_long_long], :CUresult
     attach_function :cuMemPoolGetAccess, %i[pointer CUmemoryPool pointer], :CUresult
     attach_function :cuMemPoolGetAttribute, %i[CUmemoryPool CUmemPool_attribute pointer], :CUresult
-    attach_function :cuMemPoolImportFromShareableHandle,
-                    %i[pointer pointer CUmemAllocationHandleType unsigned_long_long], :CUresult
+    attach_function :cuMemPoolImportFromShareableHandle, %i[pointer pointer CUmemAllocationHandleType unsigned_long_long], :CUresult
     attach_function :cuMemPoolImportPointer, %i[pointer CUmemoryPool pointer], :CUresult
     attach_function :cuMemPoolSetAccess, %i[CUmemoryPool pointer size_t], :CUresult
     attach_function :cuMemPoolSetAttribute, %i[CUmemoryPool CUmemPool_attribute pointer], :CUresult
@@ -1066,19 +1092,15 @@ module Cuda
     attach_function :cuMemcpyHtoD, %i[CUdeviceptr pointer size_t], :CUresult
     attach_function :cuMemcpyHtoDAsync, %i[CUdeviceptr pointer size_t CUstream], :CUresult
     attach_function :cuMemcpyPeer, %i[CUdeviceptr CUcontext CUdeviceptr CUcontext size_t], :CUresult
-    attach_function :cuMemcpyPeerAsync,
-                    %i[CUdeviceptr CUcontext CUdeviceptr CUcontext size_t CUstream], :CUresult
+    attach_function :cuMemcpyPeerAsync, %i[CUdeviceptr CUcontext CUdeviceptr CUcontext size_t CUstream], :CUresult
     attach_function :cuMemsetD16, %i[CUdeviceptr unsigned_short size_t], :CUresult
     attach_function :cuMemsetD16Async, %i[CUdeviceptr unsigned_short size_t CUstream], :CUresult
     attach_function :cuMemsetD2D16, %i[CUdeviceptr size_t unsigned_short size_t size_t], :CUresult
-    attach_function :cuMemsetD2D16Async, %i[CUdeviceptr size_t unsigned_short size_t size_t CUstream],
-                    :CUresult
+    attach_function :cuMemsetD2D16Async, %i[CUdeviceptr size_t unsigned_short size_t size_t CUstream], :CUresult
     attach_function :cuMemsetD2D32, %i[CUdeviceptr size_t unsigned_int size_t size_t], :CUresult
-    attach_function :cuMemsetD2D32Async, %i[CUdeviceptr size_t unsigned_int size_t size_t CUstream],
-                    :CUresult
+    attach_function :cuMemsetD2D32Async, %i[CUdeviceptr size_t unsigned_int size_t size_t CUstream], :CUresult
     attach_function :cuMemsetD2D8, %i[CUdeviceptr size_t unsigned_char size_t size_t], :CUresult
-    attach_function :cuMemsetD2D8Async, %i[CUdeviceptr size_t unsigned_char size_t size_t CUstream],
-                    :CUresult
+    attach_function :cuMemsetD2D8Async, %i[CUdeviceptr size_t unsigned_char size_t size_t CUstream], :CUresult
     attach_function :cuMemsetD32, %i[CUdeviceptr unsigned_int size_t], :CUresult
     attach_function :cuMemsetD32Async, %i[CUdeviceptr unsigned_int size_t CUstream], :CUresult
     attach_function :cuMemsetD8, %i[CUdeviceptr unsigned_char size_t], :CUresult
@@ -1092,10 +1114,8 @@ module Cuda
     attach_function :cuStreamWaitValue64, %i[CUstream CUdeviceptr cuuint64_t unsigned_int], :CUresult
     attach_function :cuStreamWriteValue32, %i[CUstream CUdeviceptr cuuint32_t unsigned_int], :CUresult
     attach_function :cuStreamWriteValue64, %i[CUstream CUdeviceptr cuuint64_t unsigned_int], :CUresult
-    attach_function :cuLinkAddData,
-                    %i[CUlinkState CUjitInputType pointer size_t pointer unsigned_int pointer pointer], :CUresult
-    attach_function :cuLinkAddFile,
-                    %i[CUlinkState CUjitInputType pointer unsigned_int pointer pointer], :CUresult
+    attach_function :cuLinkAddData, %i[CUlinkState CUjitInputType pointer size_t pointer unsigned_int pointer pointer], :CUresult
+    attach_function :cuLinkAddFile, %i[CUlinkState CUjitInputType pointer unsigned_int pointer pointer], :CUresult
     attach_function :cuLinkComplete, %i[CUlinkState pointer pointer], :CUresult
     attach_function :cuLinkCreate, %i[unsigned_int pointer pointer pointer], :CUresult
     attach_function :cuLinkDestroy, [:CUlinkState], :CUresult
@@ -1109,19 +1129,14 @@ module Cuda
     attach_function :cuModuleLoadFatBinary, %i[pointer pointer], :CUresult
     attach_function :cuModuleUnload, [:CUmodule], :CUresult
     attach_function :cuOccupancyAvailableDynamicSMemPerBlock, %i[pointer CUfunction int int], :CUresult
-    attach_function :cuOccupancyMaxActiveBlocksPerMultiprocessor, %i[pointer CUfunction int size_t],
-                    :CUresult
-    attach_function :cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags,
-                    %i[pointer CUfunction int size_t unsigned_int], :CUresult
-    attach_function :cuOccupancyMaxPotentialBlockSize,
-                    %i[pointer pointer CUfunction CUoccupancyB2DSize size_t int], :CUresult
-    attach_function :cuOccupancyMaxPotentialBlockSizeWithFlags,
-                    %i[pointer pointer CUfunction CUoccupancyB2DSize size_t int unsigned_int], :CUresult
+    attach_function :cuOccupancyMaxActiveBlocksPerMultiprocessor, %i[pointer CUfunction int size_t], :CUresult
+    attach_function :cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags, %i[pointer CUfunction int size_t unsigned_int], :CUresult
+    attach_function :cuOccupancyMaxPotentialBlockSize, %i[pointer pointer CUfunction CUoccupancyB2DSize size_t int], :CUresult
+    attach_function :cuOccupancyMaxPotentialBlockSizeWithFlags, %i[pointer pointer CUfunction CUoccupancyB2DSize size_t int unsigned_int], :CUresult
     attach_function :cuCtxDisablePeerAccess, [:CUcontext], :CUresult
     attach_function :cuCtxEnablePeerAccess, %i[CUcontext unsigned_int], :CUresult
     attach_function :cuDeviceCanAccessPeer, %i[pointer CUdevice CUdevice], :CUresult
-    attach_function :cuDeviceGetP2PAttribute, %i[pointer CUdevice_P2PAttribute CUdevice CUdevice],
-                    :CUresult
+    attach_function :cuDeviceGetP2PAttribute, %i[pointer CUdevice_P2PAttribute CUdevice CUdevice], :CUresult
     attach_function :cuDevicePrimaryCtxGetState, %i[CUdevice pointer pointer], :CUresult
     attach_function :cuDevicePrimaryCtxRelease, [:CUdevice], :CUresult
     attach_function :cuDevicePrimaryCtxReset, [:CUdevice], :CUresult
@@ -1140,8 +1155,7 @@ module Cuda
     attach_function :cuStreamEndCapture, %i[CUstream pointer], :CUresult
     attach_function :cuStreamGetAttribute, %i[CUstream CUstreamAttrID pointer], :CUresult
     attach_function :cuStreamGetCaptureInfo, %i[CUstream pointer pointer], :CUresult
-    attach_function :cuStreamGetCaptureInfo_v2, %i[CUstream pointer pointer pointer pointer pointer],
-                    :CUresult
+    attach_function :cuStreamGetCaptureInfo_v2, %i[CUstream pointer pointer pointer pointer pointer], :CUresult
     attach_function :cuStreamGetCtx, %i[CUstream pointer], :CUresult
     attach_function :cuStreamGetFlags, %i[CUstream pointer], :CUresult
     attach_function :cuStreamGetPriority, %i[CUstream pointer], :CUresult
@@ -1191,34 +1205,26 @@ module Cuda
     attach_function :cuTexRefSetMipmappedArray, %i[CUtexref CUmipmappedArray unsigned_int], :CUresult
     attach_function :cuMemAdvise, %i[CUdeviceptr size_t CUmem_advise CUdevice], :CUresult
     attach_function :cuMemPrefetchAsync, %i[CUdeviceptr size_t CUdevice CUstream], :CUresult
-    attach_function :cuMemRangeGetAttribute,
-                    %i[pointer size_t CUmem_range_attribute CUdeviceptr size_t], :CUresult
-    attach_function :cuMemRangeGetAttributes, %i[pointer pointer pointer size_t CUdeviceptr size_t],
-                    :CUresult
+    attach_function :cuMemRangeGetAttribute, %i[pointer size_t CUmem_range_attribute CUdeviceptr size_t], :CUresult
+    attach_function :cuMemRangeGetAttributes, %i[pointer pointer pointer size_t CUdeviceptr size_t], :CUresult
     attach_function :cuPointerGetAttribute, %i[pointer CUpointer_attribute CUdeviceptr], :CUresult
     attach_function :cuPointerGetAttributes, %i[unsigned_int pointer pointer CUdeviceptr], :CUresult
     attach_function :cuPointerSetAttribute, %i[pointer CUpointer_attribute CUdeviceptr], :CUresult
     attach_function :cuMemAddressFree, %i[CUdeviceptr size_t], :CUresult
-    attach_function :cuMemAddressReserve, %i[pointer size_t size_t CUdeviceptr unsigned_long_long],
-                    :CUresult
+    attach_function :cuMemAddressReserve, %i[pointer size_t size_t CUdeviceptr unsigned_long_long], :CUresult
     attach_function :cuMemCreate, %i[pointer size_t pointer unsigned_long_long], :CUresult
-    attach_function :cuMemExportToShareableHandle,
-                    %i[pointer CUmemGenericAllocationHandle CUmemAllocationHandleType unsigned_long_long], :CUresult
+    attach_function :cuMemExportToShareableHandle, %i[pointer CUmemGenericAllocationHandle CUmemAllocationHandleType unsigned_long_long], :CUresult
     attach_function :cuMemGetAccess, %i[pointer pointer CUdeviceptr], :CUresult
-    attach_function :cuMemGetAllocationGranularity, %i[pointer pointer CUmemAllocationGranularity_flags],
-                    :CUresult
-    attach_function :cuMemGetAllocationPropertiesFromHandle, %i[pointer CUmemGenericAllocationHandle],
-                    :CUresult
+    attach_function :cuMemGetAllocationGranularity, %i[pointer pointer CUmemAllocationGranularity_flags], :CUresult
+    attach_function :cuMemGetAllocationPropertiesFromHandle, %i[pointer CUmemGenericAllocationHandle], :CUresult
     attach_function :cuMemImportFromShareableHandle, %i[pointer pointer CUmemAllocationHandleType], :CUresult
-    attach_function :cuMemMap,
-                    %i[CUdeviceptr size_t size_t CUmemGenericAllocationHandle unsigned_long_long], :CUresult
+    attach_function :cuMemMap, %i[CUdeviceptr size_t size_t CUmemGenericAllocationHandle unsigned_long_long], :CUresult
     attach_function :cuMemMapArrayAsync, %i[pointer unsigned_int CUstream], :CUresult
     attach_function :cuMemRelease, [:CUmemGenericAllocationHandle], :CUresult
     attach_function :cuMemRetainAllocationHandle, %i[pointer pointer], :CUresult
     attach_function :cuMemSetAccess, %i[CUdeviceptr size_t pointer size_t], :CUresult
     attach_function :cuMemUnmap, %i[CUdeviceptr size_t], :CUresult
-    attach_function :cuGraphicsVDPAURegisterOutputSurface, %i[pointer VdpOutputSurface unsigned_int],
-                    :CUresult
+    attach_function :cuGraphicsVDPAURegisterOutputSurface, %i[pointer VdpOutputSurface unsigned_int], :CUresult
     attach_function :cuGraphicsVDPAURegisterVideoSurface, %i[pointer VdpVideoSurface unsigned_int], :CUresult
     attach_function :cuVDPAUCtxCreate, %i[pointer unsigned_int CUdevice VdpDevice pointer], :CUresult
     attach_function :cuVDPAUGetDevice, %i[pointer VdpDevice pointer], :CUresult
@@ -1228,3 +1234,4 @@ end
 
 # rubocop:enable Metrics/ModuleLength
 # rubocop:enable Naming/VariableNumber
+    
