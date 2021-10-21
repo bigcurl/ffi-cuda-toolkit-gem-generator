@@ -9,6 +9,8 @@ GEM
   specs:
     ffi (1.15.4)
     minitest (5.14.4)
+    minitest-debugger (1.0.3)
+      minitest (~> 5.0)
     rake (13.0.6)
 
 PLATFORMS
@@ -17,6 +19,7 @@ PLATFORMS
 DEPENDENCIES
   cuda!
   minitest (~> 5.0)
+  minitest-debugger
   rake (~> 13.0)
 
 BUNDLED WITH
