@@ -22,7 +22,7 @@ class GenerateDriverApi < ApplicationSubcommand
     c_type_typedefs = Parser.parse_typedefs_from_documentation(cuda_docu_path)
 
     # Store everything to disk into the gem folder
-    store_ffi_types_on_disk(c_type_typedefs, c_type_enums, c_type_functions)
+    store_ffi_types_on_disk(cuda_version, c_type_typedefs, c_type_enums, c_type_functions)
 
     @logger.info 'End generate-driver-api subcommand'
   end
@@ -67,7 +67,7 @@ class GenerateDriverApi < ApplicationSubcommand
     converted_types
   end
 
-  def store_ffi_types_on_disk(typedefs, c_type_enums, c_type_functions)
+  def store_ffi_types_on_disk(cuda_version, typedefs, c_type_enums, c_type_functions)
     enums = stringify_enum_types(c_type_enums)
     functions = stringify_function_types(c_type_functions)
     ### Generate enum from template
@@ -145,14 +145,15 @@ class GenerateDriverApi < ApplicationSubcommand
     )
 
     # create module folder
-    FileUtils.mkdir_p File.join('gem', 'cuda', 'lib', 'cuda', 'driver')
+    gem_folder_path = File.join('gem', 'cuda', 'lib', 'cuda', cuda_version, 'driver')
+    FileUtils.mkdir_p gem_folder_path
 
     template = Erubi::Engine.new(wrapper_template).src
 
     br = OpenStruct.new(functions: functions, enums: enums, typedefs: typedefs).instance_eval(template)
 
     file_name = 'wrapper.rb'
-    File.open(File.join('gem', 'cuda', 'lib', 'cuda', 'driver', file_name), 'w') do |file|
+    File.open(File.join(gem_folder_path, file_name), 'w') do |file|
       file.write(br)
     end
   end
