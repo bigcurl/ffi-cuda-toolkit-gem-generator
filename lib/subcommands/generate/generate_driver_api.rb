@@ -1,29 +1,44 @@
 # frozen_string_literal: true
 
 class GenerateDriverApi < ApplicationSubcommand
-  option ['--cuda-version'],
-         'N',
-         'version of cuda to parse',
-         default: '11.5.0'
-
   def execute
     @logger = Logger.new($stdout)
-    @logger.info "Start generate-driver-api subcommand for CUDA version #{cuda_version}"
+    @logger.info 'Start generate-driver-api subcommand'
 
-    cuda_docu_path = File.join(__dir__, "../../../vendor/nvidia/cuda-documentation/#{cuda_version}/cuda-driver-api")
+    cuda_version_path = File.join(__dir__, '..', '..', '..', 'vendor', 'nvidia', 'cuda-documentation')
+    cuda_versions = Dir.entries(cuda_version_path).select do |entry|
+      File.directory? File.join(cuda_version_path, entry) and !['.', '..'].include?(entry)
+    end
 
-    # Parse required html documentation
-    # Parser.parse_unions_from_documentation(cuda_docu_path)
-    # Parser.parse_defines_from_documentation(cuda_docu_path)
-    c_type_defines = Parser.parse_define_from_documentation(cuda_docu_path)
-    c_type_enums = Parser.parse_enums_from_documentation(cuda_docu_path)
+    cuda_versions.each do |cuda_version|
+      @logger.info "Start parsing CUDA version #{cuda_version}"
 
-    # Parser.parse_structs_from_documentation(cuda_docu_path)
-    c_type_functions = Parser.parse_functions_from_documentation(cuda_docu_path)
-    c_type_typedefs = Parser.parse_typedefs_from_documentation(cuda_docu_path)
+      cuda_docu_path = File.join(
+        __dir__,
+        '..',
+        '..',
+        '..',
+        'vendor',
+        'nvidia',
+        'cuda-documentation',
+        cuda_version,
+        'cuda-driver-api'
+      )
 
-    # Store everything to disk into the gem folder
-    store_ffi_types_on_disk(cuda_version, c_type_defines, c_type_typedefs, c_type_enums, c_type_functions)
+      # Parse required html documentation
+      # Parser.parse_unions_from_documentation(cuda_docu_path)
+      # Parser.parse_defines_from_documentation(cuda_docu_path)
+      c_type_defines = Parser.parse_define_from_documentation(cuda_docu_path)
+      c_type_enums = Parser.parse_enums_from_documentation(cuda_docu_path)
+
+      # Parser.parse_structs_from_documentation(cuda_docu_path)
+      c_type_functions = Parser.parse_functions_from_documentation(cuda_docu_path)
+      c_type_typedefs = Parser.parse_typedefs_from_documentation(cuda_docu_path)
+
+      # Store everything to disk into the gem folder
+      store_ffi_types_on_disk(cuda_version, c_type_defines, c_type_typedefs, c_type_enums, c_type_functions)
+      @logger.info "End parsing CUDA version #{cuda_version}"
+    end
 
     @logger.info 'End generate-driver-api subcommand'
   end
@@ -84,6 +99,7 @@ class GenerateDriverApi < ApplicationSubcommand
     wrapper_template = %(
       # rubocop:disable Naming/VariableNumber
       # rubocop:disable Metrics/ModuleLength
+      # rubocop:disable Style/NumericLiterals
 
       module Cuda
         module DriverApi
@@ -146,6 +162,7 @@ class GenerateDriverApi < ApplicationSubcommand
         end
       end
 
+      # rubocop:enable Style/NumericLiterals
       # rubocop:enable Metrics/ModuleLength
       # rubocop:enable Naming/VariableNumber
     )
