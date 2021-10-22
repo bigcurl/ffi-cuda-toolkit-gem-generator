@@ -1,2 +1,0 @@
-I, [2021-10-22T22:06:46.550968 #2724563]  INFO -- : Start generate-driver-api subcommand for CUDA version 11.4.2
-I, [2021-10-22T22:06:47.534337 #2724563]  INFO -- : End generate-driver-api subcommand
