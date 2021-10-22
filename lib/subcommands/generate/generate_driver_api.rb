@@ -134,7 +134,7 @@ class GenerateDriverApi < ApplicationSubcommand
             <% end %>
 
             # DEFINES
-            <% for define in c_defines %>
+            <% for define in defines %>
             <%= define[:name] %> = <%= define[:value] %>
             <% end %>
 
@@ -156,7 +156,12 @@ class GenerateDriverApi < ApplicationSubcommand
 
     template = Erubi::Engine.new(wrapper_template).src
 
-    br = OpenStruct.new(functions: functions, enums: enums, typedefs: typedefs).instance_eval(template)
+    br = OpenStruct.new(
+      functions: functions,
+      enums: enums,
+      typedefs: typedefs,
+      defines: c_defines
+    ).instance_eval(template)
 
     file_name = 'wrapper.rb'
     File.open(File.join(gem_folder_path, file_name), 'w') do |file|

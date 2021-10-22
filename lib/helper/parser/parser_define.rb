@@ -29,4 +29,3 @@ module Parser
     c_type_defines
   end
 end
-
