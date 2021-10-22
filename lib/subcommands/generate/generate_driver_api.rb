@@ -8,13 +8,14 @@ class GenerateDriverApi < ApplicationSubcommand
 
   def execute
     @logger = Logger.new($stdout)
-    @logger.info 'Start generate-driver-api subcommand'
+    @logger.info "Start generate-driver-api subcommand for CUDA version #{cuda_version}"
 
     cuda_docu_path = File.join(__dir__, "../../../vendor/nvidia/cuda-documentation/#{cuda_version}/cuda-driver-api")
 
     # Parse required html documentation
     # Parser.parse_unions_from_documentation(cuda_docu_path)
     # Parser.parse_defines_from_documentation(cuda_docu_path)
+    c_type_defines = Parser.parse_define_from_documentation(cuda_docu_path)
     c_type_enums = Parser.parse_enums_from_documentation(cuda_docu_path)
 
     # Parser.parse_structs_from_documentation(cuda_docu_path)
@@ -22,7 +23,7 @@ class GenerateDriverApi < ApplicationSubcommand
     c_type_typedefs = Parser.parse_typedefs_from_documentation(cuda_docu_path)
 
     # Store everything to disk into the gem folder
-    store_ffi_types_on_disk(cuda_version, c_type_typedefs, c_type_enums, c_type_functions)
+    store_ffi_types_on_disk(cuda_version, c_type_defines, c_type_typedefs, c_type_enums, c_type_functions)
 
     @logger.info 'End generate-driver-api subcommand'
   end
@@ -67,7 +68,7 @@ class GenerateDriverApi < ApplicationSubcommand
     converted_types
   end
 
-  def store_ffi_types_on_disk(cuda_version, typedefs, c_type_enums, c_type_functions)
+  def store_ffi_types_on_disk(cuda_version, c_defines, typedefs, c_type_enums, c_type_functions)
     enums = stringify_enum_types(c_type_enums)
     functions = stringify_function_types(c_type_functions)
     ### Generate enum from template
@@ -130,6 +131,11 @@ class GenerateDriverApi < ApplicationSubcommand
             <% for enum in enums %>
             enum :<%= enum[:enum_name] %>, [<%= enum[:values] %>]
 
+            <% end %>
+
+            # DEFINES
+            <% for define in c_defines %>
+            <%= define[:name] %> = <%= define[:value] %>
             <% end %>
 
             # Functions
