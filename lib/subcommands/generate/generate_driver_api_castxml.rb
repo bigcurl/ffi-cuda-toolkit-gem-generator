@@ -25,26 +25,28 @@ class GenerateDriverApiCastxml < ApplicationSubcommand
         'cuda.h.xml'
       )
 
+      xml_doc = File.open(cuda_header_path) { |f| Nokogiri::XML(f) }
+
       # Parse File
-      file_id = Parser.parse_file_definition(cuda_header_path)
+      file_id = Parser.parse_file_definition(xml_doc)
 
       # Parse Function
-      functions_definition = Parser.parse_functions_definition(cuda_header_path, file_id)
+      functions_definition = Parser.parse_functions_definition(xml_doc, file_id)
 
       # Parse Enum
-      enums_definition = Parser.parse_enums_definition(cuda_header_path, file_id)
+      enums_definition = Parser.parse_enums_definition(xml_doc, file_id)
 
       # Parse Union
-      # unions_definition = Parser.parse_unions_definition(cuda_header_path, file_id)
+      # unions_definition = Parser.parse_unions_definition(xml_doc, file_id)
 
       # Parse Struct
-      # structs_definition = Parser.parse_structs_definition(cuda_header_path, file_id)
+      # structs_definition = Parser.parse_structs_definition(xml_doc, file_id)
 
       # Parse Typedefs
-      typedefs_definition = Parser.parse_typedefs_definition(cuda_header_path, file_id)
+      typedefs_definition = Parser.parse_typedefs_definition(xml_doc, file_id)
 
       # Parse FundamentalTypes
-      fundamental_type_definition = Parser.parse_fundamental_type_definition(cuda_header_path, file_id)
+      fundamental_type_definition = Parser.parse_fundamental_type_definition(xml_doc, file_id)
 
       @logger.info "End parsing CUDA version #{cuda_version}"
     end

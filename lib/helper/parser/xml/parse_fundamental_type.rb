@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
 module Parser
-  def self.parse_fundamental_type_definition(cuda_header_path, _file_id)
+  def self.parse_fundamental_type_definition(xml_doc, _file_id)
     fundamental_types = []
-    # open xml file
-    doc = File.open(cuda_header_path) { |f| Nokogiri::XML(f) }
 
-    doc.xpath('//FundamentalType').each do |fundamental_type|
+    xml_doc.xpath('//FundamentalType').each do |fundamental_type|
       fundamental_types << {
         id: fundamental_type.attr('id'),
         name: fundamental_type.attr('name')
