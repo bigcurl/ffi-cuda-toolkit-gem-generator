@@ -13,17 +13,22 @@ class GenerateDriverApi < ApplicationSubcommand
     cuda_docu_path = File.join(__dir__, "../../../vendor/nvidia/cuda-documentation/#{cuda_version}/cuda-driver-api")
 
     # Parse required html documentation
-    # Parser.parse_unions_from_documentation(cuda_docu_path)
-    # Parser.parse_defines_from_documentation(cuda_docu_path)
+
+    # test = "ASAD21[121]"
+    # te = test.match(/\[[0-9]+\]/)
+    # t = te.to_s
+    # puts t.class
+    # puts t.gsub(/\[/, '').gsub(/\]/, '')
+    # return 0
+
+    c_type_structs = Parser.parse_structs_from_documentation(cuda_docu_path)
     c_type_defines = Parser.parse_define_from_documentation(cuda_docu_path)
     c_type_enums = Parser.parse_enums_from_documentation(cuda_docu_path)
-
-    # Parser.parse_structs_from_documentation(cuda_docu_path)
     c_type_functions = Parser.parse_functions_from_documentation(cuda_docu_path)
     c_type_typedefs = Parser.parse_typedefs_from_documentation(cuda_docu_path)
 
     # Store everything to disk into the gem folder
-    store_ffi_types_on_disk(cuda_version, c_type_defines, c_type_typedefs, c_type_enums, c_type_functions)
+    store_ffi_types_on_disk(cuda_version, c_type_defines, c_type_structs, c_type_typedefs, c_type_enums, c_type_functions)
 
     @logger.info 'End generate-driver-api subcommand'
   end
@@ -68,7 +73,7 @@ class GenerateDriverApi < ApplicationSubcommand
     converted_types
   end
 
-  def store_ffi_types_on_disk(cuda_version, c_defines, typedefs, c_type_enums, c_type_functions)
+  def store_ffi_types_on_disk(cuda_version, c_defines, c_structs, typedefs, c_type_enums, c_type_functions)
     enums = stringify_enum_types(c_type_enums)
     functions = stringify_function_types(c_type_functions)
     ### Generate enum from template
@@ -80,6 +85,11 @@ class GenerateDriverApi < ApplicationSubcommand
     #   ffi_lib 'c'
     #   attach_function :strlen, [:string], :int
     # end
+
+    index = 1
+    count = 2
+    sep = ''
+    sep = ',' if index != count
 
     wrapper_template = %(
       # rubocop:disable Naming/VariableNumber
@@ -133,9 +143,92 @@ class GenerateDriverApi < ApplicationSubcommand
 
             <% end %>
 
+            # Unions and structs
+
+            class StreamMemOpValueStruct_U < FFI::Union
+              layout :value, :cuuint32_t,
+                     :value64, :cuuint64_t
+            end
+
+            class StreamMemOpValue_Struct < FFI::Struct
+              layout :operation, :CUstreamBatchMemOpType,
+                     :address, :CUdeviceptr,
+                     :unionValue, StreamMemOpValueStruct_U,
+                     :flags, :uint,
+                     :alias, :CUdeviceptr
+            end
+
+            class FlushRemoteWrites_Struct < FFI::Struct
+              layout :operation, :CUstreamBatchMemOpType,
+                     :flags, :uint
+            end
+
+            class CUstreamBatchMemOpParams_v1 < FFI::Struct
+              layout :operation, :CUstreamBatchMemOpType,
+                     :waitValue, StreamMemOpValue_Struct,
+                     :writeValue, StreamMemOpValue_Struct,
+                     :flushRemoteWrites, FlushRemoteWrites_Struct,
+                     :pad, [:cuuint64_t, 6]
+            end
+
+            typedef :CUstreamBatchMemOpParams_v1, :CUstreamBatchMemOpParams
+
+            class CUkernelNodeAttrValue_v1 < FFI::Union
+              layout :accessPolicyWindow, :CUaccessPolicyWindow,
+                     :cooperative, :int
+            end
+            typedef :CUkernelNodeAttrValue_v1, :CUkernelNodeAttrValue
+
+            class CUkernelNodeAttrValue_v1 < FFI::Union
+              layout :accessPolicyWindow, :CUaccessPolicyWindow,
+                     :cooperative, :int
+            end
+            typedef :CUkernelNodeAttrValue_v1, :CUkernelNodeAttrValue
+
             # DEFINES
             <% for define in c_defines %>
             <%= define[:name] %> = <%= define[:value] %>
+            <% end %>
+
+            # Structs
+            <% for struct in c_structs %>
+              <% struct_name = struct[:name] %>
+              class <%= struct_name %> < FFI::Struct
+                <% unless struct[:members].empty? %>
+                  <% sep = ',' if struct[:members].count > 1 %>
+                  <% name = struct[:members][0][:name] %>
+                  <% type = struct[:members][0][:type] %>
+                  <% if name.include?('[') && name.include?(']') %>
+                    <% size_match = name.match(/\\[[0-9]+\\]/).to_s %>
+                    <% size = size_match.to_s.gsub(/\\[/, '').gsub(/\\]/, '') %>
+                    <% name = name.gsub(/\\[[0-9]+\\]/, '') %>
+                    layout :<%= name %>, [:<%= type %>, <%= size %>]<%= ',' if struct[:members].count > 1 %>
+                  <% else %>
+                    layout :<%= name %>, :<%= type %><%= ',' if struct[:members].count > 1 %>
+                  <% end %>
+                  <% index = 1 %>
+                  <% count = struct[:members].count %>
+                  <% for member in struct[:members] %>
+                    <% if index == 1 %>
+                      <% index += 1 %>
+                      <% next %>
+                    <% end %>
+                    <% name = member[:name] %>
+                    <% type = member[:type] %>
+                    <% if name.include?('[') && name.include?(']') %>
+                      <% size_match = name.match(/\\[[0-9]+\\]/).to_s %>
+                      <% size = size_match.gsub(/\\[/, '').gsub(/\\]/, '') %>
+                      <% name = name.gsub(/\\[[0-9]+\\]/, '') %>
+                      :<%= name %>, [:<%= type %>, <%= size %>]<%= ',' if index != count %>
+                    <% else %>
+                      :<%= name %>, :<%= type %><%= ',' if index != count %>
+                    <% end %>
+                    <% index += 1 %>
+                  <% end %>
+                <% end %>
+              end
+              <% new_struct_name = struct_name.split('_v') %>
+              typedef :<%= struct_name %>, :<%= new_struct_name[0] %>
             <% end %>
 
             # Functions

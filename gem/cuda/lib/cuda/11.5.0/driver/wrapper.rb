@@ -827,6 +827,50 @@ module Cuda
 
     enum :CUuserObjectRetain_flags, [:CU_GRAPH_USER_OBJECT_MOVE, 1]
 
+    # Unions and structs
+
+    class StreamMemOpValueStruct_U < FFI::Union
+      layout :value, :cuuint32_t,
+             :value64, :cuuint64_t
+    end
+
+    class StreamMemOpValue_Struct < FFI::Struct
+      layout :operation, :CUstreamBatchMemOpType,
+             :address, :CUdeviceptr,
+             :unionValue, StreamMemOpValueStruct_U,
+             :flags, :uint,
+             :alias, :CUdeviceptr
+    end
+
+    class FlushRemoteWrites_Struct < FFI::Struct
+      layout :operation, :CUstreamBatchMemOpType,
+             :flags, :uint
+    end
+
+    class CUstreamBatchMemOpParams_v1 < FFI::Struct
+      layout :operation, :CUstreamBatchMemOpType,
+             :waitValue, StreamMemOpValue_Struct,
+             :writeValue, StreamMemOpValue_Struct,
+             :flushRemoteWrites, FlushRemoteWrites_Struct,
+             :pad, [:cuuint64_t, 6]
+    end
+
+    typedef :CUstreamBatchMemOpParams_v1, :CUstreamBatchMemOpParams
+
+    class CUkernelNodeAttrValue_v1 < FFI::Union
+      layout :accessPolicyWindow, :CUaccessPolicyWindow,
+             :cooperative, :int
+    end
+
+    typedef :CUkernelNodeAttrValue_v1, :CUkernelNodeAttrValue
+
+    class CUkernelNodeAttrValue_v1 < FFI::Union
+      layout :accessPolicyWindow, :CUaccessPolicyWindow,
+             :cooperative, :int
+    end
+
+    typedef :CUkernelNodeAttrValue_v1, :CUkernelNodeAttrValue
+
     # DEFINES
     CUDA_ARRAY3D_2DARRAY = 0x01
     CUDA_ARRAY3D_COLOR_ATTACHMENT = 0x20
@@ -869,6 +913,385 @@ module Cuda
     CU_TRSF_READ_AS_INTEGER = 0x01
     CU_TRSF_SRGB = 0x10
     MAX_PLANES = 3
+
+    # Structs
+    class CUDA_ARRAY3D_DESCRIPTOR_v2 < FFI::Struct
+      layout :Depth, :size_t,
+             :Flags, :uint,
+             :Format, :CUarray_format,
+             :Height, :size_t,
+             :NumChannels, :uint,
+             :Width, :size_t
+    end
+
+    typedef :CUDA_ARRAY3D_DESCRIPTOR_v2, :CUDA_ARRAY3D_DESCRIPTOR
+
+    class CUDA_ARRAY_DESCRIPTOR_v2 < FFI::Struct
+      layout :Format, :CUarray_format,
+             :Height, :size_t,
+             :NumChannels, :uint,
+             :Width, :size_t
+    end
+
+    typedef :CUDA_ARRAY_DESCRIPTOR_v2, :CUDA_ARRAY_DESCRIPTOR
+
+    class CUDA_ARRAY_SPARSE_PROPERTIES_v1 < FFI::Struct
+      layout :depth, :uint,
+             :flags, :uint,
+             :height, :uint,
+             :miptailFirstLevel, :uint,
+             :miptailSize, :ulong_long,
+             :width, :uint
+    end
+
+    typedef :CUDA_ARRAY_SPARSE_PROPERTIES_v1, :CUDA_ARRAY_SPARSE_PROPERTIES
+
+    class CUDA_EXTERNAL_MEMORY_BUFFER_DESC_v1 < FFI::Struct
+      layout :flags, :uint,
+             :offset, :ulong_long,
+             :size, :ulong_long
+    end
+
+    typedef :CUDA_EXTERNAL_MEMORY_BUFFER_DESC_v1, :CUDA_EXTERNAL_MEMORY_BUFFER_DESC
+
+    class CUDA_EXTERNAL_MEMORY_HANDLE_DESC_v1 < FFI::Struct
+      layout :fd, :int,
+             :flags, :uint,
+             :handle, :pointer,
+             :name, :pointer,
+             :nvSciBufObject, :pointer,
+             :size, :ulong_long,
+             :type, :CUexternalMemoryHandleType
+    end
+
+    typedef :CUDA_EXTERNAL_MEMORY_HANDLE_DESC_v1, :CUDA_EXTERNAL_MEMORY_HANDLE_DESC
+
+    class CUDA_EXTERNAL_MEMORY_MIPMAPPED_ARRAY_DESC_v1 < FFI::Struct
+      layout :arrayDesc, :structCUDA_ARRAY3D_DESCRIPTOR,
+             :numLevels, :uint,
+             :offset, :ulong_long
+    end
+
+    typedef :CUDA_EXTERNAL_MEMORY_MIPMAPPED_ARRAY_DESC_v1, :CUDA_EXTERNAL_MEMORY_MIPMAPPED_ARRAY_DESC
+
+    class CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC_v1 < FFI::Struct
+      layout :fd, :int,
+             :flags, :uint,
+             :handle, :pointer,
+             :name, :pointer,
+             :nvSciSyncObj, :pointer,
+             :type, :CUexternalSemaphoreHandleType
+    end
+
+    typedef :CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC_v1, :CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC
+
+    class CUDA_EXTERNAL_SEMAPHORE_SIGNAL_PARAMS_v1 < FFI::Struct
+      layout :fence, :pointer
+    end
+
+    typedef :CUDA_EXTERNAL_SEMAPHORE_SIGNAL_PARAMS_v1, :CUDA_EXTERNAL_SEMAPHORE_SIGNAL_PARAMS
+
+    class CUDA_EXT_SEM_SIGNAL_NODE_PARAMS_v1 < FFI::Struct
+      layout :extSemArray, :pointer,
+             :numExtSems, :uint,
+             :paramsArray, :pointer
+    end
+
+    typedef :CUDA_EXT_SEM_SIGNAL_NODE_PARAMS_v1, :CUDA_EXT_SEM_SIGNAL_NODE_PARAMS
+
+    class CUDA_EXT_SEM_WAIT_NODE_PARAMS_v1 < FFI::Struct
+      layout :extSemArray, :pointer,
+             :numExtSems, :uint,
+             :paramsArray, :pointer
+    end
+
+    typedef :CUDA_EXT_SEM_WAIT_NODE_PARAMS_v1, :CUDA_EXT_SEM_WAIT_NODE_PARAMS
+
+    class CUDA_HOST_NODE_PARAMS_v1 < FFI::Struct
+      layout :fn, :CUhostFn,
+             :userData, :pointer
+    end
+
+    typedef :CUDA_HOST_NODE_PARAMS_v1, :CUDA_HOST_NODE_PARAMS
+
+    class CUDA_KERNEL_NODE_PARAMS_v1 < FFI::Struct
+      layout :blockDimX, :uint,
+             :blockDimY, :uint,
+             :blockDimZ, :uint,
+             :extra, :pointer,
+             :func, :CUfunction,
+             :gridDimX, :uint,
+             :gridDimY, :uint,
+             :gridDimZ, :uint,
+             :kernelParams, :pointer,
+             :sharedMemBytes, :uint
+    end
+
+    typedef :CUDA_KERNEL_NODE_PARAMS_v1, :CUDA_KERNEL_NODE_PARAMS
+
+    class CUDA_LAUNCH_PARAMS_v1 < FFI::Struct
+      layout :blockDimX, :uint,
+             :blockDimY, :uint,
+             :blockDimZ, :uint,
+             :function, :CUfunction,
+             :gridDimX, :uint,
+             :gridDimY, :uint,
+             :gridDimZ, :uint,
+             :hStream, :CUstream,
+             :kernelParams, :pointer,
+             :sharedMemBytes, :uint
+    end
+
+    typedef :CUDA_LAUNCH_PARAMS_v1, :CUDA_LAUNCH_PARAMS
+
+    class CUDA_MEMCPY2D_v2 < FFI::Struct
+      layout :Height, :size_t,
+             :WidthInBytes, :size_t,
+             :dstArray, :CUarray,
+             :dstDevice, :CUdeviceptr,
+             :dstHost, :pointer,
+             :dstMemoryType, :CUmemorytype,
+             :dstPitch, :size_t,
+             :dstXInBytes, :size_t,
+             :dstY, :size_t,
+             :srcArray, :CUarray,
+             :srcDevice, :CUdeviceptr,
+             :srcHost, :pointer,
+             :srcMemoryType, :CUmemorytype,
+             :srcPitch, :size_t,
+             :srcXInBytes, :size_t,
+             :srcY, :size_t
+    end
+
+    typedef :CUDA_MEMCPY2D_v2, :CUDA_MEMCPY2D
+
+    class CUDA_MEMCPY3D_PEER_v1 < FFI::Struct
+      layout :Depth, :size_t,
+             :Height, :size_t,
+             :WidthInBytes, :size_t,
+             :dstArray, :CUarray,
+             :dstContext, :CUcontext,
+             :dstDevice, :CUdeviceptr,
+             :dstHeight, :size_t,
+             :dstHost, :pointer,
+             :dstLOD, :size_t,
+             :dstMemoryType, :CUmemorytype,
+             :dstPitch, :size_t,
+             :dstXInBytes, :size_t,
+             :dstY, :size_t,
+             :dstZ, :size_t,
+             :srcArray, :CUarray,
+             :srcContext, :CUcontext,
+             :srcDevice, :CUdeviceptr,
+             :srcHeight, :size_t,
+             :srcHost, :pointer,
+             :srcLOD, :size_t,
+             :srcMemoryType, :CUmemorytype,
+             :srcPitch, :size_t,
+             :srcXInBytes, :size_t,
+             :srcY, :size_t,
+             :srcZ, :size_t
+    end
+
+    typedef :CUDA_MEMCPY3D_PEER_v1, :CUDA_MEMCPY3D_PEER
+
+    class CUDA_MEMCPY3D_v2 < FFI::Struct
+      layout :Depth, :size_t,
+             :Height, :size_t,
+             :WidthInBytes, :size_t,
+             :dstArray, :CUarray,
+             :dstDevice, :CUdeviceptr,
+             :dstHeight, :size_t,
+             :dstHost, :pointer,
+             :dstLOD, :size_t,
+             :dstMemoryType, :CUmemorytype,
+             :dstPitch, :size_t,
+             :dstXInBytes, :size_t,
+             :dstY, :size_t,
+             :dstZ, :size_t,
+             :reserved0, :pointer,
+             :reserved1, :pointer,
+             :srcArray, :CUarray,
+             :srcDevice, :CUdeviceptr,
+             :srcHeight, :size_t,
+             :srcHost, :pointer,
+             :srcLOD, :size_t,
+             :srcMemoryType, :CUmemorytype,
+             :srcPitch, :size_t,
+             :srcXInBytes, :size_t,
+             :srcY, :size_t,
+             :srcZ, :size_t
+    end
+
+    typedef :CUDA_MEMCPY3D_v2, :CUDA_MEMCPY3D
+
+    class CUDA_MEMSET_NODE_PARAMS_v1 < FFI::Struct
+      layout :dst, :CUdeviceptr,
+             :elementSize, :uint,
+             :height, :size_t,
+             :pitch, :size_t,
+             :value, :uint,
+             :width, :size_t
+    end
+
+    typedef :CUDA_MEMSET_NODE_PARAMS_v1, :CUDA_MEMSET_NODE_PARAMS
+
+    class CUDA_MEM_ALLOC_NODE_PARAMS < FFI::Struct
+      layout :accessDescCount, :size_t,
+             :accessDescs, :pointer,
+             :bytesize, :size_t,
+             :dptr, :CUdeviceptr,
+             :poolProps, :structCUmemPoolProps
+    end
+
+    typedef :CUDA_MEM_ALLOC_NODE_PARAMS, :CUDA_MEM_ALLOC_NODE_PARAMS
+
+    class CUDA_RESOURCE_DESC_v1 < FFI::Struct
+      layout :devPtr, :CUdeviceptr,
+             :flags, :uint,
+             :format, :CUarray_format,
+             :hArray, :CUarray,
+             :hMipmappedArray, :CUmipmappedArray,
+             :height, :size_t,
+             :numChannels, :uint,
+             :pitchInBytes, :size_t,
+             :resType, :CUresourcetype,
+             :sizeInBytes, :size_t,
+             :width, :size_t
+    end
+
+    typedef :CUDA_RESOURCE_DESC_v1, :CUDA_RESOURCE_DESC
+
+    class CUDA_RESOURCE_VIEW_DESC_v1 < FFI::Struct
+      layout :depth, :size_t,
+             :firstLayer, :uint,
+             :firstMipmapLevel, :uint,
+             :format, :CUresourceViewFormat,
+             :height, :size_t,
+             :lastLayer, :uint,
+             :lastMipmapLevel, :uint,
+             :width, :size_t
+    end
+
+    typedef :CUDA_RESOURCE_VIEW_DESC_v1, :CUDA_RESOURCE_VIEW_DESC
+
+    class CUDA_TEXTURE_DESC_v1 < FFI::Struct
+      layout :addressMode, [:CUaddress_mode, 3],
+             :borderColor, [:float, 4],
+             :filterMode, :CUfilter_mode,
+             :flags, :uint,
+             :maxAnisotropy, :uint,
+             :maxMipmapLevelClamp, :float,
+             :minMipmapLevelClamp, :float,
+             :mipmapFilterMode, :CUfilter_mode,
+             :mipmapLevelBias, :float
+    end
+
+    typedef :CUDA_TEXTURE_DESC_v1, :CUDA_TEXTURE_DESC
+
+    class CUaccessPolicyWindow_v1 < FFI::Struct
+      layout :base_ptr, :pointer,
+             :hitProp, :CUaccessProperty,
+             :hitRatio, :float,
+             :missProp, :CUaccessProperty,
+             :num_bytes, :size_t
+    end
+
+    typedef :CUaccessPolicyWindow_v1, :CUaccessPolicyWindow
+
+    class CUarrayMapInfo_v1 < FFI::Struct
+      layout :deviceBitMask, :uint,
+             :extentDepth, :uint,
+             :extentHeight, :uint,
+             :extentWidth, :uint,
+             :flags, :uint,
+             :layer, :uint,
+             :level, :uint,
+             :memHandleType, :CUmemHandleType,
+             :memOperationType, :CUmemOperationType,
+             :offset, :ulong_long,
+             :offsetX, :uint,
+             :offsetY, :uint,
+             :offsetZ, :uint,
+             :reserved, [:uint, 2],
+             :resourceType, :CUresourcetype,
+             :size, :ulong_long,
+             :subresourceType, :CUarraySparseSubresourceType
+    end
+
+    typedef :CUarrayMapInfo_v1, :CUarrayMapInfo
+
+    class CUdevprop_v1 < FFI::Struct
+      layout :SIMDWidth, :int,
+             :clockRate, :int,
+             :maxGridSize, [:int, 3],
+             :maxThreadsDim, [:int, 3],
+             :maxThreadsPerBlock, :int,
+             :memPitch, :int,
+             :regsPerBlock, :int,
+             :sharedMemPerBlock, :int,
+             :textureAlign, :int,
+             :totalConstantMemory, :int
+    end
+
+    typedef :CUdevprop_v1, :CUdevprop
+
+    class CUeglFrame_v1 < FFI::Struct
+      layout :cuFormat, :CUarray_format,
+             :depth, :uint,
+             :eglColorFormat, :CUeglColorFormat,
+             :frameType, :CUeglFrameType,
+             :height, :uint,
+             :numChannels, :uint,
+             :pArray[MAX_PLANES], [:CUarray,],
+             :pPitch, :pointer,
+             :pitch, :uint,
+             :planeCount, :uint,
+             :width, :uint
+    end
+
+    typedef :CUeglFrame_v1, :CUeglFrame
+
+    class CUexecAffinitySmCount_v1 < FFI::Struct
+      layout :val, :uint
+    end
+
+    typedef :CUexecAffinitySmCount_v1, :CUexecAffinitySmCount
+
+    class CUmemAccessDesc_v1 < FFI::Struct
+      layout :flags, :CUmemAccess_flags,
+             :location, :structCUmemLocation
+    end
+
+    typedef :CUmemAccessDesc_v1, :CUmemAccessDesc
+
+    class CUmemAllocationProp_v1 < FFI::Struct
+      layout :compressionType, :unsignedchar,
+             :location, :structCUmemLocation,
+             :requestedHandleTypes, :CUmemAllocationHandleType,
+             :type, :CUmemAllocationType,
+             :usage, :unsignedshort,
+             :win32HandleMetaData, :pointer
+    end
+
+    typedef :CUmemAllocationProp_v1, :CUmemAllocationProp
+
+    class CUmemLocation_v1 < FFI::Struct
+      layout :id, :int,
+             :type, :CUmemLocationType
+    end
+
+    typedef :CUmemLocation_v1, :CUmemLocation
+
+    class CUmemPoolProps_v1 < FFI::Struct
+      layout :allocType, :CUmemAllocationType,
+             :handleTypes, :CUmemAllocationHandleType,
+             :location, :structCUmemLocation,
+             :reserved, [:unsignedchar, 64],
+             :win32SecurityAttributes, :pointer
+    end
+
+    typedef :CUmemPoolProps_v1, :CUmemPoolProps
 
     # Functions
 

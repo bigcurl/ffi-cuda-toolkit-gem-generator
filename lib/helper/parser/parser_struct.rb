@@ -1,27 +1,68 @@
 # frozen_string_literal: true
 
 module Parser
-  # def parse_structs_from_documentation(cuda_docu_path)
-  #   struct_html_pages_paths = Dir[File.join(cuda_docu_path, 'struct*')].sort
-  #   struct_html_pages_paths.reject! { |name| name.include? 'group__CUDA__TYPES.html' }
+  def self.parse_structs_from_documentation(cuda_docu_path)
+    struct_html_pages_paths = Dir[File.join(cuda_docu_path, 'struct*')].sort
+    struct_html_pages_paths.reject! { |name| name.include? 'group__CUDA__TYPES.html' }
 
-  #   c_type_structs = parse_struct_html_pages(struct_html_pages_paths)
-  #   ffi_type_structs = transform_struct_c_types_into_ffi_types(c_type_structs)
-  #   store_ffi_type_structs_on_disk(ffi_type_structs)
-  # end
+    parse_struct_html_pages(struct_html_pages_paths)
+    # ffi_type_structs = transform_struct_c_types_into_ffi_types(c_type_structs)
+    # store_ffi_type_structs_on_disk(ffi_type_structs)
+  end
 
-  # def parse_struct_html_pages(struct_html_pages_paths)
-  #   c_type_structs = []
-  #   struct_html_pages_paths.each do |struct_html_pages_path|
-  #     struct_name = ''
-  #     layout = []
+  def self.parse_struct_html_pages(struct_html_pages_paths)
+    c_type_structs = []
+    struct_html_pages_paths.each do |struct_html_pages_path|
+      struct_name = ''
+      variable_list = []
+      track = 1
 
-  #     doc = File.open(struct_html_pages_path) { |f| Nokogiri::HTML(f) }
-  #     doc.css('.description span').each do |description|
-  #       # "size_t  CUDA_ARRAY3D_DESCRIPTOR_v2::Height [inherited] "
-  #       case description.elements.count
-  #       when 3
-  #         return_type = description.elements[0].text.strip.split('\n').join(' ')
+      doc = File.open(struct_html_pages_path) { |f| Nokogiri::HTML(f) }
+
+      # Get struct name
+      doc.css('.topictitle2').each do |struct_description|
+        next unless struct_description.text.include? 'Struct'
+
+        list = struct_description.text.strip.gsub(/[[:space:]]/, ' ').split(' ')
+        unless list.empty?
+          struct_name = list[1]
+          break
+        end
+      end
+
+      # Get list of struct variables
+      temp_type = ''
+      doc.css('.members dt span').each do |description|
+        parsed = description.text.strip.gsub(/[[:space:]]/, ' ').gsub(/ +/, ' ').strip
+        if track.even?
+          next if temp_type.empty?
+
+          temp_type = case temp_type
+                      when 'unsigned int'
+                        'uint'
+                      when 'unsigned long long'
+                        'ulong_long'
+                      when 'void **', 'void *', 'const void *'
+                        'pointer'
+                      else
+                        temp_type.gsub(/[[:space:]]/, '').gsub(' ', '').strip
+                      end
+          temp_type = 'pointer' if temp_type.include?('**') || temp_type.include?('*')
+          variable_list << { name: parsed, type: temp_type }
+          temp_type = ''
+        else
+          temp_type = parsed unless parsed.include? '::'
+        end
+        track += 1
+      end
+
+      c_type_structs << { name: struct_name, members: variable_list } unless variable_list.empty?
+    end
+
+        # "size_t  CUDA_ARRAY3D_DESCRIPTOR_v2::Height [inherited] "
+        # case description.elements.count
+        # when 3
+        #   return_type = description.elements[0].text.strip.split('\n').join(' ')
   #         struct_name = description.elements[1].text.strip
   #         function_name = description.elements[2].text.strip
   #       when 2
@@ -48,8 +89,8 @@ module Parser
 
   #     c_type_structs << { struct_name: struct_name, layout: layout } unless layout.empty?
   #   end
-  #   c_type_structs
-  # end
+    c_type_structs
+  end
 
   # def transform_struct_c_types_into_ffi_types(c_type_structs)
   #   ffi_type_structs = []
