@@ -5,14 +5,17 @@ module Parser
     typedefs = []
 
     xml_doc.xpath("//Typedef[@file='#{file_id}']").each do |typedef|
+      type_id = typedef.attr('type')
+      type_name = xml_doc.at_xpath("//*[@id='#{type_id}']").attr('name')
+
       typedefs << {
         id: typedef.attr('id'),
         name: typedef.attr('name'),
-        type_id: typedef.attr('type')
+        type_id: type_id,
+        type_name: type_name
       }
     end
-    Parser.replace_fundamental_types(typedefs)
-  end
 
-  def self.replace_fundamental_types(typedefs); end
+    typedefs
+  end
 end
