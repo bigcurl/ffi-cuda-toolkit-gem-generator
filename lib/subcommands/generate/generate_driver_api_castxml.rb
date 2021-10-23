@@ -130,11 +130,11 @@ class GenerateDriverApiCastxml < ApplicationSubcommand
       end
       c_type_enum[:values_string] = values.join(",\n")
     end
-    debugger
+
     c_type_enums
   end
 
-  def stringify_function_types(functions)
+  def stringify_function_types(functargsions)
       functions.each do |ffi_type_function|
         args_string = ffi_type_function[:arguments].map do |x|
           target = :pointer if x[:type].include? '*'

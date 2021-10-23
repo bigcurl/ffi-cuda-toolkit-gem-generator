@@ -10,17 +10,19 @@ module Parser
 
         type_element = xml_doc.at_xpath("//*[@id='#{type_id}']")
         type_name = case type_element.name
-                               when 'PointerType'
-                                type = nil
-                                type_element_n = type_element
-                                while type.nil?
-                                  type_element_n = xml_doc.at_xpath("//*[@id='#{type_element_n.attr('type')}']") 
-                                  type = type_element_n.attr('name') if type_element_n.name == 'FundamentalType' || type_element_n.name == 'Typedef'
-                                end
-                                type
-                               when 'Typedef', 'FundamentalType'
-                                 type_element.attr('name')
-                               end
+                    when 'PointerType'
+                      type = nil
+                      type_element_n = type_element
+                      while type.nil?
+                        type_element_n = xml_doc.at_xpath("//*[@id='#{type_element_n.attr('type')}']")
+                        if type_element_n.name == 'FundamentalType' || type_element_n.name == 'Typedef'
+                          type = type_element_n.attr('name')
+                        end
+                      end
+                      type
+                    when 'Typedef', 'FundamentalType'
+                      type_element.attr('name')
+                    end
 
         {
           name: arg.attr('name'),
