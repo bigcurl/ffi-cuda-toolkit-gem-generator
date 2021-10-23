@@ -31,7 +31,7 @@ module Parser
                  when 'short int'
                    :short
                  when 'void'
-                   :void
+                   :pointer
                  when 'char'
                    :char
                  when 'unsigned char'

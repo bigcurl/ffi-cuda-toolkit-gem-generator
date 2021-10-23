@@ -49,7 +49,8 @@ class GenerateDriverApiCastxml < ApplicationSubcommand
       # structs_definition = Parser.parse_structs_definition(xml_doc, file_id)
 
       # Store on disk
-      store_definitions_on_disk(cuda_version, functions_definition, enums_definition, fundamental_type_definition, typedefs_definition)
+      store_definitions_on_disk(cuda_version, functions_definition, enums_definition, fundamental_type_definition,
+                                typedefs_definition)
 
       @logger.info "End parsing CUDA version #{cuda_version}"
     end
@@ -57,8 +58,7 @@ class GenerateDriverApiCastxml < ApplicationSubcommand
     @logger.info 'End generate-driver-api subcommand'
   end
 
-  def store_definitions_on_disk(cuda_version, functions, enums, fundamental_type, typedefs)
-
+  def store_definitions_on_disk(cuda_version, functions, enums, fundamental_types, typedefs)
     wrapper_template = %(
       # rubocop:disable Naming/VariableNumber
       # rubocop:disable Metrics/ModuleLength
@@ -73,22 +73,18 @@ class GenerateDriverApiCastxml < ApplicationSubcommand
             ffi_lib binary_path
 
             # Typedefs
-            <% for types in fundament_types %>
-            typedef :<%= types[:type_name] %>, :<%= typedef[:name] %>
-            <% end %>
-
-            <% for typedef in typedefs %>
-            typedef :<%= typedef[:type_name] %>, :<%= typedef[:name] %>
+            <% for type in fundamental_types %>
+            typedef :<%= type[:type_name] %>, :<%= type[:name].gsub(' ', '_') %>
             <% end %>
 
             # Enums
             <% for enum in enums %>
-            enum :<%= enum[:enum_name] %>, [<%= enum[:values_string] %>]
+            enum :<%= enum[:name] %>, [<%= enum[:values_string] %>]
             <% end %>
 
             # Functions
             <% for function in functions %>
-            attach_function :<%= function[:name] %>, [<%= function[:args] %>], :<%= function[:return_type] %>
+            attach_function :<%= function[:name] %>, [<%= function[:arguments_string] %>], :<%= function[:return_type_name] %>
             <% end %>
         end
       end
@@ -106,7 +102,7 @@ class GenerateDriverApiCastxml < ApplicationSubcommand
 
     enums = stringify_enum_types(enums)
     functions = stringify_function_types(functions)
- 
+
     br = OpenStruct.new(
       fundamental_types: fundamental_types,
       functions: functions,
@@ -134,15 +130,14 @@ class GenerateDriverApiCastxml < ApplicationSubcommand
     c_type_enums
   end
 
-  def stringify_function_types(functargsions)
-      functions.each do |ffi_type_function|
-        args_string = ffi_type_function[:arguments].map do |x|
-          target = :pointer if x[:type].include? '*'
-          target = x[:type].gsub(' ', '_').to_sym if target.nil?
-          ":#{target}" # colon in string is an ugly way to get sym but works
-        end
-        ffi_type_function[:arguments_string] = args_string.join(', ')
+  def stringify_function_types(functions)
+    functions.each do |ffi_type_function|
+      args_string = ffi_type_function[:arguments].map do |x|
+        arg = ":#{x[:type_name].gsub(' ', '_')}" # colon in string is an ugly way to get sym but works
+        arg = ':pointer' if arg.include? 'void'
+        arg
       end
+      ffi_type_function[:arguments_string] = args_string.join(', ')
     end
     functions
   end
