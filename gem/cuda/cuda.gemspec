@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
-require_relative "lib/cuda/version"
+require_relative 'lib/cuda/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "cuda"
+  spec.name          = 'cuda'
   spec.version       = Cuda::VERSION
-  spec.authors       = ["Dr. Samuel Goebert"]
-  spec.email         = ["samuel.goebert@bigcurl.de"]
+  spec.authors       = ['Dr. Samuel Goebert']
+  spec.email         = ['samuel.goebert@bigcurl.de']
 
-  spec.summary       = "FFI wrapper for the NVIDIA Cuda Toolkit"
-  spec.homepage      = "https://github.com/bigcurl/ffi-cuda-toolkit-gem-generator"
-  spec.license       = "MIT"
-  spec.required_ruby_version = ">= 2.6.0"
+  spec.summary       = 'FFI wrapper for the NVIDIA Cuda Toolkit'
+  spec.homepage      = 'https://github.com/bigcurl/ffi-cuda-toolkit-gem-generator'
+  spec.license       = 'MIT'
+  spec.required_ruby_version = '>= 2.6.0'
 
-  spec.metadata["homepage_uri"] = spec.homepage
+  spec.metadata['homepage_uri'] = spec.homepage
   # spec.metadata["source_code_uri"] = "TODO: Put your gem's public repo URL here."
   # spec.metadata["changelog_uri"] = "TODO: Put your gem's CHANGELOG.md URL here."
 
@@ -25,9 +25,9 @@ Gem::Specification.new do |spec|
     end
   end
 
-  spec.bindir        = "exe"
+  spec.bindir        = 'exe'
   spec.executables   = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
-  spec.require_paths = ["lib"]
+  spec.require_paths = ['lib']
 
-  spec.add_dependency "ffi", "~> 1.15.4"
+  spec.add_dependency 'ffi', '~> 1.15.4'
 end

@@ -7,12 +7,14 @@
 module Cuda
   module DriverApi
     extend FFI::Library
-    binary_list = `whereis -b libcuda`.strip.split("libcuda: ")
-    binary_path = "/usr/lib/x86_64-linux-gnu/libcuda.so"
+    binary_list = `whereis -b libcuda`.strip.split('libcuda: ')
+    binary_path = '/usr/lib/x86_64-linux-gnu/libcuda.so'
     binary_path = binary_list[1] unless binary_list[1].nil?
     ffi_lib binary_path
 
-    # Typedefs
+    # TODO: Missing Unions, Structs, FunctionTypes
+
+    # Fundamental Typedefs
     typedef :ulong_long, :long_unsigned_int
     typedef :int, :int
     typedef :float, :float
@@ -27,6 +29,187 @@ module Cuda
     typedef :short, :short_int
     typedef :pointer, :void
     typedef :char, :char
+
+    # Typedefs
+    typedef :uint32_t, :cuuint32_t
+    typedef :uint64_t, :cuuint64_t
+    typedef :long_long_unsigned_int, :CUdeviceptr_v2
+    typedef :CUdeviceptr_v2, :CUdeviceptr
+    typedef :int, :CUdevice_v1
+    typedef :CUdevice_v1, :CUdevice
+    typedef :CUctx_st, :CUcontext
+    typedef :CUmod_st, :CUmodule
+    typedef :CUfunc_st, :CUfunction
+    typedef :CUarray_st, :CUarray
+    typedef :CUmipmappedArray_st, :CUmipmappedArray
+    typedef :CUtexref_st, :CUtexref
+    typedef :CUsurfref_st, :CUsurfref
+    typedef :CUevent_st, :CUevent
+    typedef :CUstream_st, :CUstream
+    typedef :CUgraphicsResource_st, :CUgraphicsResource
+    typedef :long_long_unsigned_int, :CUtexObject_v1
+    typedef :CUtexObject_v1, :CUtexObject
+    typedef :long_long_unsigned_int, :CUsurfObject_v1
+    typedef :CUsurfObject_v1, :CUsurfObject
+    typedef :CUextMemory_st, :CUexternalMemory
+    typedef :CUextSemaphore_st, :CUexternalSemaphore
+    typedef :CUgraph_st, :CUgraph
+    typedef :CUgraphNode_st, :CUgraphNode
+    typedef :CUgraphExec_st, :CUgraphExec
+    typedef :CUmemPoolHandle_st, :CUmemoryPool
+    typedef :CUuserObject_st, :CUuserObject
+    typedef :CUuuid_st, :CUuuid
+    typedef :CUipcEventHandle_st, :CUipcEventHandle_v1
+    typedef :CUipcEventHandle_v1, :CUipcEventHandle
+    typedef :CUipcMemHandle_st, :CUipcMemHandle_v1
+    typedef :CUipcMemHandle_v1, :CUipcMemHandle
+    typedef :CUipcMem_flags_enum, :CUipcMem_flags
+    typedef :CUmemAttach_flags_enum, :CUmemAttach_flags
+    typedef :CUctx_flags_enum, :CUctx_flags
+    typedef :CUstream_flags_enum, :CUstream_flags
+    typedef :CUevent_flags_enum, :CUevent_flags
+    typedef :CUevent_record_flags_enum, :CUevent_record_flags
+    typedef :CUevent_wait_flags_enum, :CUevent_wait_flags
+    typedef :CUstreamWaitValue_flags_enum, :CUstreamWaitValue_flags
+    typedef :CUstreamWriteValue_flags_enum, :CUstreamWriteValue_flags
+    typedef :CUstreamBatchMemOpType_enum, :CUstreamBatchMemOpType
+    typedef :CUstreamBatchMemOpParams_union, :CUstreamBatchMemOpParams_v1
+    typedef :CUstreamBatchMemOpParams_v1, :CUstreamBatchMemOpParams
+    typedef :CUoccupancy_flags_enum, :CUoccupancy_flags
+    typedef :CUstreamUpdateCaptureDependencies_flags_enum, :CUstreamUpdateCaptureDependencies_flags
+    typedef :CUarray_format_enum, :CUarray_format
+    typedef :CUaddress_mode_enum, :CUaddress_mode
+    typedef :CUfilter_mode_enum, :CUfilter_mode
+    typedef :CUdevice_attribute_enum, :CUdevice_attribute
+    typedef :CUdevprop_st, :CUdevprop_v1
+    typedef :CUdevprop_v1, :CUdevprop
+    typedef :CUpointer_attribute_enum, :CUpointer_attribute
+    typedef :CUfunction_attribute_enum, :CUfunction_attribute
+    typedef :CUfunc_cache_enum, :CUfunc_cache
+    typedef :CUsharedconfig_enum, :CUsharedconfig
+    typedef :CUshared_carveout_enum, :CUshared_carveout
+    typedef :CUmemorytype_enum, :CUmemorytype
+    typedef :CUcomputemode_enum, :CUcomputemode
+    typedef :CUmem_advise_enum, :CUmem_advise
+    typedef :CUmem_range_attribute_enum, :CUmem_range_attribute
+    typedef :CUjit_option_enum, :CUjit_option
+    typedef :CUjit_target_enum, :CUjit_target
+    typedef :CUjit_fallback_enum, :CUjit_fallback
+    typedef :CUjit_cacheMode_enum, :CUjit_cacheMode
+    typedef :CUjitInputType_enum, :CUjitInputType
+    typedef :CUlinkState_st, :CUlinkState
+    typedef :CUgraphicsRegisterFlags_enum, :CUgraphicsRegisterFlags
+    typedef :CUgraphicsMapResourceFlags_enum, :CUgraphicsMapResourceFlags
+    typedef :CUarray_cubemap_face_enum, :CUarray_cubemap_face
+    typedef :CUlimit_enum, :CUlimit
+    typedef :CUresourcetype_enum, :CUresourcetype
+    typedef :pointer, :CUhostFn
+    typedef :CUaccessProperty_enum, :CUaccessProperty
+    typedef :CUaccessPolicyWindow_st, :CUaccessPolicyWindow_v1
+    typedef :CUaccessPolicyWindow_v1, :CUaccessPolicyWindow
+    typedef :CUDA_KERNEL_NODE_PARAMS_st, :CUDA_KERNEL_NODE_PARAMS_v1
+    typedef :CUDA_KERNEL_NODE_PARAMS_v1, :CUDA_KERNEL_NODE_PARAMS
+    typedef :CUDA_MEMSET_NODE_PARAMS_st, :CUDA_MEMSET_NODE_PARAMS_v1
+    typedef :CUDA_MEMSET_NODE_PARAMS_v1, :CUDA_MEMSET_NODE_PARAMS
+    typedef :CUDA_HOST_NODE_PARAMS_st, :CUDA_HOST_NODE_PARAMS_v1
+    typedef :CUDA_HOST_NODE_PARAMS_v1, :CUDA_HOST_NODE_PARAMS
+    typedef :CUgraphNodeType_enum, :CUgraphNodeType
+    typedef :CUsynchronizationPolicy_enum, :CUsynchronizationPolicy
+    typedef :CUkernelNodeAttrID_enum, :CUkernelNodeAttrID
+    typedef :CUkernelNodeAttrValue_union, :CUkernelNodeAttrValue_v1
+    typedef :CUkernelNodeAttrValue_v1, :CUkernelNodeAttrValue
+    typedef :CUstreamCaptureStatus_enum, :CUstreamCaptureStatus
+    typedef :CUstreamCaptureMode_enum, :CUstreamCaptureMode
+    typedef :CUstreamAttrID_enum, :CUstreamAttrID
+    typedef :CUstreamAttrValue_union, :CUstreamAttrValue_v1
+    typedef :CUstreamAttrValue_v1, :CUstreamAttrValue
+    typedef :CUdriverProcAddress_flags_enum, :CUdriverProcAddress_flags
+    typedef :CUexecAffinityType_enum, :CUexecAffinityType
+    typedef :CUexecAffinitySmCount_st, :CUexecAffinitySmCount_v1
+    typedef :CUexecAffinitySmCount_v1, :CUexecAffinitySmCount
+    typedef :CUexecAffinityParam_st, :CUexecAffinityParam_v1
+    typedef :CUexecAffinityParam_v1, :CUexecAffinityParam
+    typedef :cudaError_enum, :CUresult
+    typedef :CUdevice_P2PAttribute_enum, :CUdevice_P2PAttribute
+    typedef :pointer, :CUstreamCallback
+    typedef :pointer, :CUoccupancyB2DSize
+    typedef :CUDA_MEMCPY2D_st, :CUDA_MEMCPY2D_v2
+    typedef :CUDA_MEMCPY2D_v2, :CUDA_MEMCPY2D
+    typedef :CUDA_MEMCPY3D_st, :CUDA_MEMCPY3D_v2
+    typedef :CUDA_MEMCPY3D_v2, :CUDA_MEMCPY3D
+    typedef :CUDA_MEMCPY3D_PEER_st, :CUDA_MEMCPY3D_PEER_v1
+    typedef :CUDA_MEMCPY3D_PEER_v1, :CUDA_MEMCPY3D_PEER
+    typedef :CUDA_ARRAY_DESCRIPTOR_st, :CUDA_ARRAY_DESCRIPTOR_v2
+    typedef :CUDA_ARRAY_DESCRIPTOR_v2, :CUDA_ARRAY_DESCRIPTOR
+    typedef :CUDA_ARRAY3D_DESCRIPTOR_st, :CUDA_ARRAY3D_DESCRIPTOR_v2
+    typedef :CUDA_ARRAY3D_DESCRIPTOR_v2, :CUDA_ARRAY3D_DESCRIPTOR
+    typedef :CUDA_ARRAY_SPARSE_PROPERTIES_st, :CUDA_ARRAY_SPARSE_PROPERTIES_v1
+    typedef :CUDA_ARRAY_SPARSE_PROPERTIES_v1, :CUDA_ARRAY_SPARSE_PROPERTIES
+    typedef :CUDA_RESOURCE_DESC_st, :CUDA_RESOURCE_DESC_v1
+    typedef :CUDA_RESOURCE_DESC_v1, :CUDA_RESOURCE_DESC
+    typedef :CUDA_TEXTURE_DESC_st, :CUDA_TEXTURE_DESC_v1
+    typedef :CUDA_TEXTURE_DESC_v1, :CUDA_TEXTURE_DESC
+    typedef :CUresourceViewFormat_enum, :CUresourceViewFormat
+    typedef :CUDA_RESOURCE_VIEW_DESC_st, :CUDA_RESOURCE_VIEW_DESC_v1
+    typedef :CUDA_RESOURCE_VIEW_DESC_v1, :CUDA_RESOURCE_VIEW_DESC
+    typedef :CUDA_POINTER_ATTRIBUTE_P2P_TOKENS_st, :CUDA_POINTER_ATTRIBUTE_P2P_TOKENS_v1
+    typedef :CUDA_POINTER_ATTRIBUTE_P2P_TOKENS_v1, :CUDA_POINTER_ATTRIBUTE_P2P_TOKENS
+    typedef :CUDA_POINTER_ATTRIBUTE_ACCESS_FLAGS_enum, :CUDA_POINTER_ATTRIBUTE_ACCESS_FLAGS
+    typedef :CUDA_LAUNCH_PARAMS_st, :CUDA_LAUNCH_PARAMS_v1
+    typedef :CUDA_LAUNCH_PARAMS_v1, :CUDA_LAUNCH_PARAMS
+    typedef :CUexternalMemoryHandleType_enum, :CUexternalMemoryHandleType
+    typedef :CUDA_EXTERNAL_MEMORY_HANDLE_DESC_st, :CUDA_EXTERNAL_MEMORY_HANDLE_DESC_v1
+    typedef :CUDA_EXTERNAL_MEMORY_HANDLE_DESC_v1, :CUDA_EXTERNAL_MEMORY_HANDLE_DESC
+    typedef :CUDA_EXTERNAL_MEMORY_BUFFER_DESC_st, :CUDA_EXTERNAL_MEMORY_BUFFER_DESC_v1
+    typedef :CUDA_EXTERNAL_MEMORY_BUFFER_DESC_v1, :CUDA_EXTERNAL_MEMORY_BUFFER_DESC
+    typedef :CUDA_EXTERNAL_MEMORY_MIPMAPPED_ARRAY_DESC_st, :CUDA_EXTERNAL_MEMORY_MIPMAPPED_ARRAY_DESC_v1
+    typedef :CUDA_EXTERNAL_MEMORY_MIPMAPPED_ARRAY_DESC_v1, :CUDA_EXTERNAL_MEMORY_MIPMAPPED_ARRAY_DESC
+    typedef :CUexternalSemaphoreHandleType_enum, :CUexternalSemaphoreHandleType
+    typedef :CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC_st, :CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC_v1
+    typedef :CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC_v1, :CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC
+    typedef :CUDA_EXTERNAL_SEMAPHORE_SIGNAL_PARAMS_st, :CUDA_EXTERNAL_SEMAPHORE_SIGNAL_PARAMS_v1
+    typedef :CUDA_EXTERNAL_SEMAPHORE_SIGNAL_PARAMS_v1, :CUDA_EXTERNAL_SEMAPHORE_SIGNAL_PARAMS
+    typedef :CUDA_EXTERNAL_SEMAPHORE_WAIT_PARAMS_st, :CUDA_EXTERNAL_SEMAPHORE_WAIT_PARAMS_v1
+    typedef :CUDA_EXTERNAL_SEMAPHORE_WAIT_PARAMS_v1, :CUDA_EXTERNAL_SEMAPHORE_WAIT_PARAMS
+    typedef :CUDA_EXT_SEM_SIGNAL_NODE_PARAMS_st, :CUDA_EXT_SEM_SIGNAL_NODE_PARAMS_v1
+    typedef :CUDA_EXT_SEM_SIGNAL_NODE_PARAMS_v1, :CUDA_EXT_SEM_SIGNAL_NODE_PARAMS
+    typedef :CUDA_EXT_SEM_WAIT_NODE_PARAMS_st, :CUDA_EXT_SEM_WAIT_NODE_PARAMS_v1
+    typedef :CUDA_EXT_SEM_WAIT_NODE_PARAMS_v1, :CUDA_EXT_SEM_WAIT_NODE_PARAMS
+    typedef :long_long_unsigned_int, :CUmemGenericAllocationHandle_v1
+    typedef :CUmemGenericAllocationHandle_v1, :CUmemGenericAllocationHandle
+    typedef :CUmemAllocationHandleType_enum, :CUmemAllocationHandleType
+    typedef :CUmemAccess_flags_enum, :CUmemAccess_flags
+    typedef :CUmemLocationType_enum, :CUmemLocationType
+    typedef :CUmemAllocationType_enum, :CUmemAllocationType
+    typedef :CUmemAllocationGranularity_flags_enum, :CUmemAllocationGranularity_flags
+    typedef :CUarraySparseSubresourceType_enum, :CUarraySparseSubresourceType
+    typedef :CUmemOperationType_enum, :CUmemOperationType
+    typedef :CUmemHandleType_enum, :CUmemHandleType
+    typedef :CUarrayMapInfo_st, :CUarrayMapInfo_v1
+    typedef :CUarrayMapInfo_v1, :CUarrayMapInfo
+    typedef :CUmemLocation_st, :CUmemLocation_v1
+    typedef :CUmemLocation_v1, :CUmemLocation
+    typedef :CUmemAllocationCompType_enum, :CUmemAllocationCompType
+    typedef :CUmemAllocationProp_st, :CUmemAllocationProp_v1
+    typedef :CUmemAllocationProp_v1, :CUmemAllocationProp
+    typedef :CUmemAccessDesc_st, :CUmemAccessDesc_v1
+    typedef :CUmemAccessDesc_v1, :CUmemAccessDesc
+    typedef :CUgraphExecUpdateResult_enum, :CUgraphExecUpdateResult
+    typedef :CUmemPool_attribute_enum, :CUmemPool_attribute
+    typedef :CUmemPoolProps_st, :CUmemPoolProps_v1
+    typedef :CUmemPoolProps_v1, :CUmemPoolProps
+    typedef :CUmemPoolPtrExportData_st, :CUmemPoolPtrExportData_v1
+    typedef :CUmemPoolPtrExportData_v1, :CUmemPoolPtrExportData
+    typedef :CUDA_MEM_ALLOC_NODE_PARAMS_st, :CUDA_MEM_ALLOC_NODE_PARAMS
+    typedef :CUgraphMem_attribute_enum, :CUgraphMem_attribute
+    typedef :CUflushGPUDirectRDMAWritesOptions_enum, :CUflushGPUDirectRDMAWritesOptions
+    typedef :CUGPUDirectRDMAWritesOrdering_enum, :CUGPUDirectRDMAWritesOrdering
+    typedef :CUflushGPUDirectRDMAWritesScope_enum, :CUflushGPUDirectRDMAWritesScope
+    typedef :CUflushGPUDirectRDMAWritesTarget_enum, :CUflushGPUDirectRDMAWritesTarget
+    typedef :CUgraphDebugDot_flags_enum, :CUgraphDebugDot_flags
+    typedef :CUuserObject_flags_enum, :CUuserObject_flags
+    typedef :CUuserObjectRetain_flags_enum, :CUuserObjectRetain_flags
+    typedef :CUgraphInstantiate_flags_enum, :CUgraphInstantiate_flags
 
     # Enums
     enum :CUipcMem_flags_enum, [:CU_IPC_MEM_LAZY_ENABLE_PEER_ACCESS, 1]
@@ -608,15 +791,13 @@ module Cuda
     attach_function :cuDeviceGetUuid_v2, %i[CUuuid CUdevice], :CUresult
     attach_function :cuDeviceGetLuid, %i[char unsigned_int CUdevice], :CUresult
     attach_function :cuDeviceTotalMem_v2, %i[size_t CUdevice], :CUresult
-    attach_function :cuDeviceGetTexture1DLinearMaxWidth, %i[size_t CUarray_format unsigned_int CUdevice],
-                    :CUresult
+    attach_function :cuDeviceGetTexture1DLinearMaxWidth, %i[size_t CUarray_format unsigned_int CUdevice], :CUresult
     attach_function :cuDeviceGetAttribute, %i[int CUdevice_attribute CUdevice], :CUresult
     attach_function :cuDeviceGetNvSciSyncAttributes, %i[pointer CUdevice int], :CUresult
     attach_function :cuDeviceSetMemPool, %i[CUdevice CUmemoryPool], :CUresult
     attach_function :cuDeviceGetMemPool, %i[CUmemoryPool CUdevice], :CUresult
     attach_function :cuDeviceGetDefaultMemPool, %i[CUmemoryPool CUdevice], :CUresult
-    attach_function :cuFlushGPUDirectRDMAWrites,
-                    %i[CUflushGPUDirectRDMAWritesTarget CUflushGPUDirectRDMAWritesScope], :CUresult
+    attach_function :cuFlushGPUDirectRDMAWrites, %i[CUflushGPUDirectRDMAWritesTarget CUflushGPUDirectRDMAWritesScope], :CUresult
     attach_function :cuDeviceGetProperties, %i[CUdevprop CUdevice], :CUresult
     attach_function :cuDeviceComputeCapability, %i[int int CUdevice], :CUresult
     attach_function :cuDevicePrimaryCtxRetain, %i[CUcontext CUdevice], :CUresult
@@ -626,8 +807,7 @@ module Cuda
     attach_function :cuDevicePrimaryCtxReset_v2, [:CUdevice], :CUresult
     attach_function :cuDeviceGetExecAffinitySupport, %i[int CUexecAffinityType CUdevice], :CUresult
     attach_function :cuCtxCreate_v2, %i[CUcontext unsigned_int CUdevice], :CUresult
-    attach_function :cuCtxCreate_v3, %i[CUcontext CUexecAffinityParam int unsigned_int CUdevice],
-                    :CUresult
+    attach_function :cuCtxCreate_v3, %i[CUcontext CUexecAffinityParam int unsigned_int CUdevice], :CUresult
     attach_function :cuCtxDestroy_v2, [:CUcontext], :CUresult
     attach_function :cuCtxPushCurrent_v2, [:CUcontext], :CUresult
     attach_function :cuCtxPopCurrent_v2, [:CUcontext], :CUresult
@@ -650,8 +830,7 @@ module Cuda
     attach_function :cuCtxDetach, [:CUcontext], :CUresult
     attach_function :cuModuleLoad, %i[CUmodule char], :CUresult
     attach_function :cuModuleLoadData, %i[CUmodule pointer], :CUresult
-    attach_function :cuModuleLoadDataEx, %i[CUmodule pointer unsigned_int CUjit_option pointer],
-                    :CUresult
+    attach_function :cuModuleLoadDataEx, %i[CUmodule pointer unsigned_int CUjit_option pointer], :CUresult
     attach_function :cuModuleLoadFatBinary, %i[CUmodule pointer], :CUresult
     attach_function :cuModuleUnload, [:CUmodule], :CUresult
     attach_function :cuModuleGetFunction, %i[CUfunction CUmodule char], :CUresult
@@ -659,10 +838,8 @@ module Cuda
     attach_function :cuModuleGetTexRef, %i[CUtexref CUmodule char], :CUresult
     attach_function :cuModuleGetSurfRef, %i[CUsurfref CUmodule char], :CUresult
     attach_function :cuLinkCreate_v2, %i[unsigned_int CUjit_option pointer CUlinkState], :CUresult
-    attach_function :cuLinkAddData_v2,
-                    %i[CUlinkState CUjitInputType pointer size_t char unsigned_int CUjit_option pointer], :CUresult
-    attach_function :cuLinkAddFile_v2,
-                    %i[CUlinkState CUjitInputType char unsigned_int CUjit_option pointer], :CUresult
+    attach_function :cuLinkAddData_v2, %i[CUlinkState CUjitInputType pointer size_t char unsigned_int CUjit_option pointer], :CUresult
+    attach_function :cuLinkAddFile_v2, %i[CUlinkState CUjitInputType char unsigned_int CUjit_option pointer], :CUresult
     attach_function :cuLinkComplete, %i[CUlinkState pointer size_t], :CUresult
     attach_function :cuLinkDestroy, [:CUlinkState], :CUresult
     attach_function :cuMemGetInfo_v2, %i[size_t size_t], :CUresult
@@ -700,8 +877,7 @@ module Cuda
     attach_function :cuMemcpy3D_v2, [:CUDA_MEMCPY3D], :CUresult
     attach_function :cuMemcpy3DPeer, [:CUDA_MEMCPY3D_PEER], :CUresult
     attach_function :cuMemcpyAsync, %i[CUdeviceptr CUdeviceptr size_t CUstream], :CUresult
-    attach_function :cuMemcpyPeerAsync,
-                    %i[CUdeviceptr CUcontext CUdeviceptr CUcontext size_t CUstream], :CUresult
+    attach_function :cuMemcpyPeerAsync, %i[CUdeviceptr CUcontext CUdeviceptr CUcontext size_t CUstream], :CUresult
     attach_function :cuMemcpyHtoDAsync_v2, %i[CUdeviceptr pointer size_t CUstream], :CUresult
     attach_function :cuMemcpyDtoHAsync_v2, %i[pointer CUdeviceptr size_t CUstream], :CUresult
     attach_function :cuMemcpyDtoDAsync_v2, %i[CUdeviceptr CUdeviceptr size_t CUstream], :CUresult
@@ -719,45 +895,33 @@ module Cuda
     attach_function :cuMemsetD8Async, %i[CUdeviceptr unsigned_char size_t CUstream], :CUresult
     attach_function :cuMemsetD16Async, %i[CUdeviceptr short_unsigned_int size_t CUstream], :CUresult
     attach_function :cuMemsetD32Async, %i[CUdeviceptr unsigned_int size_t CUstream], :CUresult
-    attach_function :cuMemsetD2D8Async, %i[CUdeviceptr size_t unsigned_char size_t size_t CUstream],
-                    :CUresult
-    attach_function :cuMemsetD2D16Async,
-                    %i[CUdeviceptr size_t short_unsigned_int size_t size_t CUstream], :CUresult
-    attach_function :cuMemsetD2D32Async, %i[CUdeviceptr size_t unsigned_int size_t size_t CUstream],
-                    :CUresult
+    attach_function :cuMemsetD2D8Async, %i[CUdeviceptr size_t unsigned_char size_t size_t CUstream], :CUresult
+    attach_function :cuMemsetD2D16Async, %i[CUdeviceptr size_t short_unsigned_int size_t size_t CUstream], :CUresult
+    attach_function :cuMemsetD2D32Async, %i[CUdeviceptr size_t unsigned_int size_t size_t CUstream], :CUresult
     attach_function :cuArrayCreate_v2, %i[CUarray CUDA_ARRAY_DESCRIPTOR], :CUresult
     attach_function :cuArrayGetDescriptor_v2, %i[CUDA_ARRAY_DESCRIPTOR CUarray], :CUresult
     attach_function :cuArrayGetSparseProperties, %i[CUDA_ARRAY_SPARSE_PROPERTIES CUarray], :CUresult
-    attach_function :cuMipmappedArrayGetSparseProperties, %i[CUDA_ARRAY_SPARSE_PROPERTIES CUmipmappedArray],
-                    :CUresult
+    attach_function :cuMipmappedArrayGetSparseProperties, %i[CUDA_ARRAY_SPARSE_PROPERTIES CUmipmappedArray], :CUresult
     attach_function :cuArrayGetPlane, %i[CUarray CUarray unsigned_int], :CUresult
     attach_function :cuArrayDestroy, [:CUarray], :CUresult
     attach_function :cuArray3DCreate_v2, %i[CUarray CUDA_ARRAY3D_DESCRIPTOR], :CUresult
     attach_function :cuArray3DGetDescriptor_v2, %i[CUDA_ARRAY3D_DESCRIPTOR CUarray], :CUresult
-    attach_function :cuMipmappedArrayCreate, %i[CUmipmappedArray CUDA_ARRAY3D_DESCRIPTOR unsigned_int],
-                    :CUresult
+    attach_function :cuMipmappedArrayCreate, %i[CUmipmappedArray CUDA_ARRAY3D_DESCRIPTOR unsigned_int], :CUresult
     attach_function :cuMipmappedArrayGetLevel, %i[CUarray CUmipmappedArray unsigned_int], :CUresult
     attach_function :cuMipmappedArrayDestroy, [:CUmipmappedArray], :CUresult
-    attach_function :cuMemAddressReserve,
-                    %i[CUdeviceptr size_t size_t CUdeviceptr long_long_unsigned_int], :CUresult
+    attach_function :cuMemAddressReserve, %i[CUdeviceptr size_t size_t CUdeviceptr long_long_unsigned_int], :CUresult
     attach_function :cuMemAddressFree, %i[CUdeviceptr size_t], :CUresult
-    attach_function :cuMemCreate,
-                    %i[CUmemGenericAllocationHandle size_t CUmemAllocationProp long_long_unsigned_int], :CUresult
+    attach_function :cuMemCreate, %i[CUmemGenericAllocationHandle size_t CUmemAllocationProp long_long_unsigned_int], :CUresult
     attach_function :cuMemRelease, [:CUmemGenericAllocationHandle], :CUresult
-    attach_function :cuMemMap,
-                    %i[CUdeviceptr size_t size_t CUmemGenericAllocationHandle long_long_unsigned_int], :CUresult
+    attach_function :cuMemMap, %i[CUdeviceptr size_t size_t CUmemGenericAllocationHandle long_long_unsigned_int], :CUresult
     attach_function :cuMemMapArrayAsync, %i[CUarrayMapInfo unsigned_int CUstream], :CUresult
     attach_function :cuMemUnmap, %i[CUdeviceptr size_t], :CUresult
     attach_function :cuMemSetAccess, %i[CUdeviceptr size_t CUmemAccessDesc size_t], :CUresult
     attach_function :cuMemGetAccess, %i[long_long_unsigned_int CUmemLocation CUdeviceptr], :CUresult
-    attach_function :cuMemExportToShareableHandle,
-                    %i[pointer CUmemGenericAllocationHandle CUmemAllocationHandleType long_long_unsigned_int], :CUresult
-    attach_function :cuMemImportFromShareableHandle,
-                    %i[CUmemGenericAllocationHandle pointer CUmemAllocationHandleType], :CUresult
-    attach_function :cuMemGetAllocationGranularity,
-                    %i[size_t CUmemAllocationProp CUmemAllocationGranularity_flags], :CUresult
-    attach_function :cuMemGetAllocationPropertiesFromHandle,
-                    %i[CUmemAllocationProp CUmemGenericAllocationHandle], :CUresult
+    attach_function :cuMemExportToShareableHandle, %i[pointer CUmemGenericAllocationHandle CUmemAllocationHandleType long_long_unsigned_int], :CUresult
+    attach_function :cuMemImportFromShareableHandle, %i[CUmemGenericAllocationHandle pointer CUmemAllocationHandleType], :CUresult
+    attach_function :cuMemGetAllocationGranularity, %i[size_t CUmemAllocationProp CUmemAllocationGranularity_flags], :CUresult
+    attach_function :cuMemGetAllocationPropertiesFromHandle, %i[CUmemAllocationProp CUmemGenericAllocationHandle], :CUresult
     attach_function :cuMemRetainAllocationHandle, %i[CUmemGenericAllocationHandle pointer], :CUresult
     attach_function :cuMemFreeAsync, %i[CUdeviceptr CUstream], :CUresult
     attach_function :cuMemAllocAsync, %i[CUdeviceptr size_t CUstream], :CUresult
@@ -769,22 +933,17 @@ module Cuda
     attach_function :cuMemPoolCreate, %i[CUmemoryPool CUmemPoolProps], :CUresult
     attach_function :cuMemPoolDestroy, [:CUmemoryPool], :CUresult
     attach_function :cuMemAllocFromPoolAsync, %i[CUdeviceptr size_t CUmemoryPool CUstream], :CUresult
-    attach_function :cuMemPoolExportToShareableHandle,
-                    %i[pointer CUmemoryPool CUmemAllocationHandleType long_long_unsigned_int], :CUresult
-    attach_function :cuMemPoolImportFromShareableHandle,
-                    %i[CUmemoryPool pointer CUmemAllocationHandleType long_long_unsigned_int], :CUresult
+    attach_function :cuMemPoolExportToShareableHandle, %i[pointer CUmemoryPool CUmemAllocationHandleType long_long_unsigned_int], :CUresult
+    attach_function :cuMemPoolImportFromShareableHandle, %i[CUmemoryPool pointer CUmemAllocationHandleType long_long_unsigned_int], :CUresult
     attach_function :cuMemPoolExportPointer, %i[CUmemPoolPtrExportData CUdeviceptr], :CUresult
     attach_function :cuMemPoolImportPointer, %i[CUdeviceptr CUmemoryPool CUmemPoolPtrExportData], :CUresult
     attach_function :cuPointerGetAttribute, %i[pointer CUpointer_attribute CUdeviceptr], :CUresult
     attach_function :cuMemPrefetchAsync, %i[CUdeviceptr size_t CUdevice CUstream], :CUresult
     attach_function :cuMemAdvise, %i[CUdeviceptr size_t CUmem_advise CUdevice], :CUresult
-    attach_function :cuMemRangeGetAttribute,
-                    %i[pointer size_t CUmem_range_attribute CUdeviceptr size_t], :CUresult
-    attach_function :cuMemRangeGetAttributes,
-                    %i[pointer size_t CUmem_range_attribute size_t CUdeviceptr size_t], :CUresult
+    attach_function :cuMemRangeGetAttribute, %i[pointer size_t CUmem_range_attribute CUdeviceptr size_t], :CUresult
+    attach_function :cuMemRangeGetAttributes, %i[pointer size_t CUmem_range_attribute size_t CUdeviceptr size_t], :CUresult
     attach_function :cuPointerSetAttribute, %i[pointer CUpointer_attribute CUdeviceptr], :CUresult
-    attach_function :cuPointerGetAttributes, %i[unsigned_int CUpointer_attribute pointer CUdeviceptr],
-                    :CUresult
+    attach_function :cuPointerGetAttributes, %i[unsigned_int CUpointer_attribute pointer CUdeviceptr], :CUresult
     attach_function :cuStreamCreate, %i[CUstream unsigned_int], :CUresult
     attach_function :cuStreamCreateWithPriority, %i[CUstream unsigned_int int], :CUresult
     attach_function :cuStreamGetPriority, %i[CUstream int], :CUresult
@@ -797,10 +956,8 @@ module Cuda
     attach_function :cuStreamEndCapture, %i[CUstream CUgraph], :CUresult
     attach_function :cuStreamIsCapturing, %i[CUstream CUstreamCaptureStatus], :CUresult
     attach_function :cuStreamGetCaptureInfo, %i[CUstream CUstreamCaptureStatus cuuint64_t], :CUresult
-    attach_function :cuStreamGetCaptureInfo_v2,
-                    %i[CUstream CUstreamCaptureStatus cuuint64_t CUgraph CUgraphNode size_t], :CUresult
-    attach_function :cuStreamUpdateCaptureDependencies, %i[CUstream CUgraphNode size_t unsigned_int],
-                    :CUresult
+    attach_function :cuStreamGetCaptureInfo_v2, %i[CUstream CUstreamCaptureStatus cuuint64_t CUgraph CUgraphNode size_t], :CUresult
+    attach_function :cuStreamUpdateCaptureDependencies, %i[CUstream CUgraphNode size_t unsigned_int], :CUresult
     attach_function :cuStreamAttachMemAsync, %i[CUstream CUdeviceptr size_t unsigned_int], :CUresult
     attach_function :cuStreamQuery, [:CUstream], :CUresult
     attach_function :cuStreamSynchronize, [:CUstream], :CUresult
@@ -816,35 +973,26 @@ module Cuda
     attach_function :cuEventDestroy_v2, [:CUevent], :CUresult
     attach_function :cuEventElapsedTime, %i[float CUevent CUevent], :CUresult
     attach_function :cuImportExternalMemory, %i[CUexternalMemory CUDA_EXTERNAL_MEMORY_HANDLE_DESC], :CUresult
-    attach_function :cuExternalMemoryGetMappedBuffer,
-                    %i[CUdeviceptr CUexternalMemory CUDA_EXTERNAL_MEMORY_BUFFER_DESC], :CUresult
-    attach_function :cuExternalMemoryGetMappedMipmappedArray,
-                    %i[CUmipmappedArray CUexternalMemory CUDA_EXTERNAL_MEMORY_MIPMAPPED_ARRAY_DESC], :CUresult
+    attach_function :cuExternalMemoryGetMappedBuffer, %i[CUdeviceptr CUexternalMemory CUDA_EXTERNAL_MEMORY_BUFFER_DESC], :CUresult
+    attach_function :cuExternalMemoryGetMappedMipmappedArray, %i[CUmipmappedArray CUexternalMemory CUDA_EXTERNAL_MEMORY_MIPMAPPED_ARRAY_DESC], :CUresult
     attach_function :cuDestroyExternalMemory, [:CUexternalMemory], :CUresult
-    attach_function :cuImportExternalSemaphore, %i[CUexternalSemaphore CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC],
-                    :CUresult
-    attach_function :cuSignalExternalSemaphoresAsync,
-                    %i[CUexternalSemaphore CUDA_EXTERNAL_SEMAPHORE_SIGNAL_PARAMS unsigned_int CUstream], :CUresult
-    attach_function :cuWaitExternalSemaphoresAsync,
-                    %i[CUexternalSemaphore CUDA_EXTERNAL_SEMAPHORE_WAIT_PARAMS unsigned_int CUstream], :CUresult
+    attach_function :cuImportExternalSemaphore, %i[CUexternalSemaphore CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC], :CUresult
+    attach_function :cuSignalExternalSemaphoresAsync, %i[CUexternalSemaphore CUDA_EXTERNAL_SEMAPHORE_SIGNAL_PARAMS unsigned_int CUstream], :CUresult
+    attach_function :cuWaitExternalSemaphoresAsync, %i[CUexternalSemaphore CUDA_EXTERNAL_SEMAPHORE_WAIT_PARAMS unsigned_int CUstream], :CUresult
     attach_function :cuDestroyExternalSemaphore, [:CUexternalSemaphore], :CUresult
     attach_function :cuStreamWaitValue32, %i[CUstream CUdeviceptr cuuint32_t unsigned_int], :CUresult
     attach_function :cuStreamWaitValue64, %i[CUstream CUdeviceptr cuuint64_t unsigned_int], :CUresult
     attach_function :cuStreamWriteValue32, %i[CUstream CUdeviceptr cuuint32_t unsigned_int], :CUresult
     attach_function :cuStreamWriteValue64, %i[CUstream CUdeviceptr cuuint64_t unsigned_int], :CUresult
-    attach_function :cuStreamBatchMemOp, %i[CUstream unsigned_int CUstreamBatchMemOpParams unsigned_int],
-                    :CUresult
+    attach_function :cuStreamBatchMemOp, %i[CUstream unsigned_int CUstreamBatchMemOpParams unsigned_int], :CUresult
     attach_function :cuFuncGetAttribute, %i[int CUfunction_attribute CUfunction], :CUresult
     attach_function :cuFuncSetAttribute, %i[CUfunction CUfunction_attribute int], :CUresult
     attach_function :cuFuncSetCacheConfig, %i[CUfunction CUfunc_cache], :CUresult
     attach_function :cuFuncSetSharedMemConfig, %i[CUfunction CUsharedconfig], :CUresult
     attach_function :cuFuncGetModule, %i[CUmodule CUfunction], :CUresult
-    attach_function :cuLaunchKernel,
-                    %i[CUfunction unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int CUstream pointer pointer], :CUresult
-    attach_function :cuLaunchCooperativeKernel,
-                    %i[CUfunction unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int CUstream pointer], :CUresult
-    attach_function :cuLaunchCooperativeKernelMultiDevice, %i[CUDA_LAUNCH_PARAMS unsigned_int unsigned_int],
-                    :CUresult
+    attach_function :cuLaunchKernel, %i[CUfunction unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int CUstream pointer pointer], :CUresult
+    attach_function :cuLaunchCooperativeKernel, %i[CUfunction unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int unsigned_int CUstream pointer], :CUresult
+    attach_function :cuLaunchCooperativeKernelMultiDevice, %i[CUDA_LAUNCH_PARAMS unsigned_int unsigned_int], :CUresult
     attach_function :cuLaunchHostFunc, %i[CUstream CUhostFn pointer], :CUresult
     attach_function :cuFuncSetBlockShape, %i[CUfunction int int int], :CUresult
     attach_function :cuFuncSetSharedSize, %i[CUfunction unsigned_int], :CUresult
@@ -857,51 +1005,36 @@ module Cuda
     attach_function :cuLaunchGridAsync, %i[CUfunction int int CUstream], :CUresult
     attach_function :cuParamSetTexRef, %i[CUfunction int CUtexref], :CUresult
     attach_function :cuGraphCreate, %i[CUgraph unsigned_int], :CUresult
-    attach_function :cuGraphAddKernelNode,
-                    %i[CUgraphNode CUgraph CUgraphNode size_t CUDA_KERNEL_NODE_PARAMS], :CUresult
+    attach_function :cuGraphAddKernelNode, %i[CUgraphNode CUgraph CUgraphNode size_t CUDA_KERNEL_NODE_PARAMS], :CUresult
     attach_function :cuGraphKernelNodeGetParams, %i[CUgraphNode CUDA_KERNEL_NODE_PARAMS], :CUresult
     attach_function :cuGraphKernelNodeSetParams, %i[CUgraphNode CUDA_KERNEL_NODE_PARAMS], :CUresult
-    attach_function :cuGraphAddMemcpyNode,
-                    %i[CUgraphNode CUgraph CUgraphNode size_t CUDA_MEMCPY3D CUcontext], :CUresult
+    attach_function :cuGraphAddMemcpyNode, %i[CUgraphNode CUgraph CUgraphNode size_t CUDA_MEMCPY3D CUcontext], :CUresult
     attach_function :cuGraphMemcpyNodeGetParams, %i[CUgraphNode CUDA_MEMCPY3D], :CUresult
     attach_function :cuGraphMemcpyNodeSetParams, %i[CUgraphNode CUDA_MEMCPY3D], :CUresult
-    attach_function :cuGraphAddMemsetNode,
-                    %i[CUgraphNode CUgraph CUgraphNode size_t CUDA_MEMSET_NODE_PARAMS CUcontext], :CUresult
+    attach_function :cuGraphAddMemsetNode, %i[CUgraphNode CUgraph CUgraphNode size_t CUDA_MEMSET_NODE_PARAMS CUcontext], :CUresult
     attach_function :cuGraphMemsetNodeGetParams, %i[CUgraphNode CUDA_MEMSET_NODE_PARAMS], :CUresult
     attach_function :cuGraphMemsetNodeSetParams, %i[CUgraphNode CUDA_MEMSET_NODE_PARAMS], :CUresult
-    attach_function :cuGraphAddHostNode,
-                    %i[CUgraphNode CUgraph CUgraphNode size_t CUDA_HOST_NODE_PARAMS], :CUresult
+    attach_function :cuGraphAddHostNode, %i[CUgraphNode CUgraph CUgraphNode size_t CUDA_HOST_NODE_PARAMS], :CUresult
     attach_function :cuGraphHostNodeGetParams, %i[CUgraphNode CUDA_HOST_NODE_PARAMS], :CUresult
     attach_function :cuGraphHostNodeSetParams, %i[CUgraphNode CUDA_HOST_NODE_PARAMS], :CUresult
-    attach_function :cuGraphAddChildGraphNode, %i[CUgraphNode CUgraph CUgraphNode size_t CUgraph],
-                    :CUresult
+    attach_function :cuGraphAddChildGraphNode, %i[CUgraphNode CUgraph CUgraphNode size_t CUgraph], :CUresult
     attach_function :cuGraphChildGraphNodeGetGraph, %i[CUgraphNode CUgraph], :CUresult
     attach_function :cuGraphAddEmptyNode, %i[CUgraphNode CUgraph CUgraphNode size_t], :CUresult
-    attach_function :cuGraphAddEventRecordNode, %i[CUgraphNode CUgraph CUgraphNode size_t CUevent],
-                    :CUresult
+    attach_function :cuGraphAddEventRecordNode, %i[CUgraphNode CUgraph CUgraphNode size_t CUevent], :CUresult
     attach_function :cuGraphEventRecordNodeGetEvent, %i[CUgraphNode CUevent], :CUresult
     attach_function :cuGraphEventRecordNodeSetEvent, %i[CUgraphNode CUevent], :CUresult
-    attach_function :cuGraphAddEventWaitNode, %i[CUgraphNode CUgraph CUgraphNode size_t CUevent],
-                    :CUresult
+    attach_function :cuGraphAddEventWaitNode, %i[CUgraphNode CUgraph CUgraphNode size_t CUevent], :CUresult
     attach_function :cuGraphEventWaitNodeGetEvent, %i[CUgraphNode CUevent], :CUresult
     attach_function :cuGraphEventWaitNodeSetEvent, %i[CUgraphNode CUevent], :CUresult
-    attach_function :cuGraphAddExternalSemaphoresSignalNode,
-                    %i[CUgraphNode CUgraph CUgraphNode size_t CUDA_EXT_SEM_SIGNAL_NODE_PARAMS], :CUresult
-    attach_function :cuGraphExternalSemaphoresSignalNodeGetParams,
-                    %i[CUgraphNode CUDA_EXT_SEM_SIGNAL_NODE_PARAMS], :CUresult
-    attach_function :cuGraphExternalSemaphoresSignalNodeSetParams,
-                    %i[CUgraphNode CUDA_EXT_SEM_SIGNAL_NODE_PARAMS], :CUresult
-    attach_function :cuGraphAddExternalSemaphoresWaitNode,
-                    %i[CUgraphNode CUgraph CUgraphNode size_t CUDA_EXT_SEM_WAIT_NODE_PARAMS], :CUresult
-    attach_function :cuGraphExternalSemaphoresWaitNodeGetParams,
-                    %i[CUgraphNode CUDA_EXT_SEM_WAIT_NODE_PARAMS], :CUresult
-    attach_function :cuGraphExternalSemaphoresWaitNodeSetParams,
-                    %i[CUgraphNode CUDA_EXT_SEM_WAIT_NODE_PARAMS], :CUresult
-    attach_function :cuGraphAddMemAllocNode,
-                    %i[CUgraphNode CUgraph CUgraphNode size_t CUDA_MEM_ALLOC_NODE_PARAMS], :CUresult
+    attach_function :cuGraphAddExternalSemaphoresSignalNode, %i[CUgraphNode CUgraph CUgraphNode size_t CUDA_EXT_SEM_SIGNAL_NODE_PARAMS], :CUresult
+    attach_function :cuGraphExternalSemaphoresSignalNodeGetParams, %i[CUgraphNode CUDA_EXT_SEM_SIGNAL_NODE_PARAMS], :CUresult
+    attach_function :cuGraphExternalSemaphoresSignalNodeSetParams, %i[CUgraphNode CUDA_EXT_SEM_SIGNAL_NODE_PARAMS], :CUresult
+    attach_function :cuGraphAddExternalSemaphoresWaitNode, %i[CUgraphNode CUgraph CUgraphNode size_t CUDA_EXT_SEM_WAIT_NODE_PARAMS], :CUresult
+    attach_function :cuGraphExternalSemaphoresWaitNodeGetParams, %i[CUgraphNode CUDA_EXT_SEM_WAIT_NODE_PARAMS], :CUresult
+    attach_function :cuGraphExternalSemaphoresWaitNodeSetParams, %i[CUgraphNode CUDA_EXT_SEM_WAIT_NODE_PARAMS], :CUresult
+    attach_function :cuGraphAddMemAllocNode, %i[CUgraphNode CUgraph CUgraphNode size_t CUDA_MEM_ALLOC_NODE_PARAMS], :CUresult
     attach_function :cuGraphMemAllocNodeGetParams, %i[CUgraphNode CUDA_MEM_ALLOC_NODE_PARAMS], :CUresult
-    attach_function :cuGraphAddMemFreeNode, %i[CUgraphNode CUgraph CUgraphNode size_t CUdeviceptr],
-                    :CUresult
+    attach_function :cuGraphAddMemFreeNode, %i[CUgraphNode CUgraph CUgraphNode size_t CUdeviceptr], :CUresult
     attach_function :cuGraphMemFreeNodeGetParams, %i[CUgraphNode CUdeviceptr], :CUresult
     attach_function :cuDeviceGraphMemTrim, [:CUdevice], :CUresult
     attach_function :cuDeviceGetGraphMemAttribute, %i[CUdevice CUgraphMem_attribute pointer], :CUresult
@@ -919,52 +1052,38 @@ module Cuda
     attach_function :cuGraphDestroyNode, [:CUgraphNode], :CUresult
     attach_function :cuGraphInstantiate_v2, %i[CUgraphExec CUgraph CUgraphNode char size_t], :CUresult
     attach_function :cuGraphInstantiateWithFlags, %i[CUgraphExec CUgraph long_long_unsigned_int], :CUresult
-    attach_function :cuGraphExecKernelNodeSetParams, %i[CUgraphExec CUgraphNode CUDA_KERNEL_NODE_PARAMS],
-                    :CUresult
-    attach_function :cuGraphExecMemcpyNodeSetParams, %i[CUgraphExec CUgraphNode CUDA_MEMCPY3D CUcontext],
-                    :CUresult
-    attach_function :cuGraphExecMemsetNodeSetParams,
-                    %i[CUgraphExec CUgraphNode CUDA_MEMSET_NODE_PARAMS CUcontext], :CUresult
-    attach_function :cuGraphExecHostNodeSetParams, %i[CUgraphExec CUgraphNode CUDA_HOST_NODE_PARAMS],
-                    :CUresult
+    attach_function :cuGraphExecKernelNodeSetParams, %i[CUgraphExec CUgraphNode CUDA_KERNEL_NODE_PARAMS], :CUresult
+    attach_function :cuGraphExecMemcpyNodeSetParams, %i[CUgraphExec CUgraphNode CUDA_MEMCPY3D CUcontext], :CUresult
+    attach_function :cuGraphExecMemsetNodeSetParams, %i[CUgraphExec CUgraphNode CUDA_MEMSET_NODE_PARAMS CUcontext], :CUresult
+    attach_function :cuGraphExecHostNodeSetParams, %i[CUgraphExec CUgraphNode CUDA_HOST_NODE_PARAMS], :CUresult
     attach_function :cuGraphExecChildGraphNodeSetParams, %i[CUgraphExec CUgraphNode CUgraph], :CUresult
     attach_function :cuGraphExecEventRecordNodeSetEvent, %i[CUgraphExec CUgraphNode CUevent], :CUresult
     attach_function :cuGraphExecEventWaitNodeSetEvent, %i[CUgraphExec CUgraphNode CUevent], :CUresult
-    attach_function :cuGraphExecExternalSemaphoresSignalNodeSetParams,
-                    %i[CUgraphExec CUgraphNode CUDA_EXT_SEM_SIGNAL_NODE_PARAMS], :CUresult
-    attach_function :cuGraphExecExternalSemaphoresWaitNodeSetParams,
-                    %i[CUgraphExec CUgraphNode CUDA_EXT_SEM_WAIT_NODE_PARAMS], :CUresult
+    attach_function :cuGraphExecExternalSemaphoresSignalNodeSetParams, %i[CUgraphExec CUgraphNode CUDA_EXT_SEM_SIGNAL_NODE_PARAMS], :CUresult
+    attach_function :cuGraphExecExternalSemaphoresWaitNodeSetParams, %i[CUgraphExec CUgraphNode CUDA_EXT_SEM_WAIT_NODE_PARAMS], :CUresult
     attach_function :cuGraphUpload, %i[CUgraphExec CUstream], :CUresult
     attach_function :cuGraphLaunch, %i[CUgraphExec CUstream], :CUresult
     attach_function :cuGraphExecDestroy, [:CUgraphExec], :CUresult
     attach_function :cuGraphDestroy, [:CUgraph], :CUresult
-    attach_function :cuGraphExecUpdate, %i[CUgraphExec CUgraph CUgraphNode CUgraphExecUpdateResult],
-                    :CUresult
+    attach_function :cuGraphExecUpdate, %i[CUgraphExec CUgraph CUgraphNode CUgraphExecUpdateResult], :CUresult
     attach_function :cuGraphKernelNodeCopyAttributes, %i[CUgraphNode CUgraphNode], :CUresult
-    attach_function :cuGraphKernelNodeGetAttribute,
-                    %i[CUgraphNode CUkernelNodeAttrID CUkernelNodeAttrValue], :CUresult
-    attach_function :cuGraphKernelNodeSetAttribute,
-                    %i[CUgraphNode CUkernelNodeAttrID CUkernelNodeAttrValue], :CUresult
+    attach_function :cuGraphKernelNodeGetAttribute, %i[CUgraphNode CUkernelNodeAttrID CUkernelNodeAttrValue], :CUresult
+    attach_function :cuGraphKernelNodeSetAttribute, %i[CUgraphNode CUkernelNodeAttrID CUkernelNodeAttrValue], :CUresult
     attach_function :cuGraphDebugDotPrint, %i[CUgraph char unsigned_int], :CUresult
-    attach_function :cuUserObjectCreate, %i[CUuserObject pointer CUhostFn unsigned_int unsigned_int],
-                    :CUresult
+    attach_function :cuUserObjectCreate, %i[CUuserObject pointer CUhostFn unsigned_int unsigned_int], :CUresult
     attach_function :cuUserObjectRetain, %i[CUuserObject unsigned_int], :CUresult
     attach_function :cuUserObjectRelease, %i[CUuserObject unsigned_int], :CUresult
     attach_function :cuGraphRetainUserObject, %i[CUgraph CUuserObject unsigned_int unsigned_int], :CUresult
     attach_function :cuGraphReleaseUserObject, %i[CUgraph CUuserObject unsigned_int], :CUresult
     attach_function :cuOccupancyMaxActiveBlocksPerMultiprocessor, %i[int CUfunction int size_t], :CUresult
-    attach_function :cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags,
-                    %i[int CUfunction int size_t unsigned_int], :CUresult
-    attach_function :cuOccupancyMaxPotentialBlockSize,
-                    %i[int int CUfunction CUoccupancyB2DSize size_t int], :CUresult
-    attach_function :cuOccupancyMaxPotentialBlockSizeWithFlags,
-                    %i[int int CUfunction CUoccupancyB2DSize size_t int unsigned_int], :CUresult
+    attach_function :cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags, %i[int CUfunction int size_t unsigned_int], :CUresult
+    attach_function :cuOccupancyMaxPotentialBlockSize, %i[int int CUfunction CUoccupancyB2DSize size_t int], :CUresult
+    attach_function :cuOccupancyMaxPotentialBlockSizeWithFlags, %i[int int CUfunction CUoccupancyB2DSize size_t int unsigned_int], :CUresult
     attach_function :cuOccupancyAvailableDynamicSMemPerBlock, %i[size_t CUfunction int int], :CUresult
     attach_function :cuTexRefSetArray, %i[CUtexref CUarray unsigned_int], :CUresult
     attach_function :cuTexRefSetMipmappedArray, %i[CUtexref CUmipmappedArray unsigned_int], :CUresult
     attach_function :cuTexRefSetAddress_v2, %i[size_t CUtexref CUdeviceptr size_t], :CUresult
-    attach_function :cuTexRefSetAddress2D_v3, %i[CUtexref CUDA_ARRAY_DESCRIPTOR CUdeviceptr size_t],
-                    :CUresult
+    attach_function :cuTexRefSetAddress2D_v3, %i[CUtexref CUDA_ARRAY_DESCRIPTOR CUdeviceptr size_t], :CUresult
     attach_function :cuTexRefSetFormat, %i[CUtexref CUarray_format int], :CUresult
     attach_function :cuTexRefSetAddressMode, %i[CUtexref int CUaddress_mode], :CUresult
     attach_function :cuTexRefSetFilterMode, %i[CUtexref CUfilter_mode], :CUresult
@@ -990,8 +1109,7 @@ module Cuda
     attach_function :cuTexRefDestroy, [:CUtexref], :CUresult
     attach_function :cuSurfRefSetArray, %i[CUsurfref CUarray unsigned_int], :CUresult
     attach_function :cuSurfRefGetArray, %i[CUarray CUsurfref], :CUresult
-    attach_function :cuTexObjectCreate,
-                    %i[CUtexObject CUDA_RESOURCE_DESC CUDA_TEXTURE_DESC CUDA_RESOURCE_VIEW_DESC], :CUresult
+    attach_function :cuTexObjectCreate, %i[CUtexObject CUDA_RESOURCE_DESC CUDA_TEXTURE_DESC CUDA_RESOURCE_VIEW_DESC], :CUresult
     attach_function :cuTexObjectDestroy, [:CUtexObject], :CUresult
     attach_function :cuTexObjectGetResourceDesc, %i[CUDA_RESOURCE_DESC CUtexObject], :CUresult
     attach_function :cuTexObjectGetTextureDesc, %i[CUDA_TEXTURE_DESC CUtexObject], :CUresult
@@ -1004,12 +1122,9 @@ module Cuda
     attach_function :cuCtxDisablePeerAccess, [:CUcontext], :CUresult
     attach_function :cuDeviceGetP2PAttribute, %i[int CUdevice_P2PAttribute CUdevice CUdevice], :CUresult
     attach_function :cuGraphicsUnregisterResource, [:CUgraphicsResource], :CUresult
-    attach_function :cuGraphicsSubResourceGetMappedArray,
-                    %i[CUarray CUgraphicsResource unsigned_int unsigned_int], :CUresult
-    attach_function :cuGraphicsResourceGetMappedMipmappedArray, %i[CUmipmappedArray CUgraphicsResource],
-                    :CUresult
-    attach_function :cuGraphicsResourceGetMappedPointer_v2, %i[CUdeviceptr size_t CUgraphicsResource],
-                    :CUresult
+    attach_function :cuGraphicsSubResourceGetMappedArray, %i[CUarray CUgraphicsResource unsigned_int unsigned_int], :CUresult
+    attach_function :cuGraphicsResourceGetMappedMipmappedArray, %i[CUmipmappedArray CUgraphicsResource], :CUresult
+    attach_function :cuGraphicsResourceGetMappedPointer_v2, %i[CUdeviceptr size_t CUgraphicsResource], :CUresult
     attach_function :cuGraphicsResourceSetMapFlags_v2, %i[CUgraphicsResource unsigned_int], :CUresult
     attach_function :cuGraphicsMapResources, %i[unsigned_int CUgraphicsResource CUstream], :CUresult
     attach_function :cuGraphicsUnmapResources, %i[unsigned_int CUgraphicsResource CUstream], :CUresult
