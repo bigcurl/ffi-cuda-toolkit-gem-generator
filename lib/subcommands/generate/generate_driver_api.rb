@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class GenerateDriverApiCastxml < ApplicationSubcommand
+class GenerateDriverApi < ApplicationSubcommand
   def execute
     @logger = Logger.new($stdout)
     @logger.info 'Start generate-driver-api-xml subcommand'
@@ -43,14 +43,17 @@ class GenerateDriverApiCastxml < ApplicationSubcommand
       typedefs_definition = Parser.parse_typedefs_definition(xml_doc, file_id)
 
       # TODO: Parse Union
-      # unions_definition = Parser.parse_unions_definition(xml_doc, file_id)
+      unions_definition = Parser.parse_unions_definition(xml_doc, file_id)
 
       # TODO: Parse Struct
       # structs_definition = Parser.parse_structs_definition(xml_doc, file_id)
 
+      # TODO: Parse FunctionTypes
+      # structs_definition = Parser.parse_structs_definition(xml_doc, file_id)
+
       # Store on disk
       store_definitions_on_disk(cuda_version, functions_definition, enums_definition, fundamental_type_definition,
-                                typedefs_definition)
+                                typedefs_definition, unions_definition)
 
       @logger.info "End parsing CUDA version #{cuda_version}"
     end
@@ -58,7 +61,7 @@ class GenerateDriverApiCastxml < ApplicationSubcommand
     @logger.info 'End generate-driver-api subcommand'
   end
 
-  def store_definitions_on_disk(cuda_version, functions, enums, fundamental_types, typedefs)
+  def store_definitions_on_disk(cuda_version, functions, enums, fundamental_types, typedefs, unions)
     wrapper_template = %(
       # rubocop:disable Naming/VariableNumber
       # rubocop:disable Metrics/ModuleLength
@@ -72,7 +75,17 @@ class GenerateDriverApiCastxml < ApplicationSubcommand
             binary_path = binary_list[1] unless binary_list[1].nil?
             ffi_lib binary_path
 
-            # TODO: Missing Unions, Structs, FunctionTypes
+            # TODO: Missing Structs, FunctionTypes
+
+            # Unions
+            <% for union in unions %>
+            class <%= union[:name] %> < FFI::Union
+              <% for field in union[:fields] %>
+              layout :<%= field[:type_name] %>, :<%= field[:name] %>
+              <% end %>
+            end
+
+            <% end %>
 
             # Fundamental Typedefs
             <% for fundamental_type in fundamental_types %>
@@ -114,7 +127,8 @@ class GenerateDriverApiCastxml < ApplicationSubcommand
       fundamental_types: fundamental_types,
       functions: functions,
       enums: enums,
-      typedefs: typedefs
+      typedefs: typedefs,
+      unions: unions
     ).instance_eval(template)
 
     file_name = 'driver_api.rb'

@@ -28,6 +28,6 @@ Clamp do
   end
 
   subcommand 'generate', 'Generator subcommand' do
-    subcommand 'driver-api-xml', 'Generates the driver api from castxml output', GenerateDriverApiCastxml
+    subcommand 'driver-api', 'Generates the driver api from castxml output', GenerateDriverApi
   end
 end

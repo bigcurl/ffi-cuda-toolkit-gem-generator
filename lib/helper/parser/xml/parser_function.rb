@@ -7,18 +7,18 @@ module Parser
     xml_doc.xpath("//Function[@file='#{file_id}']").each do |function|
       args = function.xpath('Argument').map do |arg|
         type_id = arg.attr('type')
-        type_element = xml_doc.at_xpath("//*[@id='#{type_id}']")
+        element = xml_doc.at_xpath("//*[@id='#{type_id}']")
 
         type_name = nil
 
         while type_name.nil?
-          case type_element.name
+          case element.name
           when 'Struct', 'Typedef', 'FundamentalType', 'Enumeration', 'Union'
-            type_name = type_element.attr('name')
+            type_name = element.attr('name')
           when 'FunctionType'
             type_name = 'pointer' # TODO: Build FunctionType. Parse seperatly?
           else
-            type_element = xml_doc.at_xpath("//*[@id='#{type_element.attr('type')}']")
+            element = xml_doc.at_xpath("//*[@id='#{element.attr('type')}']")
           end
         end
 
