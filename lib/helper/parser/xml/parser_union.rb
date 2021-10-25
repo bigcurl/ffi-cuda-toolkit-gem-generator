@@ -5,9 +5,9 @@ module Parser
     unions = []
 
     xml_doc.xpath("//Union[@file='#{file_id}']").each do |union|
-      member_ids = union.attr('members').split
-      fields = member_ids.map do |member_id|
-      end
+      # member_ids = union.attr('members').split
+      # fields = member_ids.map do |member_id|
+      # end
 
       unions << {
         id: union.attr('id'),

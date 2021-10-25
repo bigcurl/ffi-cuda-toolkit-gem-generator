@@ -72,9 +72,16 @@ class GenerateDriverApiCastxml < ApplicationSubcommand
             binary_path = binary_list[1] unless binary_list[1].nil?
             ffi_lib binary_path
 
+            # TODO: Missing Unions, Structs, FunctionTypes
+
+            # Fundamental Typedefs
+            <% for fundamental_type in fundamental_types %>
+            typedef :<%= fundamental_type[:ffi_type] %>, :<%= fundamental_type[:name].gsub(' ', '_') %>
+            <% end %>
+
             # Typedefs
-            <% for type in fundamental_types %>
-            typedef :<%= type[:type_name] %>, :<%= type[:name].gsub(' ', '_') %>
+            <% for typedef in typedefs %>
+            typedef :<%= typedef[:type_name].gsub(' ', '_') %>, :<%= typedef[:name].gsub(' ', '_') %>
             <% end %>
 
             # Enums
