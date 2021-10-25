@@ -20,4 +20,4 @@ unless File.exist? binary_path
   exit(-1)
 end
 
-require_relative 'cuda/11.5.0/driver/wrapper'
+require_relative 'cuda/11.5.0/driver_api'

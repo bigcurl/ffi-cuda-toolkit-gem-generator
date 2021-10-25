@@ -5,8 +5,6 @@ require 'ffi'
 # Version
 require_relative 'cuda/version'
 
-# Driver API
-
 # check if lib is available
 
 binary_path = '/usr/lib/x86_64-linux-gnu/libcuda.so'
@@ -20,4 +18,4 @@ unless File.exist? binary_path
   exit(-1)
 end
 
-require_relative 'cuda/11.5.0/driver/wrapper'
+require_relative 'cuda/11.5.0/driver_api'

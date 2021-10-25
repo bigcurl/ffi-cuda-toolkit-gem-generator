@@ -102,7 +102,7 @@ class GenerateDriverApiCastxml < ApplicationSubcommand
     )
 
     # create module folder
-    gem_folder_path = File.join('gem', 'cuda', 'lib', 'cuda', cuda_version, 'driver')
+    gem_folder_path = File.join('gem', 'cuda', 'lib', 'cuda', cuda_version)
     FileUtils.mkdir_p gem_folder_path
 
     template = Erubi::Engine.new(wrapper_template).src
@@ -117,7 +117,7 @@ class GenerateDriverApiCastxml < ApplicationSubcommand
       typedefs: typedefs
     ).instance_eval(template)
 
-    file_name = 'wrapper.rb'
+    file_name = 'driver_api.rb'
     File.open(File.join(gem_folder_path, file_name), 'w') do |file|
       file.write(br)
     end
