@@ -80,9 +80,7 @@ class GenerateDriverApi < ApplicationSubcommand
             # Unions
             <% for union in unions %>
             class <%= union[:name] %> < FFI::Union
-              <% for field in union[:fields] %>
-              layout :<%= field[:type_name] %>, :<%= field[:name] %>
-              <% end %>
+              layout <%= union[:fields_string] %>
             end
 
             <% end %>
@@ -122,6 +120,7 @@ class GenerateDriverApi < ApplicationSubcommand
 
     enums = stringify_enum_types(enums)
     functions = stringify_function_types(functions)
+    unions = stringify_union_types(unions)
 
     br = OpenStruct.new(
       fundamental_types: fundamental_types,
@@ -161,5 +160,19 @@ class GenerateDriverApi < ApplicationSubcommand
       ffi_type_function[:arguments_string] = args_string.join(', ')
     end
     functions
+  end
+
+  def stringify_union_types(unions)
+    unions.each do |union|
+      fields = union[:fields].map do |union_field|
+        line = ''
+        line += ":#{union_field[:name]}"
+        line += ", #{union_field[:type_name]}"
+        line
+      end
+      union[:fields_string] = fields.join(",\n")
+    end
+
+    unions
   end
 end
