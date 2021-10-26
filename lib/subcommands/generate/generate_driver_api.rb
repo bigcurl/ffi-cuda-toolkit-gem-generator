@@ -46,7 +46,7 @@ class GenerateDriverApi < ApplicationSubcommand
       unions_definition = Parser.parse_unions_definition(xml_doc, file_id)
 
       # TODO: Parse Struct
-      # structs_definition = Parser.parse_structs_definition(xml_doc, file_id)
+      structs_definition = Parser.parse_structs_definition(xml_doc, file_id)
 
       # TODO: Parse FunctionTypes
       # structs_definition = Parser.parse_structs_definition(xml_doc, file_id)
