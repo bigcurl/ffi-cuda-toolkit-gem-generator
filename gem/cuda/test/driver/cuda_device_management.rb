@@ -25,19 +25,19 @@ class CudaDeviceManagementTest < Minitest::Test
 
   def test_cu_device_get_count
     count_pointer = FFI::MemoryPointer.new(:int, 1)
-    assert_equal(:CUDA_SUCCESS, Cuda::DriverApi.cuDeviceGetCount(count_pointer))
+    assert_equal(:success, Cuda::DriverApi.cuDeviceGetCount(count_pointer))
     refute_equal(0, count_pointer.read(:int))
   end
 
   def test_cu_device_get_success
     device_pointer = FFI::MemoryPointer.new(:int, 1)
-    assert_equal(:CUDA_SUCCESS, Cuda::DriverApi.cuDeviceGet(device_pointer, 0))
+    assert_equal(:success, Cuda::DriverApi.cuDeviceGet(device_pointer, 0))
     assert_equal(0, device_pointer.read(:int))
   end
 
   def test_cu_device_get_invalid_device
     device_pointer = FFI::MemoryPointer.new(:int, 1)
-    assert_equal(:CUDA_ERROR_INVALID_DEVICE, Cuda::DriverApi.cuDeviceGet(device_pointer, -1)) # invalid device number
+    assert_equal(:error_invalid_value, Cuda::DriverApi.cuDeviceGet(device_pointer, -1)) # invalid device number
     assert_equal(0, device_pointer.read(:int))
   end
 
@@ -46,7 +46,7 @@ class CudaDeviceManagementTest < Minitest::Test
     Cuda::DriverApi.cuDeviceGet(device_pointer, 0)
 
     size_pointer = FFI::MemoryPointer.new(:size_t, 1)
-    assert_equal(:CUDA_SUCCESS, Cuda::DriverApi.cuDeviceTotalMem(size_pointer, device_pointer.read(:int)))
+    assert_equal(:success, Cuda::DriverApi.cuDeviceTotalMem(size_pointer, device_pointer.read(:int)))
     assert_equal(0, size_pointer.read(:size_t))
   end
 end
