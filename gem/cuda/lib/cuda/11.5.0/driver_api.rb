@@ -12,7 +12,6 @@ module Cuda
     binary_path = binary_list[1] unless binary_list[1].nil?
     ffi_lib binary_path
 
-    # frozen_string_literal: true
     typedef :uint32, :cuuint32_t
     typedef :uint64, :cuuint64_t
     CUDA_VERSION = 11050
@@ -52,14 +51,12 @@ module Cuda
         :reserved, [:char, 64]
       )
     end
-    typedef CUipcEventHandleSt.by_value, :CUipcEventHandle_v1
     typedef :CUipcEventHandle_v1, :CUipcEventHandle
     class CUipcMemHandleSt < FFI::Struct
       layout(
         :reserved, [:char, 64]
       )
     end
-    typedef CUipcMemHandleSt.by_value, :CUipcMemHandle_v1
     typedef :CUipcMemHandle_v1, :CUipcMemHandle
     CU_IPC_MEM_LAZY_ENABLE_PEER_ACCESS = 0x1
     CUipcMem_flags_enum = enum :CUipcMem_flags, [
@@ -161,6 +158,16 @@ module Cuda
       :flush_remote_writes, 3
     ]
 
+    class CUstreamBatchMemOpParamsUnion < FFI::Union
+      layout(
+        :waitValue, CUstreamMemOpWaitValueParamsSt.by_value,
+        :writeValue, CUstreamMemOpWriteValueParamsSt.by_value,
+        :flushRemoteWrites, CUstreamMemOpFlushRemoteWritesParamsSt.by_value,
+        :operation, :CUstreamBatchMemOpType,
+        :pad, [:cuuint64_t, 6]
+      )
+    end
+
     class CUstreamMemOpWaitValueParamsSt < FFI::Struct
       layout(
         :operation, :CUstreamBatchMemOpType,
@@ -189,17 +196,6 @@ module Cuda
         :flags, :uint
       )
     end
-
-    class CUstreamBatchMemOpParamsUnion < FFI::Union
-      layout(
-        :waitValue, CUstreamMemOpWaitValueParamsSt.by_value,
-        :writeValue, CUstreamMemOpWriteValueParamsSt.by_value,
-        :flushRemoteWrites, CUstreamMemOpFlushRemoteWritesParamsSt.by_value,
-        :operation, :CUstreamBatchMemOpType,
-        :pad, [:cuuint64_t, 6]
-      )
-    end
-    typedef CUstreamBatchMemOpParamsUnion.by_value, :CUstreamBatchMemOpParams_v1
     typedef :CUstreamBatchMemOpParams_v1, :CUstreamBatchMemOpParams
     CU_OCCUPANCY_DEFAULT = 0x0
     CU_OCCUPANCY_DISABLE_CACHING_OVERRIDE = 0x1
@@ -575,7 +571,6 @@ module Cuda
         :textureAlign, :int
       )
     end
-    typedef CUdevpropSt.by_value, :CUdevprop_v1
     typedef :CUdevprop_v1, :CUdevprop
     CU_POINTER_ATTRIBUTE_CONTEXT = 1
     CU_POINTER_ATTRIBUTE_MEMORY_TYPE = 2
@@ -926,7 +921,6 @@ module Cuda
         :missProp, :CUaccessProperty
       )
     end
-    typedef CUaccessPolicyWindowSt.by_value, :CUaccessPolicyWindow_v1
     typedef :CUaccessPolicyWindow_v1, :CUaccessPolicyWindow
     class CUDAKERNELNODEPARAMSSt < FFI::Struct
       layout(
@@ -942,7 +936,6 @@ module Cuda
         :extra, :pointer
       )
     end
-    typedef CUDAKERNELNODEPARAMSSt.by_value, :CUDA_KERNEL_NODE_PARAMS_v1
     typedef :CUDA_KERNEL_NODE_PARAMS_v1, :CUDA_KERNEL_NODE_PARAMS
     class CUDAMEMSETNODEPARAMSSt < FFI::Struct
       layout(
@@ -954,7 +947,6 @@ module Cuda
         :height, :size_t
       )
     end
-    typedef CUDAMEMSETNODEPARAMSSt.by_value, :CUDA_MEMSET_NODE_PARAMS_v1
     typedef :CUDA_MEMSET_NODE_PARAMS_v1, :CUDA_MEMSET_NODE_PARAMS
     class CUDAHOSTNODEPARAMSSt < FFI::Struct
       layout(
@@ -968,7 +960,6 @@ module Cuda
 
       attr_reader :fn
     end
-    typedef CUDAHOSTNODEPARAMSSt.by_value, :CUDA_HOST_NODE_PARAMS_v1
     typedef :CUDA_HOST_NODE_PARAMS_v1, :CUDA_HOST_NODE_PARAMS
     CU_GRAPH_NODE_TYPE_KERNEL = 0
     CU_GRAPH_NODE_TYPE_MEMCPY = 1
@@ -1021,7 +1012,6 @@ module Cuda
         :cooperative, :int
       )
     end
-    typedef CUkernelNodeAttrValueUnion.by_value, :CUkernelNodeAttrValue_v1
     typedef :CUkernelNodeAttrValue_v1, :CUkernelNodeAttrValue
     CU_STREAM_CAPTURE_STATUS_NONE = 0
     CU_STREAM_CAPTURE_STATUS_ACTIVE = 1
@@ -1054,7 +1044,6 @@ module Cuda
         :syncPolicy, :CUsynchronizationPolicy
       )
     end
-    typedef CUstreamAttrValueUnion.by_value, :CUstreamAttrValue_v1
     typedef :CUstreamAttrValue_v1, :CUstreamAttrValue
     CU_GET_PROC_ADDRESS_DEFAULT = 0
     CU_GET_PROC_ADDRESS_LEGACY_STREAM = 1 << 0
@@ -1077,21 +1066,19 @@ module Cuda
         :val, :uint
       )
     end
-    typedef CUexecAffinitySmCountSt.by_value, :CUexecAffinitySmCount_v1
     typedef :CUexecAffinitySmCount_v1, :CUexecAffinitySmCount
+    class CUexecAffinityParamSt < FFI::Struct
+      layout(
+        :type, :CUexecAffinityType,
+        :param, CUexecAffinityParam_st_param
+      )
+    end
+
     class CUexecAffinityParamStParam < FFI::Union
       layout(
         :smCount, :CUexecAffinitySmCount
       )
     end
-
-    class CUexecAffinityParamSt < FFI::Struct
-      layout(
-        :type, :CUexecAffinityType,
-        :param, CUexecAffinityParamStParam
-      )
-    end
-    typedef CUexecAffinityParamSt.by_value, :CUexecAffinityParam_v1
     typedef :CUexecAffinityParam_v1, :CUexecAffinityParam
     CUDA_SUCCESS = 0
     CUDA_ERROR_INVALID_VALUE = 1
@@ -1312,7 +1299,6 @@ module Cuda
         :Height, :size_t
       )
     end
-    typedef CUDAMEMCPY2DSt.by_value, :CUDA_MEMCPY2D_v2
     typedef :CUDA_MEMCPY2D_v2, :CUDA_MEMCPY2D
     class CUDAMEMCPY3DSt < FFI::Struct
       layout(
@@ -1343,7 +1329,6 @@ module Cuda
         :Depth, :size_t
       )
     end
-    typedef CUDAMEMCPY3DSt.by_value, :CUDA_MEMCPY3D_v2
     typedef :CUDA_MEMCPY3D_v2, :CUDA_MEMCPY3D
     class CUDAMEMCPY3DPEERSt < FFI::Struct
       layout(
@@ -1374,7 +1359,6 @@ module Cuda
         :Depth, :size_t
       )
     end
-    typedef CUDAMEMCPY3DPEERSt.by_value, :CUDA_MEMCPY3D_PEER_v1
     typedef :CUDA_MEMCPY3D_PEER_v1, :CUDA_MEMCPY3D_PEER
     class CUDAARRAYDESCRIPTORSt < FFI::Struct
       layout(
@@ -1384,7 +1368,6 @@ module Cuda
         :NumChannels, :uint
       )
     end
-    typedef CUDAARRAYDESCRIPTORSt.by_value, :CUDA_ARRAY_DESCRIPTOR_v2
     typedef :CUDA_ARRAY_DESCRIPTOR_v2, :CUDA_ARRAY_DESCRIPTOR
     class CUDAARRAY3DDESCRIPTORSt < FFI::Struct
       layout(
@@ -1396,9 +1379,18 @@ module Cuda
         :Flags, :uint
       )
     end
-    typedef CUDAARRAY3DDESCRIPTORSt.by_value, :CUDA_ARRAY3D_DESCRIPTOR_v2
     typedef :CUDA_ARRAY3D_DESCRIPTOR_v2, :CUDA_ARRAY3D_DESCRIPTOR
     CU_ARRAY_SPARSE_PROPERTIES_SINGLE_MIPTAIL = 0x1
+    class CUDAARRAYSPARSEPROPERTIESSt < FFI::Struct
+      layout(
+        :tileExtent, CUDA_ARRAY_SPARSE_PROPERTIES_st_tileExtent,
+        :miptailFirstLevel, :uint,
+        :miptailSize, :ulong_long,
+        :flags, :uint,
+        :reserved, [:uint, 4]
+      )
+    end
+
     class CUDAARRAYSPARSEPROPERTIESStTileExtent < FFI::Struct
       layout(
         :width, :uint,
@@ -1406,18 +1398,25 @@ module Cuda
         :depth, :uint
       )
     end
-
-    class CUDAARRAYSPARSEPROPERTIESSt < FFI::Struct
+    typedef :CUDA_ARRAY_SPARSE_PROPERTIES_v1, :CUDA_ARRAY_SPARSE_PROPERTIES
+    class CUDARESOURCEDESCSt < FFI::Struct
       layout(
-        :tileExtent, CUDAARRAYSPARSEPROPERTIESStTileExtent,
-        :miptailFirstLevel, :uint,
-        :miptailSize, :ulong_long,
-        :flags, :uint,
-        :reserved, [:uint, 4]
+        :resType, :CUresourcetype,
+        :res, CUDA_RESOURCE_DESC_st_res,
+        :flags, :uint
       )
     end
-    typedef CUDAARRAYSPARSEPROPERTIESSt.by_value, :CUDA_ARRAY_SPARSE_PROPERTIES_v1
-    typedef :CUDA_ARRAY_SPARSE_PROPERTIES_v1, :CUDA_ARRAY_SPARSE_PROPERTIES
+
+    class CUDARESOURCEDESCStRes < FFI::Union
+      layout(
+        :array, CUDA_RESOURCE_DESC_st_res_array,
+        :mipmap, CUDA_RESOURCE_DESC_st_res_mipmap,
+        :linear, CUDA_RESOURCE_DESC_st_res_linear,
+        :pitch2D, CUDA_RESOURCE_DESC_st_res_pitch2D,
+        :reserved, CUDA_RESOURCE_DESC_st_res_reserved
+      )
+    end
+
     class CUDARESOURCEDESCStResReserved < FFI::Struct
       layout(
         :reserved, [:int, 32]
@@ -1455,25 +1454,6 @@ module Cuda
         :hArray, :CUarray
       )
     end
-
-    class CUDARESOURCEDESCStRes < FFI::Union
-      layout(
-        :array, CUDARESOURCEDESCStResArray,
-        :mipmap, CUDARESOURCEDESCStResMipmap,
-        :linear, CUDARESOURCEDESCStResLinear,
-        :pitch2D, CUDARESOURCEDESCStResPitch2D,
-        :reserved, CUDARESOURCEDESCStResReserved
-      )
-    end
-
-    class CUDARESOURCEDESCSt < FFI::Struct
-      layout(
-        :resType, :CUresourcetype,
-        :res, CUDARESOURCEDESCStRes,
-        :flags, :uint
-      )
-    end
-    typedef CUDARESOURCEDESCSt.by_value, :CUDA_RESOURCE_DESC_v1
     typedef :CUDA_RESOURCE_DESC_v1, :CUDA_RESOURCE_DESC
     class CUDATEXTUREDESCSt < FFI::Struct
       layout(
@@ -1489,7 +1469,6 @@ module Cuda
         :reserved, [:int, 12]
       )
     end
-    typedef CUDATEXTUREDESCSt.by_value, :CUDA_TEXTURE_DESC_v1
     typedef :CUDA_TEXTURE_DESC_v1, :CUDA_TEXTURE_DESC
     CU_RES_VIEW_FORMAT_NONE = 0x00
     CU_RES_VIEW_FORMAT_UINT_1X8 = 0x01
@@ -1577,7 +1556,6 @@ module Cuda
         :reserved, [:uint, 16]
       )
     end
-    typedef CUDARESOURCEVIEWDESCSt.by_value, :CUDA_RESOURCE_VIEW_DESC_v1
     typedef :CUDA_RESOURCE_VIEW_DESC_v1, :CUDA_RESOURCE_VIEW_DESC
     class CUDAPOINTERATTRIBUTEP2PTOKENSSt < FFI::Struct
       layout(
@@ -1585,7 +1563,6 @@ module Cuda
         :vaSpaceToken, :uint
       )
     end
-    typedef CUDAPOINTERATTRIBUTEP2PTOKENSSt.by_value, :CUDA_POINTER_ATTRIBUTE_P2P_TOKENS_v1
     typedef :CUDA_POINTER_ATTRIBUTE_P2P_TOKENS_v1, :CUDA_POINTER_ATTRIBUTE_P2P_TOKENS
     CU_POINTER_ATTRIBUTE_ACCESS_FLAG_NONE = 0x0
     CU_POINTER_ATTRIBUTE_ACCESS_FLAG_READ = 0x1
@@ -1610,7 +1587,6 @@ module Cuda
         :kernelParams, :pointer
       )
     end
-    typedef CUDALAUNCHPARAMSSt.by_value, :CUDA_LAUNCH_PARAMS_v1
     typedef :CUDA_LAUNCH_PARAMS_v1, :CUDA_LAUNCH_PARAMS
     CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD = 1
     CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32 = 2
@@ -1636,31 +1612,30 @@ module Cuda
     CUDA_EXTERNAL_SEMAPHORE_WAIT_SKIP_NVSCIBUF_MEMSYNC = 0x02
     CUDA_NVSCISYNC_ATTR_SIGNAL = 0x1
     CUDA_NVSCISYNC_ATTR_WAIT = 0x2
-    class CUDAEXTERNALMEMORYHANDLEDESCStHandleWin32 < FFI::Struct
+    class CUDAEXTERNALMEMORYHANDLEDESCSt < FFI::Struct
       layout(
-        :handle, :pointer,
-        :name, :pointer
+        :type, :CUexternalMemoryHandleType,
+        :handle, CUDA_EXTERNAL_MEMORY_HANDLE_DESC_st_handle,
+        :size, :ulong_long,
+        :flags, :uint,
+        :reserved, [:uint, 16]
       )
     end
 
     class CUDAEXTERNALMEMORYHANDLEDESCStHandle < FFI::Union
       layout(
         :fd, :int,
-        :win32, CUDAEXTERNALMEMORYHANDLEDESCStHandleWin32,
+        :win32, CUDA_EXTERNAL_MEMORY_HANDLE_DESC_st_handle_win32,
         :nvSciBufObject, :pointer
       )
     end
 
-    class CUDAEXTERNALMEMORYHANDLEDESCSt < FFI::Struct
+    class CUDAEXTERNALMEMORYHANDLEDESCStHandleWin32 < FFI::Struct
       layout(
-        :type, :CUexternalMemoryHandleType,
-        :handle, CUDAEXTERNALMEMORYHANDLEDESCStHandle,
-        :size, :ulong_long,
-        :flags, :uint,
-        :reserved, [:uint, 16]
+        :handle, :pointer,
+        :name, :pointer
       )
     end
-    typedef CUDAEXTERNALMEMORYHANDLEDESCSt.by_value, :CUDA_EXTERNAL_MEMORY_HANDLE_DESC_v1
     typedef :CUDA_EXTERNAL_MEMORY_HANDLE_DESC_v1, :CUDA_EXTERNAL_MEMORY_HANDLE_DESC
     class CUDAEXTERNALMEMORYBUFFERDESCSt < FFI::Struct
       layout(
@@ -1670,7 +1645,6 @@ module Cuda
         :reserved, [:uint, 16]
       )
     end
-    typedef CUDAEXTERNALMEMORYBUFFERDESCSt.by_value, :CUDA_EXTERNAL_MEMORY_BUFFER_DESC_v1
     typedef :CUDA_EXTERNAL_MEMORY_BUFFER_DESC_v1, :CUDA_EXTERNAL_MEMORY_BUFFER_DESC
     class CUDAEXTERNALMEMORYMIPMAPPEDARRAYDESCSt < FFI::Struct
       layout(
@@ -1680,7 +1654,6 @@ module Cuda
         :reserved, [:uint, 16]
       )
     end
-    typedef CUDAEXTERNALMEMORYMIPMAPPEDARRAYDESCSt.by_value, :CUDA_EXTERNAL_MEMORY_MIPMAPPED_ARRAY_DESC_v1
     typedef :CUDA_EXTERNAL_MEMORY_MIPMAPPED_ARRAY_DESC_v1, :CUDA_EXTERNAL_MEMORY_MIPMAPPED_ARRAY_DESC
     CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD = 1
     CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32 = 2
@@ -1705,31 +1678,47 @@ module Cuda
       :timeline_semaphore_win32, 10
     ]
 
-    class CUDAEXTERNALSEMAPHOREHANDLEDESCStHandleWin32 < FFI::Struct
+    class CUDAEXTERNALSEMAPHOREHANDLEDESCSt < FFI::Struct
       layout(
-        :handle, :pointer,
-        :name, :pointer
+        :type, :CUexternalSemaphoreHandleType,
+        :handle, CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC_st_handle,
+        :flags, :uint,
+        :reserved, [:uint, 16]
       )
     end
 
     class CUDAEXTERNALSEMAPHOREHANDLEDESCStHandle < FFI::Union
       layout(
         :fd, :int,
-        :win32, CUDAEXTERNALSEMAPHOREHANDLEDESCStHandleWin32,
+        :win32, CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC_st_handle_win32,
         :nvSciSyncObj, :pointer
       )
     end
 
-    class CUDAEXTERNALSEMAPHOREHANDLEDESCSt < FFI::Struct
+    class CUDAEXTERNALSEMAPHOREHANDLEDESCStHandleWin32 < FFI::Struct
       layout(
-        :type, :CUexternalSemaphoreHandleType,
-        :handle, CUDAEXTERNALSEMAPHOREHANDLEDESCStHandle,
+        :handle, :pointer,
+        :name, :pointer
+      )
+    end
+    typedef :CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC_v1, :CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC
+    class CUDAEXTERNALSEMAPHORESIGNALPARAMSSt < FFI::Struct
+      layout(
+        :params, CUDA_EXTERNAL_SEMAPHORE_SIGNAL_PARAMS_st_params,
         :flags, :uint,
         :reserved, [:uint, 16]
       )
     end
-    typedef CUDAEXTERNALSEMAPHOREHANDLEDESCSt.by_value, :CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC_v1
-    typedef :CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC_v1, :CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC
+
+    class CUDAEXTERNALSEMAPHORESIGNALPARAMSStParams < FFI::Struct
+      layout(
+        :fence, CUDA_EXTERNAL_SEMAPHORE_SIGNAL_PARAMS_st_params_fence,
+        :nvSciSync, CUDA_EXTERNAL_SEMAPHORE_SIGNAL_PARAMS_st_params_nvSciSync,
+        :keyedMutex, CUDA_EXTERNAL_SEMAPHORE_SIGNAL_PARAMS_st_params_keyedMutex,
+        :reserved, [:uint, 12]
+      )
+    end
+
     class CUDAEXTERNALSEMAPHORESIGNALPARAMSStParamsKeyedMutex < FFI::Struct
       layout(
         :key, :ulong_long
@@ -1748,25 +1737,24 @@ module Cuda
         :value, :ulong_long
       )
     end
-
-    class CUDAEXTERNALSEMAPHORESIGNALPARAMSStParams < FFI::Struct
+    typedef :CUDA_EXTERNAL_SEMAPHORE_SIGNAL_PARAMS_v1, :CUDA_EXTERNAL_SEMAPHORE_SIGNAL_PARAMS
+    class CUDAEXTERNALSEMAPHOREWAITPARAMSSt < FFI::Struct
       layout(
-        :fence, CUDAEXTERNALSEMAPHORESIGNALPARAMSStParamsFence,
-        :nvSciSync, CUDAEXTERNALSEMAPHORESIGNALPARAMSStParamsNvSciSync,
-        :keyedMutex, CUDAEXTERNALSEMAPHORESIGNALPARAMSStParamsKeyedMutex,
-        :reserved, [:uint, 12]
-      )
-    end
-
-    class CUDAEXTERNALSEMAPHORESIGNALPARAMSSt < FFI::Struct
-      layout(
-        :params, CUDAEXTERNALSEMAPHORESIGNALPARAMSStParams,
+        :params, CUDA_EXTERNAL_SEMAPHORE_WAIT_PARAMS_st_params,
         :flags, :uint,
         :reserved, [:uint, 16]
       )
     end
-    typedef CUDAEXTERNALSEMAPHORESIGNALPARAMSSt.by_value, :CUDA_EXTERNAL_SEMAPHORE_SIGNAL_PARAMS_v1
-    typedef :CUDA_EXTERNAL_SEMAPHORE_SIGNAL_PARAMS_v1, :CUDA_EXTERNAL_SEMAPHORE_SIGNAL_PARAMS
+
+    class CUDAEXTERNALSEMAPHOREWAITPARAMSStParams < FFI::Struct
+      layout(
+        :fence, CUDA_EXTERNAL_SEMAPHORE_WAIT_PARAMS_st_params_fence,
+        :nvSciSync, CUDA_EXTERNAL_SEMAPHORE_WAIT_PARAMS_st_params_nvSciSync,
+        :keyedMutex, CUDA_EXTERNAL_SEMAPHORE_WAIT_PARAMS_st_params_keyedMutex,
+        :reserved, [:uint, 10]
+      )
+    end
+
     class CUDAEXTERNALSEMAPHOREWAITPARAMSStParamsKeyedMutex < FFI::Struct
       layout(
         :key, :ulong_long,
@@ -1786,24 +1774,6 @@ module Cuda
         :value, :ulong_long
       )
     end
-
-    class CUDAEXTERNALSEMAPHOREWAITPARAMSStParams < FFI::Struct
-      layout(
-        :fence, CUDAEXTERNALSEMAPHOREWAITPARAMSStParamsFence,
-        :nvSciSync, CUDAEXTERNALSEMAPHOREWAITPARAMSStParamsNvSciSync,
-        :keyedMutex, CUDAEXTERNALSEMAPHOREWAITPARAMSStParamsKeyedMutex,
-        :reserved, [:uint, 10]
-      )
-    end
-
-    class CUDAEXTERNALSEMAPHOREWAITPARAMSSt < FFI::Struct
-      layout(
-        :params, CUDAEXTERNALSEMAPHOREWAITPARAMSStParams,
-        :flags, :uint,
-        :reserved, [:uint, 16]
-      )
-    end
-    typedef CUDAEXTERNALSEMAPHOREWAITPARAMSSt.by_value, :CUDA_EXTERNAL_SEMAPHORE_WAIT_PARAMS_v1
     typedef :CUDA_EXTERNAL_SEMAPHORE_WAIT_PARAMS_v1, :CUDA_EXTERNAL_SEMAPHORE_WAIT_PARAMS
     class CUDAEXTSEMSIGNALNODEPARAMSSt < FFI::Struct
       layout(
@@ -1812,7 +1782,6 @@ module Cuda
         :numExtSems, :uint
       )
     end
-    typedef CUDAEXTSEMSIGNALNODEPARAMSSt.by_value, :CUDA_EXT_SEM_SIGNAL_NODE_PARAMS_v1
     typedef :CUDA_EXT_SEM_SIGNAL_NODE_PARAMS_v1, :CUDA_EXT_SEM_SIGNAL_NODE_PARAMS
     class CUDAEXTSEMWAITNODEPARAMSSt < FFI::Struct
       layout(
@@ -1821,7 +1790,6 @@ module Cuda
         :numExtSems, :uint
       )
     end
-    typedef CUDAEXTSEMWAITNODEPARAMSSt.by_value, :CUDA_EXT_SEM_WAIT_NODE_PARAMS_v1
     typedef :CUDA_EXT_SEM_WAIT_NODE_PARAMS_v1, :CUDA_EXT_SEM_WAIT_NODE_PARAMS
     typedef :ulong_long, :CUmemGenericAllocationHandle_v1
     typedef :CUmemGenericAllocationHandle_v1, :CUmemGenericAllocationHandle
@@ -1893,9 +1861,32 @@ module Cuda
       :generic, 0
     ]
 
+    class CUarrayMapInfoSt < FFI::Struct
+      layout(
+        :resourceType, :CUresourcetype,
+        :resource, CUarrayMapInfo_st_resource,
+        :subresourceType, :CUarraySparseSubresourceType,
+        :subresource, CUarrayMapInfo_st_subresource,
+        :memOperationType, :CUmemOperationType,
+        :memHandleType, :CUmemHandleType,
+        :memHandle, CUarrayMapInfo_st_memHandle,
+        :offset, :ulong_long,
+        :deviceBitMask, :uint,
+        :flags, :uint,
+        :reserved, [:uint, 2]
+      )
+    end
+
     class CUarrayMapInfoStMemHandle < FFI::Union
       layout(
         :memHandle, :CUmemGenericAllocationHandle
+      )
+    end
+
+    class CUarrayMapInfoStSubresource < FFI::Union
+      layout(
+        :sparseLevel, CUarrayMapInfo_st_subresource_sparseLevel,
+        :miptail, CUarrayMapInfo_st_subresource_miptail
       )
     end
 
@@ -1920,36 +1911,12 @@ module Cuda
       )
     end
 
-    class CUarrayMapInfoStSubresource < FFI::Union
-      layout(
-        :sparseLevel, CUarrayMapInfoStSubresourceSparseLevel,
-        :miptail, CUarrayMapInfoStSubresourceMiptail
-      )
-    end
-
     class CUarrayMapInfoStResource < FFI::Union
       layout(
         :mipmap, :CUmipmappedArray,
         :array, :CUarray
       )
     end
-
-    class CUarrayMapInfoSt < FFI::Struct
-      layout(
-        :resourceType, :CUresourcetype,
-        :resource, CUarrayMapInfoStResource,
-        :subresourceType, :CUarraySparseSubresourceType,
-        :subresource, CUarrayMapInfoStSubresource,
-        :memOperationType, :CUmemOperationType,
-        :memHandleType, :CUmemHandleType,
-        :memHandle, CUarrayMapInfoStMemHandle,
-        :offset, :ulong_long,
-        :deviceBitMask, :uint,
-        :flags, :uint,
-        :reserved, [:uint, 2]
-      )
-    end
-    typedef CUarrayMapInfoSt.by_value, :CUarrayMapInfo_v1
     typedef :CUarrayMapInfo_v1, :CUarrayMapInfo
     class CUmemLocationSt < FFI::Struct
       layout(
@@ -1957,7 +1924,6 @@ module Cuda
         :id, :int
       )
     end
-    typedef CUmemLocationSt.by_value, :CUmemLocation_v1
     typedef :CUmemLocation_v1, :CUmemLocation
     CU_MEM_ALLOCATION_COMP_NONE = 0x0
     CU_MEM_ALLOCATION_COMP_GENERIC = 0x1
@@ -1967,6 +1933,16 @@ module Cuda
     ]
 
     CU_MEM_CREATE_USAGE_TILE_POOL = 0x1
+    class CUmemAllocationPropSt < FFI::Struct
+      layout(
+        :type, :CUmemAllocationType,
+        :requestedHandleTypes, :CUmemAllocationHandleType,
+        :location, :CUmemLocation,
+        :win32HandleMetaData, :pointer,
+        :allocFlags, CUmemAllocationProp_st_allocFlags
+      )
+    end
+
     class CUmemAllocationPropStAllocFlags < FFI::Struct
       layout(
         :compressionType, :uchar,
@@ -1975,17 +1951,6 @@ module Cuda
         :reserved, [:uchar, 4]
       )
     end
-
-    class CUmemAllocationPropSt < FFI::Struct
-      layout(
-        :type, :CUmemAllocationType,
-        :requestedHandleTypes, :CUmemAllocationHandleType,
-        :location, :CUmemLocation,
-        :win32HandleMetaData, :pointer,
-        :allocFlags, CUmemAllocationPropStAllocFlags
-      )
-    end
-    typedef CUmemAllocationPropSt.by_value, :CUmemAllocationProp_v1
     typedef :CUmemAllocationProp_v1, :CUmemAllocationProp
     class CUmemAccessDescSt < FFI::Struct
       layout(
@@ -1993,7 +1958,6 @@ module Cuda
         :flags, :CUmemAccess_flags
       )
     end
-    typedef CUmemAccessDescSt.by_value, :CUmemAccessDesc_v1
     typedef :CUmemAccessDesc_v1, :CUmemAccessDesc
     CU_GRAPH_EXEC_UPDATE_SUCCESS = 0x0
     CU_GRAPH_EXEC_UPDATE_ERROR = 0x1
@@ -2042,14 +2006,12 @@ module Cuda
         :reserved, [:uchar, 64]
       )
     end
-    typedef CUmemPoolPropsSt.by_value, :CUmemPoolProps_v1
     typedef :CUmemPoolProps_v1, :CUmemPoolProps
     class CUmemPoolPtrExportDataSt < FFI::Struct
       layout(
         :reserved, [:uchar, 64]
       )
     end
-    typedef CUmemPoolPtrExportDataSt.by_value, :CUmemPoolPtrExportData_v1
     typedef :CUmemPoolPtrExportData_v1, :CUmemPoolPtrExportData
     class CUDAMEMALLOCNODEPARAMSSt < FFI::Struct
       layout(
