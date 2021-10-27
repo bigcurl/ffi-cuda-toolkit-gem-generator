@@ -15,7 +15,7 @@ class CudaInitializationTest < Minitest::Test
   # where the value is returned
   # def test_cu_init_shall_be_called_before_any_other_call
   #   count_pointer = FFI::MemoryPointer.new(:int, 1)
-  #   assert_equal(:CUDA_ERROR_NOT_INITIALIZED, Cuda::DriverApi.cuDeviceGetCount(count_pointer))
+  #   assert_equal(:error_invalid_value, Cuda::DriverApi.cuDeviceGetCount(count_pointer))
   #   assert_equal(0, count_pointer.read(:int))
   # end
 end
