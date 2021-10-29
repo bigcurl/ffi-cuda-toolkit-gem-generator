@@ -28,7 +28,7 @@ module Parser
           when 'Union'
             union_member_ids = element.attr('members').split
             fields = union_member_ids.map do |union_member_id|
-              field_element = xml_doc.at_xpath("//*[@id='#{union_member_id}']") 
+              field_element = xml_doc.at_xpath("//*[@id='#{union_member_id}']")
               field_name = field_element.attr('name')
 
               field_type_name = nil
@@ -46,12 +46,12 @@ module Parser
               ":#{field_name}, #{field_type_name}"
             end
 
-            name = ":union" 
-            type_name = "".dup # can't modify frozen String that is why we call dup
+            name = ':union'
+            type_name = ''.dup # can't modify frozen String that is why we call dup
             type_name << "Class.new(FFI::Union) do \n"
-            type_name <<  'layout '
+            type_name << 'layout '
             type_name << fields.join(", \n")
-            type_name <<  "\n end"
+            type_name << "\n end"
             type_name << "\n"
           when 'Typedef', 'FundamentalType', 'Enumeration'
             type_name = element.attr('name')
