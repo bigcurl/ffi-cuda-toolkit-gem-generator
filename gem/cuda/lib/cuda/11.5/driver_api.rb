@@ -12,7 +12,6 @@ module Cuda
     binary_path = binary_list[1] unless binary_list[1].nil?
     ffi_lib binary_path
 
-    # frozen_string_literal: true
     typedef :uint32, :cuuint32_t
     typedef :uint64, :cuuint64_t
     CUDA_VERSION = 11050
@@ -2165,10 +2164,17 @@ module Cuda
     attach_function :cuDriverGetVersion, :cuDriverGetVersion, [:pointer], :CUresult
     attach_function :cuDeviceGet, :cuDeviceGet, %i[pointer int], :CUresult
     attach_function :cuDeviceGetCount, :cuDeviceGetCount, [:pointer], :CUresult
+<<<<<<< HEAD
     attach_function :cuDeviceGetName, :cuDeviceGetName, %i[string int CUdevice], :CUresult
     attach_function :cuDeviceGetUuid, :cuDeviceGetUuid, %i[pointer CUdevice], :CUresult
     attach_function :cuDeviceGetUuid_v2, :cuDeviceGetUuid_v2, %i[pointer CUdevice], :CUresult
     attach_function :cuDeviceGetLuid, :cuDeviceGetLuid, %i[string pointer CUdevice], :CUresult
+=======
+    attach_function :cuDeviceGetName, :cuDeviceGetName, %i[pointer int CUdevice], :CUresult
+    attach_function :cuDeviceGetUuid, :cuDeviceGetUuid, %i[pointer CUdevice], :CUresult
+    attach_function :cuDeviceGetUuid_v2, :cuDeviceGetUuid_v2, %i[pointer CUdevice], :CUresult
+    attach_function :cuDeviceGetLuid, :cuDeviceGetLuid, %i[pointer pointer CUdevice], :CUresult
+>>>>>>> ab399306e6cc00de7ba3e6c210b5a08988f6b623
     attach_function :cuDeviceTotalMem_v2, :cuDeviceTotalMem_v2, %i[pointer CUdevice], :CUresult
     attach_function :cuDeviceGetTexture1DLinearMaxWidth, :cuDeviceGetTexture1DLinearMaxWidth, %i[pointer CUarray_format uint CUdevice], :CUresult
     attach_function :cuDeviceGetAttribute, :cuDeviceGetAttribute, %i[pointer CUdevice_attribute CUdevice], :CUresult
@@ -2207,11 +2213,16 @@ module Cuda
     attach_function :cuCtxGetExecAffinity, :cuCtxGetExecAffinity, %i[pointer CUexecAffinityType], :CUresult
     attach_function :cuCtxAttach, :cuCtxAttach, %i[pointer uint], :CUresult
     attach_function :cuCtxDetach, :cuCtxDetach, [:CUcontext], :CUresult
+<<<<<<< HEAD
     attach_function :cuModuleLoad, :cuModuleLoad, %i[pointer string], :CUresult
+=======
+    attach_function :cuModuleLoad, :cuModuleLoad, %i[pointer pointer], :CUresult
+>>>>>>> ab399306e6cc00de7ba3e6c210b5a08988f6b623
     attach_function :cuModuleLoadData, :cuModuleLoadData, %i[pointer pointer], :CUresult
     attach_function :cuModuleLoadDataEx, :cuModuleLoadDataEx, %i[pointer pointer uint pointer pointer], :CUresult
     attach_function :cuModuleLoadFatBinary, :cuModuleLoadFatBinary, %i[pointer pointer], :CUresult
     attach_function :cuModuleUnload, :cuModuleUnload, [:CUmodule], :CUresult
+<<<<<<< HEAD
     attach_function :cuModuleGetFunction, :cuModuleGetFunction, %i[pointer CUmodule string], :CUresult
     attach_function :cuModuleGetGlobal_v2, :cuModuleGetGlobal_v2, %i[pointer pointer CUmodule string], :CUresult
     attach_function :cuModuleGetTexRef, :cuModuleGetTexRef, %i[pointer CUmodule string], :CUresult
@@ -2219,6 +2230,15 @@ module Cuda
     attach_function :cuLinkCreate_v2, :cuLinkCreate_v2, %i[uint pointer pointer pointer], :CUresult
     attach_function :cuLinkAddData_v2, :cuLinkAddData_v2, %i[CUlinkState CUjitInputType pointer size_t string uint pointer pointer], :CUresult
     attach_function :cuLinkAddFile_v2, :cuLinkAddFile_v2, %i[CUlinkState CUjitInputType string uint pointer pointer], :CUresult
+=======
+    attach_function :cuModuleGetFunction, :cuModuleGetFunction, %i[pointer CUmodule pointer], :CUresult
+    attach_function :cuModuleGetGlobal_v2, :cuModuleGetGlobal_v2, %i[pointer pointer CUmodule pointer], :CUresult
+    attach_function :cuModuleGetTexRef, :cuModuleGetTexRef, %i[pointer CUmodule pointer], :CUresult
+    attach_function :cuModuleGetSurfRef, :cuModuleGetSurfRef, %i[pointer CUmodule pointer], :CUresult
+    attach_function :cuLinkCreate_v2, :cuLinkCreate_v2, %i[uint pointer pointer pointer], :CUresult
+    attach_function :cuLinkAddData_v2, :cuLinkAddData_v2, %i[CUlinkState CUjitInputType pointer size_t pointer uint pointer pointer], :CUresult
+    attach_function :cuLinkAddFile_v2, :cuLinkAddFile_v2, %i[CUlinkState CUjitInputType pointer uint pointer pointer], :CUresult
+>>>>>>> ab399306e6cc00de7ba3e6c210b5a08988f6b623
     attach_function :cuLinkComplete, :cuLinkComplete, %i[CUlinkState pointer pointer], :CUresult
     attach_function :cuLinkDestroy, :cuLinkDestroy, [:CUlinkState], :CUresult
     attach_function :cuMemGetInfo_v2, :cuMemGetInfo_v2, %i[pointer pointer], :CUresult
@@ -2232,8 +2252,13 @@ module Cuda
     attach_function :cuMemHostGetDevicePointer_v2, :cuMemHostGetDevicePointer_v2, %i[pointer pointer uint], :CUresult
     attach_function :cuMemHostGetFlags, :cuMemHostGetFlags, %i[pointer pointer], :CUresult
     attach_function :cuMemAllocManaged, :cuMemAllocManaged, %i[pointer size_t uint], :CUresult
+<<<<<<< HEAD
     attach_function :cuDeviceGetByPCIBusId, :cuDeviceGetByPCIBusId, %i[pointer string], :CUresult
     attach_function :cuDeviceGetPCIBusId, :cuDeviceGetPCIBusId, %i[string int CUdevice], :CUresult
+=======
+    attach_function :cuDeviceGetByPCIBusId, :cuDeviceGetByPCIBusId, %i[pointer pointer], :CUresult
+    attach_function :cuDeviceGetPCIBusId, :cuDeviceGetPCIBusId, %i[pointer int CUdevice], :CUresult
+>>>>>>> ab399306e6cc00de7ba3e6c210b5a08988f6b623
     attach_function :cuIpcGetEventHandle, :cuIpcGetEventHandle, %i[pointer CUevent], :CUresult
     attach_function :cuIpcOpenEventHandle, :cuIpcOpenEventHandle, %i[pointer CUipcEventHandle], :CUresult
     attach_function :cuIpcGetMemHandle, :cuIpcGetMemHandle, %i[pointer CUdeviceptr], :CUresult
@@ -2429,7 +2454,11 @@ module Cuda
     attach_function :cuGraphAddDependencies, :cuGraphAddDependencies, %i[CUgraph pointer pointer size_t], :CUresult
     attach_function :cuGraphRemoveDependencies, :cuGraphRemoveDependencies, %i[CUgraph pointer pointer size_t], :CUresult
     attach_function :cuGraphDestroyNode, :cuGraphDestroyNode, [:CUgraphNode], :CUresult
+<<<<<<< HEAD
     attach_function :cuGraphInstantiate_v2, :cuGraphInstantiate_v2, %i[pointer CUgraph pointer string size_t], :CUresult
+=======
+    attach_function :cuGraphInstantiate_v2, :cuGraphInstantiate_v2, %i[pointer CUgraph pointer pointer size_t], :CUresult
+>>>>>>> ab399306e6cc00de7ba3e6c210b5a08988f6b623
     attach_function :cuGraphInstantiateWithFlags, :cuGraphInstantiateWithFlags, %i[pointer CUgraph ulong_long], :CUresult
     attach_function :cuGraphExecKernelNodeSetParams, :cuGraphExecKernelNodeSetParams, %i[CUgraphExec CUgraphNode pointer], :CUresult
     attach_function :cuGraphExecMemcpyNodeSetParams, :cuGraphExecMemcpyNodeSetParams, %i[CUgraphExec CUgraphNode pointer CUcontext], :CUresult
@@ -2448,7 +2477,11 @@ module Cuda
     attach_function :cuGraphKernelNodeCopyAttributes, :cuGraphKernelNodeCopyAttributes, %i[CUgraphNode CUgraphNode], :CUresult
     attach_function :cuGraphKernelNodeGetAttribute, :cuGraphKernelNodeGetAttribute, %i[CUgraphNode CUkernelNodeAttrID pointer], :CUresult
     attach_function :cuGraphKernelNodeSetAttribute, :cuGraphKernelNodeSetAttribute, %i[CUgraphNode CUkernelNodeAttrID pointer], :CUresult
+<<<<<<< HEAD
     attach_function :cuGraphDebugDotPrint, :cuGraphDebugDotPrint, %i[CUgraph string uint], :CUresult
+=======
+    attach_function :cuGraphDebugDotPrint, :cuGraphDebugDotPrint, %i[CUgraph pointer uint], :CUresult
+>>>>>>> ab399306e6cc00de7ba3e6c210b5a08988f6b623
     attach_function :cuUserObjectCreate, :cuUserObjectCreate, [:pointer, :pointer, Callback_CUhostFn, :uint, :uint], :CUresult
     attach_function :cuUserObjectRetain, :cuUserObjectRetain, %i[CUuserObject uint], :CUresult
     attach_function :cuUserObjectRelease, :cuUserObjectRelease, %i[CUuserObject uint], :CUresult
@@ -2507,7 +2540,11 @@ module Cuda
     attach_function :cuGraphicsResourceSetMapFlags_v2, :cuGraphicsResourceSetMapFlags_v2, %i[CUgraphicsResource uint], :CUresult
     attach_function :cuGraphicsMapResources, :cuGraphicsMapResources, %i[uint pointer CUstream], :CUresult
     attach_function :cuGraphicsUnmapResources, :cuGraphicsUnmapResources, %i[uint pointer CUstream], :CUresult
+<<<<<<< HEAD
     attach_function :cuGetProcAddress, :cuGetProcAddress, %i[string pointer int cuuint64_t], :CUresult
+=======
+    attach_function :cuGetProcAddress, :cuGetProcAddress, %i[pointer pointer int cuuint64_t], :CUresult
+>>>>>>> ab399306e6cc00de7ba3e6c210b5a08988f6b623
     attach_function :cuGetExportTable, :cuGetExportTable, %i[pointer pointer], :CUresult
   end
 end

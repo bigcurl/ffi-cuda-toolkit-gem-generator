@@ -19,7 +19,6 @@ require 'test_helper'
 # cuDeviceSetMemPool ( CUdevice dev, CUmemoryPool pool )
 
 class CudaDeviceManagementTest < Minitest::Test
-
   @@device_pointer = FFI::MemoryPointer.new(:int, 1)
 
   def setup
@@ -53,35 +52,31 @@ class CudaDeviceManagementTest < Minitest::Test
 
   def test_cu_device_get_name
     len = 100
-    name = ''
-    # FIXME: name should be pointer
-    # name = FFI::MemoryPointer.new(100)
+    name = FFI::MemoryPointer.new(100)
     assert_equal(:success, Cuda::DriverApi.cuDeviceGetName(name, len, @@device_pointer.read(:int)))
-    refute_equal(0, name.size())
-    # refute_equal(0, name.read_string().size())
+    refute_equal(0, name.read_string.size)
     # puts "CUDA driver name: #{name.read_string()}"
   end
 
   def test_cu_device_get_uuid
     device_uuid_ptr = FFI::MemoryPointer.new :pointer
     assert_equal(:success, Cuda::DriverApi.cuDeviceGetUuid(device_uuid_ptr, @@device_pointer.read(:int)))
-    refute_equal(nil, device_uuid_ptr.read_pointer())
+    refute_nil(device_uuid_ptr.read_pointer)
   end
 
   def test_cu_device_get_uuid_v2
     device_uuid_ptr = FFI::MemoryPointer.new :pointer
     assert_equal(:success, Cuda::DriverApi.cuDeviceGetUuid_v2(device_uuid_ptr, @@device_pointer.read(:int)))
-    refute_equal(nil, device_uuid_ptr.read_pointer())
+    refute_nil(device_uuid_ptr.read_pointer)
   end
 
   def test_cu_device_get_luid
-    device_node_mask_ptr = FFI::MemoryPointer.new(:uint, 1)
-    luid = ''
-    # FIXME: luid should be pointer instead of string
-    # luid = FFI::MemoryPointer.new(100)
-
-    # FIXME: returns error_not_supported
-    assert_equal(:success, Cuda::DriverApi.cuDeviceGetLuid(luid, device_node_mask_ptr, @@device_pointer.read(:int)))
+    device_node_mask_ptr = FFI::MemoryPointer.new :pointer
+    luid = FFI::MemoryPointer.new :pointer
+    # FIXME: returns error_not_supported.
+    # Sam: Same for me, it is also not supported on my device
+    # assert_equal(:success, Cuda::DriverApi.cuDeviceGetLuid(luid, device_node_mask_ptr, @@device_pointer.read(:int)))
+    assert_equal(:error_not_supported, Cuda::DriverApi.cuDeviceGetLuid(luid, device_node_mask_ptr, @@device_pointer.read(:int)))
   end
 
   def test_cu_device_get_default_mem_pool
@@ -99,10 +94,9 @@ class CudaDeviceManagementTest < Minitest::Test
   end
 
   def test_cu_device_get_texture_1d_linear_max_width
-    max_width_in_elements_ptr = FFI::MemoryPointer,new(:size_t, 1)
-
+    max_width_in_elements_ptr = FFI::MemoryPointer.new(:size_t, 1)
     # FIXME: returns error_not_supported
-    assert_equal(:success, Cuda::DriverApi.cuDeviceGetTexture1DLinearMaxWidth(max_width_in_elements_ptr, CUarray_format_enum[:unsigned_int8], 2, @@device_pointer.read(:int)))
+    assert_equal(:success, Cuda::DriverApi.cuDeviceGetTexture1DLinearMaxWidth(max_width_in_elements_ptr, Cuda::DriverApi::CUarray_format_enum[:unsigned_int8], 2, @@device_pointer.read(:int)))
   end
 
   def test_cu_device_get_attribute
