@@ -11,11 +11,9 @@ class CudaInitializationTest < Minitest::Test
     assert_equal(:error_invalid_value, Cuda::DriverApi.cuInit(1))
   end
 
-  # Mentioned in the docu but I have not found a function
-  # where the value is returned
-  # def test_cu_init_shall_be_called_before_any_other_call
-  #   count_pointer = FFI::MemoryPointer.new(:int, 1)
-  #   assert_equal(:error_invalid_value, Cuda::DriverApi.cuDeviceGetCount(count_pointer))
-  #   assert_equal(0, count_pointer.read(:int))
-  # end
+  def test_cu_init_shall_be_called_before_any_other_call
+    count_pointer = FFI::MemoryPointer.new(:int, 1)
+    assert_equal(:error_not_initialized, Cuda::DriverApi.cuDeviceGetCount(count_pointer))
+    assert_equal(0, count_pointer.read(:int))
+  end
 end
