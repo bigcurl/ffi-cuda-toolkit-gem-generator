@@ -12,7 +12,6 @@ module Cuda
     binary_path = binary_list[1] unless binary_list[1].nil?
     ffi_lib binary_path
 
-    # frozen_string_literal: true
     typedef :uint32, :cuuint32_t
     typedef :uint64, :cuuint64_t
     CUDA_VERSION = 11040
