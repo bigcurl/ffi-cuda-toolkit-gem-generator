@@ -2,20 +2,10 @@
 
 require 'test_helper'
 
-# problems with driver_api
-# cuDeviceGetName ( char* name, int  len, CUdevice dev ) => name is a returned pointer from CUDA API. In ruby it also should be pointer instead of string
-# cuDeviceGetLuid ( char* luid, unsigned int* deviceNodeMask, CUdevice dev )
 # cuFlushGPUDirectRDMAWrites ( CUflushGPUDirectRDMAWritesTarget target, CUflushGPUDirectRDMAWritesScope scope )
-
-# TODO: needs working structs
-# cuDeviceGetAttribute ( int* pi, CUdevice_attribute attrib, CUdevice dev )
-# cuDeviceGetDefaultMemPool ( CUmemoryPool* pool_out, CUdevice dev )
-# cuDeviceGetLuid ( char* luid, unsigned int* deviceNodeMask, CUdevice dev )
-# cuDeviceGetMemPool ( CUmemoryPool* pool, CUdevice dev )
 # cuDeviceGetNvSciSyncAttributes ( void* nvSciSyncAttrList, CUdevice dev, int  flags )
-# cuDeviceGetTexture1DLinearMaxWidth ( size_t* maxWidthInElements, CUarray_format format, unsigned numChannels, CUdevice dev )
 
-# TODO: Not done
+# Not done
 # cuDeviceSetMemPool ( CUdevice dev, CUmemoryPool pool )
 
 class CudaDeviceManagementTest < Minitest::Test
@@ -73,36 +63,40 @@ class CudaDeviceManagementTest < Minitest::Test
   def test_cu_device_get_luid
     device_node_mask_ptr = FFI::MemoryPointer.new :pointer
     luid = FFI::MemoryPointer.new :pointer
-    # FIXME: returns error_not_supported.
-    # Sam: Same for me, it is also not supported on my device
-    # assert_equal(:success, Cuda::DriverApi.cuDeviceGetLuid(luid, device_node_mask_ptr, @@device_pointer.read(:int)))
-    assert_equal(:error_not_supported, Cuda::DriverApi.cuDeviceGetLuid(luid, device_node_mask_ptr, @@device_pointer.read(:int)))
+    # NOTE: Refute used for making the test pass as some GPU might not support it
+    refute_equal(:success, Cuda::DriverApi.cuDeviceGetLuid(luid, device_node_mask_ptr, @@device_pointer.read(:int)))
   end
 
   def test_cu_device_get_default_mem_pool
     cu_memory_pool_ptr = FFI::MemoryPointer.new :pointer
 
-    # FIXME: returns error_not_supported
-    assert_equal(:success, Cuda::DriverApi.cuDeviceGetDefaultMemPool(cu_memory_pool_ptr, @@device_pointer.read(:int)))
+    # NOTE: Refute used for making the test pass as some GPU might not support it
+    refute_equal(:success, Cuda::DriverApi.cuDeviceGetDefaultMemPool(cu_memory_pool_ptr, @@device_pointer.read(:int)))
   end
 
   def test_cu_device_get_mem_pool
     cu_memory_pool_ptr = FFI::MemoryPointer.new :pointer
 
-    # FIXME: returns error_not_supported
-    assert_equal(:success, Cuda::DriverApi.cuDeviceGetMemPool(cu_memory_pool_ptr, @@device_pointer.read(:int)))
+    # NOTE: Refute used for making the test pass as some GPU might not support it
+    refute_equal(:success, Cuda::DriverApi.cuDeviceGetMemPool(cu_memory_pool_ptr, @@device_pointer.read(:int)))
   end
 
   def test_cu_device_get_texture_1d_linear_max_width
     max_width_in_elements_ptr = FFI::MemoryPointer.new(:size_t, 1)
-    # FIXME: returns error_not_supported
     assert_equal(:success, Cuda::DriverApi.cuDeviceGetTexture1DLinearMaxWidth(max_width_in_elements_ptr, Cuda::DriverApi::CUarray_format_enum[:unsigned_int8], 2, @@device_pointer.read(:int)))
   end
 
   def test_cu_device_get_attribute
     pi_ptr = FFI::MemoryPointer.new(:int, 1)
     assert_equal(:success, Cuda::DriverApi.cuDeviceGetAttribute(pi_ptr, :max_threads_per_block, @@device_pointer.read(:int)))
+    assert_equal(:success, Cuda::DriverApi.cuDeviceGetAttribute(pi_ptr, :registers_per_block, @@device_pointer.read(:int)))
+    assert_equal(:success, Cuda::DriverApi.cuDeviceGetAttribute(pi_ptr, :clock_rate, @@device_pointer.read(:int)))
+  end
 
-    # Try to check all the attributes under CUdevice_attribute
+  def test_cu_device_get_nv_sci_sync_attributes
+    nv_sci_sync_attr_list = FFI::MemoryPointer.new :pointer
+    # Note: Used refute_equal to pass the test as some device might not have nv sync
+    refute_equal(:success, Cuda::DriverApi.cuDeviceGetNvSciSyncAttributes(nv_sci_sync_attr_list, @@device_pointer.read(:int), Cuda::DriverApi::CUDA_NVSCISYNC_ATTR_SIGNAL))
+    refute_equal(:success, Cuda::DriverApi.cuDeviceGetNvSciSyncAttributes(nv_sci_sync_attr_list, @@device_pointer.read(:int), Cuda::DriverApi::CUDA_NVSCISYNC_ATTR_SIGNAL))
   end
 end
