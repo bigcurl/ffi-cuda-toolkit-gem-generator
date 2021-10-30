@@ -2,11 +2,9 @@
 
 require 'test_helper'
 
-# cuFlushGPUDirectRDMAWrites ( CUflushGPUDirectRDMAWritesTarget target, CUflushGPUDirectRDMAWritesScope scope )
-# cuDeviceGetNvSciSyncAttributes ( void* nvSciSyncAttrList, CUdevice dev, int  flags )
-
 # Not done
 # cuDeviceSetMemPool ( CUdevice dev, CUmemoryPool pool )
+# cuFlushGPUDirectRDMAWrites ( CUflushGPUDirectRDMAWritesTarget target, CUflushGPUDirectRDMAWritesScope scope )
 
 class CudaDeviceManagementTest < Minitest::Test
   @@device_pointer = FFI::MemoryPointer.new(:int, 1)
