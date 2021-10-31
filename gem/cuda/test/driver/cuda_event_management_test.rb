@@ -5,7 +5,7 @@ require 'test_helper'
 # Not done
 # CUresult cuEventSynchronize ( CUevent hEvent )
 
-class CudaInitializationTest < Minitest::Test
+class CudaEventManagementTest < Minitest::Test
 
   @@cuContext = FFI::MemoryPointer.new :pointer
   @@cuEvent = FFI::MemoryPointer.new :pointer
