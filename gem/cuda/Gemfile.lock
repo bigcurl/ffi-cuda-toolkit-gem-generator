@@ -11,6 +11,8 @@ GEM
     minitest (5.14.4)
     minitest-debugger (1.0.3)
       minitest (~> 5.0)
+    minitest-hooks (1.5.0)
+      minitest (> 5.3)
     rake (13.0.6)
 
 PLATFORMS
@@ -20,6 +22,7 @@ DEPENDENCIES
   cuda!
   minitest (~> 5.0)
   minitest-debugger
+  minitest-hooks
   rake (~> 13.0)
 
 BUNDLED WITH
