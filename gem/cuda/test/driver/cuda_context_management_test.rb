@@ -54,7 +54,7 @@ class CudaContextManagementTest < Minitest::Test
     affinity_st[:param] = struct_param
 
     params_array = FFI::MemoryPointer.new(:pointer, 1)
-    params_array.write_array_of_pointer([ affinity_st ])
+    params_array.write_array_of_pointer([affinity_st])
 
     # FIXME: No understanding about the param array
     assert_equal(:success, Cuda::DriverApi.cuCtxCreate_v3(p_ctx, params_array, num_params, Cuda::DriverApi::CU_CTX_SCHED_AUTO, @@cuDevice))
@@ -94,7 +94,7 @@ class CudaContextManagementTest < Minitest::Test
 
   def test_cu_ctx_get_flags
     flags = FFI::MemoryPointer.new(:uint, 1)
-    assert_equal:success, Cuda::DriverApi.cuCtxGetFlags(flags)
+    assert_equal :success, Cuda::DriverApi.cuCtxGetFlags(flags)
     assert_equal Cuda::DriverApi::CU_CTX_SCHED_AUTO, flags.read(:uint)
   end
 end

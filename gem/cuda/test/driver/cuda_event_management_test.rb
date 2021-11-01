@@ -6,7 +6,6 @@ require 'test_helper'
 # CUresult cuEventSynchronize ( CUevent hEvent )
 
 class CudaEventManagementTest < Minitest::Test
-
   @@cuContext = FFI::MemoryPointer.new :pointer
   @@cuEvent = FFI::MemoryPointer.new :pointer
   @@cuStream = FFI::MemoryPointer.new :pointer

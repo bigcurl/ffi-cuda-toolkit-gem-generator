@@ -93,7 +93,7 @@ class CudaDeviceManagementTest < Minitest::Test
 
   def test_cu_device_get_nv_sci_sync_attributes
     nv_sci_sync_attr_list = FFI::MemoryPointer.new :pointer
-    # Note: Used refute_equal to pass the test as some device might not have nv sync
+    # NOTE: Used refute_equal to pass the test as some device might not have nv sync
     refute_equal(:success, Cuda::DriverApi.cuDeviceGetNvSciSyncAttributes(nv_sci_sync_attr_list, @@device_pointer.read(:int), Cuda::DriverApi::CUDA_NVSCISYNC_ATTR_SIGNAL))
     refute_equal(:success, Cuda::DriverApi.cuDeviceGetNvSciSyncAttributes(nv_sci_sync_attr_list, @@device_pointer.read(:int), Cuda::DriverApi::CUDA_NVSCISYNC_ATTR_SIGNAL))
   end

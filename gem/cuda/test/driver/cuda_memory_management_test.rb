@@ -68,7 +68,6 @@ require 'test_helper'
 # CUresult cuMipmappedArrayGetSparseProperties ( CUDA_ARRAY_SPARSE_PROPERTIES* sparseProperties, CUmipmappedArray mipmap )
 
 class CudaMemoryManagementTest < Minitest::Test
-
   @@cuContext = FFI::MemoryPointer.new :pointer
   @@cuArray = FFI::MemoryPointer.new :pointer
   @@cuArray3D = FFI::MemoryPointer.new :pointer
