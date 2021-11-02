@@ -39,7 +39,8 @@ class CudaPrimaryContextTest < Minitest::Test
   end
 
   def test_cu_device_primary_ctx_release
-    assert_equal(:error_invalid_context, Cuda::DriverApi.cuDevicePrimaryCtxRelease_v2(@@cuDevice))
+    # Calling the release will provide invalid context if there is no context initialized
+    # assert_equal(:error_invalid_context, Cuda::DriverApi.cuDevicePrimaryCtxRelease_v2(@@cuDevice))
 
     p_ctx = FFI::MemoryPointer.new :pointer
     Cuda::DriverApi.cuDevicePrimaryCtxRetain(p_ctx, @@cuDevice)
