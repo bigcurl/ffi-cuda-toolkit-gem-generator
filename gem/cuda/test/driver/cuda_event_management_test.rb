@@ -2,9 +2,6 @@
 
 require 'test_helper'
 
-# Not done
-# CUresult cuEventSynchronize ( CUevent hEvent )
-
 class CudaEventManagementTest < Minitest::Test
   @@cuContext = FFI::MemoryPointer.new :pointer
   @@cuEvent = FFI::MemoryPointer.new :pointer
@@ -81,5 +78,9 @@ class CudaEventManagementTest < Minitest::Test
     h_event = FFI::MemoryPointer.new(:pointer, 1)
     Cuda::DriverApi.cuEventCreate(h_event, Cuda::DriverApi::CU_EVENT_DEFAULT)
     assert_equal(:success, Cuda::DriverApi.cuEventDestroy_v2(h_event.read_pointer))
+  end
+
+  def test_cu_event_synchronize
+    assert_equal(:success, Cuda::DriverApi.cuEventSynchronize(@@cuEvent.read_pointer))
   end
 end
