@@ -15,6 +15,7 @@ group :development do
   gem 'irb'
   gem 'rake', '~> 13.0'
   gem 'solargraph'
+  gem 'minitest-byebug'
 
   gem 'rubocop', '~> 1.21'
   gem 'rubocop-minitest', require: false
