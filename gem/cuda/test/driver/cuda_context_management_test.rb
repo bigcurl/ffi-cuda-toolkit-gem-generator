@@ -128,10 +128,10 @@ class CudaContextManagementTest < Minitest::Test
   end
 
   def test_cu_ctx_reset_persisting_L2_cache
-    assert_equal(:success, Cuda::DriverApi.cuCtxResetPersistingL2Cache())
+    assert_equal(:success, Cuda::DriverApi.cuCtxResetPersistingL2Cache)
   end
 
   def test_cu_ctx_synchronize
-    assert_equal(:success, Cuda::DriverApi.cuCtxSynchronize())
+    assert_equal(:success, Cuda::DriverApi.cuCtxSynchronize)
   end
 end
