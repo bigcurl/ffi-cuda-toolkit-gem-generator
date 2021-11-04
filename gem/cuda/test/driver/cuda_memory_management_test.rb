@@ -4,8 +4,6 @@ require 'test_helper'
 
 # Problems
 # CUresult cuArray3DGetDescriptor ( CUDA_ARRAY3D_DESCRIPTOR* pArrayDescriptor, CUarray hArray )
-# CUresult cuArrayGetPlane ( CUarray* pPlaneArray, CUarray hArray, unsigned int  planeIdx )
-# CUresult cuArrayGetSparseProperties ( CUDA_ARRAY_SPARSE_PROPERTIES* sparseProperties, CUarray array )
 
 # Not done
 # CUresult cuIpcCloseMemHandle ( CUdeviceptr dptr )
@@ -13,19 +11,7 @@ require 'test_helper'
 # CUresult cuIpcGetMemHandle ( CUipcMemHandle* pHandle, CUdeviceptr dptr )
 # CUresult cuIpcOpenEventHandle ( CUevent* phEvent, CUipcEventHandle handle )
 # CUresult cuIpcOpenMemHandle ( CUdeviceptr* pdptr, CUipcMemHandle handle, unsigned int  Flags )
-# CUresult cuMemAlloc ( CUdeviceptr* dptr, size_t bytesize )
-# CUresult cuMemAllocHost ( void** pp, size_t bytesize )
-# CUresult cuMemAllocManaged ( CUdeviceptr* dptr, size_t bytesize, unsigned int  flags )
-# CUresult cuMemAllocPitch ( CUdeviceptr* dptr, size_t* pPitch, size_t WidthInBytes, size_t Height, unsigned int  ElementSizeBytes )
-# CUresult cuMemFree ( CUdeviceptr dptr )
-# CUresult cuMemFreeHost ( void* p )
-# CUresult cuMemGetAddressRange ( CUdeviceptr* pbase, size_t* psize, CUdeviceptr dptr )
-# CUresult cuMemGetInfo ( size_t* free, size_t* total )
-# CUresult cuMemHostAlloc ( void** pp, size_t bytesize, unsigned int  Flags )
-# CUresult cuMemHostGetDevicePointer ( CUdeviceptr* pdptr, void* p, unsigned int  Flags )
-# CUresult cuMemHostGetFlags ( unsigned int* pFlags, void* p )
-# CUresult cuMemHostRegister ( void* p, size_t bytesize, unsigned int  Flags )
-# CUresult cuMemHostUnregister ( void* p )
+
 # CUresult cuMemcpy ( CUdeviceptr dst, CUdeviceptr src, size_t ByteCount )
 # CUresult cuMemcpy2D ( const CUDA_MEMCPY2D* pCopy )
 # CUresult cuMemcpy2DAsync ( const CUDA_MEMCPY2D* pCopy, CUstream hStream )
@@ -68,23 +54,20 @@ require 'test_helper'
 # CUresult cuMipmappedArrayGetSparseProperties ( CUDA_ARRAY_SPARSE_PROPERTIES* sparseProperties, CUmipmappedArray mipmap )
 
 class CudaMemoryManagementTest < Minitest::Test
-  @@cuContext = FFI::MemoryPointer.new :pointer
-  @@cuArray = FFI::MemoryPointer.new :pointer
-  @@cuArray3D = FFI::MemoryPointer.new :pointer
-  @@cuDevice = 0
-
   def setup
+    @cu_context = FFI::MemoryPointer.new :pointer
+    @cu_array = FFI::MemoryPointer.new :pointer
+    @cu_array_3d = FFI::MemoryPointer.new :pointer
+    @device_pointer = FFI::MemoryPointer.new(:int, 1)
+    @cu_device = 0
+
     Cuda::DriverApi.cuInit(0)
 
-    cuDevicePtr = FFI::MemoryPointer.new(:int, 1)
-    Cuda::DriverApi.cuDeviceGet(cuDevicePtr, 0)
+    Cuda::DriverApi.cuDeviceGet(@device_pointer, 0)
+    @cu_device = @device_pointer.read(:int)
 
     # For testing the memory we need to have a context created
-    Cuda::DriverApi.cuCtxCreate_v2(@@cuContext, 0, cuDevicePtr.read(:int))
-
-    @@device_pointer = FFI::MemoryPointer.new(:int, 1)
-    Cuda::DriverApi.cuDeviceGet(@@device_pointer, 0)
-    @@cuDevice = @@device_pointer.read(:int)
+    Cuda::DriverApi.cuCtxCreate_v2(@cu_context, 0, @cu_device)
 
     p_allocate_array = Cuda::DriverApi::CUDAARRAY3DDESCRIPTORSt.new
     p_allocate_array[:Width] = 2048
@@ -93,14 +76,14 @@ class CudaMemoryManagementTest < Minitest::Test
     p_allocate_array[:Format] = Cuda::DriverApi::CU_AD_FORMAT_FLOAT
     p_allocate_array[:NumChannels] = 1
     p_allocate_array[:Flags] = Cuda::DriverApi::CUDA_ARRAY3D_SURFACE_LDST
-    Cuda::DriverApi.cuArray3DCreate_v2(@@cuArray3D, p_allocate_array)
+    Cuda::DriverApi.cuArray3DCreate_v2(@cu_array_3d, p_allocate_array)
 
     p_allocate_array = Cuda::DriverApi::CUDAARRAYDESCRIPTORSt.new
     p_allocate_array[:Width] = 64
     p_allocate_array[:Height] = 64
     p_allocate_array[:Format] = Cuda::DriverApi::CU_AD_FORMAT_FLOAT
     p_allocate_array[:NumChannels] = 1
-    Cuda::DriverApi.cuArrayCreate_v2(@@cuArray, p_allocate_array)
+    Cuda::DriverApi.cuArrayCreate_v2(@cu_array, p_allocate_array)
   end
 
   def test_cu_array_3d_create
@@ -117,25 +100,38 @@ class CudaMemoryManagementTest < Minitest::Test
   end
 
   # FIXME: memory issues
-  # def test_cu_array_3d_get_descriptor
-  #   cuArray3D_ptr = FFI::MemoryPointer.new :pointer
-  #   cuArray3DDescriptor = Cuda::DriverApi::CUDAARRAY3DDESCRIPTORSt.new
-  #   cuArray3DDescriptor[:Width] = 64
-  #   cuArray3DDescriptor[:Height] = 64
-  #   cuArray3DDescriptor[:Depth] = 0
-  #   cuArray3DDescriptor[:Format] = Cuda::DriverApi::CU_AD_FORMAT_FLOAT
-  #   cuArray3DDescriptor[:NumChannels] = 1
-  #   cuArray3DDescriptor[:Flags] = Cuda::DriverApi::CUDA_ARRAY3D_SURFACE_LDST
-  #   Cuda::DriverApi.cuArray3DCreate_v2(cuArray3D_ptr, cuArray3DDescriptor)
-  #
-  #   p_array_3d_descriptor_ptr = FFI::MemoryPointer.new :pointer
-  #   # FIXME: Some memory issues. Can not read cuArray3D pointer
-  #   # assert_equal(:success, Cuda::DriverApi.cuArray3DGetDescriptor_v2(p_array_3d_descriptor_ptr, cuArray3D_ptr.read_pointer))
-  #
-  #   # p_array_descriptor = Cuda::DriverApi::CUDAARRAY3DDESCRIPTORSt.new p_array_descriptor_ptr
-  #   # p_array_descriptor = p_array_descriptor_ptr.read_pointer
-  #   # refute_nil(p_array_descriptor[:Format])
-  # end
+  def test_cu_array_3d_get_descriptor
+    # cu_ctx = FFI::MemoryPointer.new :pointer
+    # Cuda::DriverApi.cuDevicePrimaryCtxRetain(cu_ctx, @cu_device)
+    # Cuda::DriverApi.cuCtxPushCurrent_v2(cu_ctx.read_pointer)
+    # Cuda::DriverApi.cuCtxSetCurrent(cu_ctx.read_pointer)
+
+    cu_array_3d_ptr = FFI::Pointer.new(:pointer, 1)
+    cu_array_3d_descriptor = Cuda::DriverApi::CUDAARRAY3DDESCRIPTORSt.new
+    cu_array_3d_descriptor[:Width] = 64
+    cu_array_3d_descriptor[:Height] = 64
+    cu_array_3d_descriptor[:Depth] = 0
+    cu_array_3d_descriptor[:Format] = Cuda::DriverApi::CU_AD_FORMAT_FLOAT
+    cu_array_3d_descriptor[:NumChannels] = 1
+    cu_array_3d_descriptor[:Flags] = Cuda::DriverApi::CUDA_ARRAY3D_SURFACE_LDST
+
+    cu_array_3d_descriptor_array = FFI::MemoryPointer.new :pointer
+    cu_array_3d_descriptor_array.write_array_of_pointer([cu_array_3d_descriptor])
+    Cuda::DriverApi.cuArray3DCreate_v2(cu_array_3d_ptr, cu_array_3d_descriptor_array)
+
+    # cu_ctx_curr = FFI::MemoryPointer.new :pointer
+    # Cuda::DriverApi.cuCtxGetCurrent(cu_ctx_curr)
+    # assert_equal(cu_ctx_curr.read_pointer, cu_ctx.read_pointer)
+
+    assert_equal('Success', 'Segmentation fault')
+    p_array_3d_descriptor_ptr = FFI::MemoryPointer.new(:pointer, 1)
+    assert_equal(:error_context_is_destroyed,
+                 # Segmentation fault. Trying to access invalid memory address
+                 Cuda::DriverApi.cuArray3DGetDescriptor_v2(
+                   p_array_3d_descriptor_ptr,
+                   cu_array_3d_ptr))
+
+  end
 
   def test_cu_array_create
     p_handle_ptr = FFI::MemoryPointer.new :pointer
@@ -162,17 +158,17 @@ class CudaMemoryManagementTest < Minitest::Test
 
   def test_cu_array_get_descriptor
     p_array_descriptor_ptr = FFI::MemoryPointer.new :pointer
-    assert_equal(:success, Cuda::DriverApi.cuArrayGetDescriptor_v2(p_array_descriptor_ptr, @@cuArray.read_pointer))
+    assert_equal(:success, Cuda::DriverApi.cuArrayGetDescriptor_v2(p_array_descriptor_ptr, @cu_array.read_pointer))
   end
 
   def test_cu_array_get_plane
     p_plane_array = FFI::MemoryPointer.new :pointer
-    assert_equal(:error_invalid_value, Cuda::DriverApi.cuArrayGetPlane(p_plane_array, @@cuArray.read_pointer, 0))
+    assert_equal(:error_invalid_value, Cuda::DriverApi.cuArrayGetPlane(p_plane_array, @cu_array.read_pointer, 0))
   end
 
   def test_cu_array_get_sparse_properties_invalid_value
     sparse_properties = FFI::MemoryPointer.new :pointer
-    assert_equal(:error_invalid_value, Cuda::DriverApi.cuArrayGetSparseProperties(sparse_properties, @@cuArray3D.read_pointer))
+    assert_equal(:error_invalid_value, Cuda::DriverApi.cuArrayGetSparseProperties(sparse_properties, @cu_array_3d.read_pointer))
   end
 
   def test_cu_array_get_sparse_properties
@@ -193,18 +189,102 @@ class CudaMemoryManagementTest < Minitest::Test
   def test_cu_device_get_pci_bus_id
     len = 100
     pci_bus_id = FFI::MemoryPointer.new(len)
-    assert_equal(:success, Cuda::DriverApi.cuDeviceGetPCIBusId(pci_bus_id, len, @@cuDevice))
+    assert_equal(:success, Cuda::DriverApi.cuDeviceGetPCIBusId(pci_bus_id, len, @cu_device))
     refute_nil(pci_bus_id.read_string)
   end
 
   def test_cu_device_get_by_pci_bus_id
     len = 100
     pci_bus_id = FFI::MemoryPointer.new(len)
-    Cuda::DriverApi.cuDeviceGetPCIBusId(pci_bus_id, len, @@cuDevice)
+    Cuda::DriverApi.cuDeviceGetPCIBusId(pci_bus_id, len, @cu_device)
     refute_nil(pci_bus_id.read_string)
 
     dev = FFI::MemoryPointer.new :pointer
     assert_equal(:success, Cuda::DriverApi.cuDeviceGetByPCIBusId(dev, pci_bus_id.read_string))
-    assert_equal(@@cuDevice, dev.read(:int))
+    assert_equal(@cu_device, dev.read(:int))
+  end
+
+  def test_cu_mem_alloc_invalid
+    d_ptr = FFI::MemoryPointer.new(:pointer, 1)
+    byte_size = 0
+    assert_equal(:error_invalid_value, Cuda::DriverApi.cuMemAlloc_v2(d_ptr, byte_size))
+  end
+
+  def test_cu_mem_alloc
+    d_ptr = FFI::MemoryPointer.new(:pointer, 1)
+    byte_size = 4
+    assert_equal(:success, Cuda::DriverApi.cuMemAlloc_v2(d_ptr, byte_size))
+    assert_equal(:success, Cuda::DriverApi.cuMemFree_v2(d_ptr.read_pointer))
+  end
+
+  def test_cu_mem_alloc_host_free
+    pp = FFI::MemoryPointer.new(:pointer, 1)
+    byte_size = 4
+    assert_equal(:success, Cuda::DriverApi.cuMemAllocHost_v2(pp, byte_size))
+    assert_equal(:success, Cuda::DriverApi.cuMemFreeHost(pp.read_pointer))
+  end
+
+  def test_cu_mem_alloc_managed
+    d_ptr = FFI::MemoryPointer.new(:pointer, 1)
+    byte_size = 4
+    assert_equal(:success, Cuda::DriverApi.cuMemAllocManaged(d_ptr, byte_size, Cuda::DriverApi::CU_MEM_ATTACH_GLOBAL))
+  end
+
+  def test_cu_mem_alloc_pitch
+    d_ptr = FFI::MemoryPointer.new(:pointer, 1)
+    p_pitch = FFI::MemoryPointer.new(:size_t, 1)
+    width_in_bytes = 4
+    height = 2
+    element_size_bytes = 4
+    assert_equal(:success, Cuda::DriverApi.cuMemAllocPitch_v2(d_ptr, p_pitch, width_in_bytes, height, element_size_bytes))
+    puts "Pitch #{p_pitch.read(:size_t)}"
+  end
+
+  def test_cu_mem_get_address_range
+    d_ptr = FFI::MemoryPointer.new(:pointer, 1)
+    byte_size = 4
+    assert_equal(:success, Cuda::DriverApi.cuMemAlloc_v2(d_ptr, byte_size))
+    p_base = FFI::MemoryPointer.new(:pointer, 1)
+    p_size = FFI::MemoryPointer.new(:size_t, 1)
+    assert_equal(:success, Cuda::DriverApi.cuMemGetAddressRange_v2(p_base, p_size, d_ptr.read_pointer))
+    assert_equal(byte_size, p_size.read(:size_t))
+  end
+
+  def test_cu_mem_get_info
+    free = FFI::MemoryPointer.new(:size_t, 1)
+    total = FFI::MemoryPointer.new(:size_t, 1)
+    assert_equal(:success, Cuda::DriverApi.cuMemGetInfo_v2(free, total))
+    puts "Free #{free.read(:size_t)} Total #{total.read(:size_t)}"
+  end
+
+  def test_cu_mem_host_alloc_free
+    pp = FFI::MemoryPointer.new(:pointer, 1)
+    byte_size = 4
+    assert_equal(:success, Cuda::DriverApi.cuMemHostAlloc(pp, byte_size, Cuda::DriverApi::CU_MEMHOSTALLOC_PORTABLE))
+    assert_equal(:success, Cuda::DriverApi.cuMemFreeHost(pp.read_pointer))
+  end
+
+  def test_cu_mem_host_get_device_pointer
+    p = FFI::MemoryPointer.new(:pointer, 1)
+    byte_size = 4
+    assert_equal(:success, Cuda::DriverApi.cuMemHostAlloc(p, byte_size, Cuda::DriverApi::CU_MEMHOSTALLOC_PORTABLE))
+    p_d_ptr = FFI::MemoryPointer.new(:pointer, 1)
+    assert_equal(:success, Cuda::DriverApi.cuMemHostGetDevicePointer_v2(p_d_ptr, p.read_pointer, 0))
+  end
+
+  def test_cu_mem_host_get_flags
+    p = FFI::MemoryPointer.new(:pointer, 1)
+    byte_size = 4
+    assert_equal(:success, Cuda::DriverApi.cuMemHostAlloc(p, byte_size, Cuda::DriverApi::CU_MEMHOSTALLOC_PORTABLE))
+    p_flags = FFI::MemoryPointer.new(:uint, 1)
+    assert_equal(:success, Cuda::DriverApi.cuMemHostGetFlags(p_flags, p.read_pointer))
+    assert_equal(3, p_flags.read(:uint))
+  end
+
+  def test_cu_mem_host_register_unregister
+    p = FFI::MemoryPointer.new(:pointer, 1)
+    byte_size = 4
+    assert_equal(:success, Cuda::DriverApi.cuMemHostRegister_v2(p, byte_size, Cuda::DriverApi::CU_MEMHOSTREGISTER_PORTABLE))
+    assert_equal(:success, Cuda::DriverApi.cuMemHostUnregister(p))
   end
 end

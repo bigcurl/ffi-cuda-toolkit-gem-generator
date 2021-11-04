@@ -2223,8 +2223,8 @@ module Cuda
     attach_function :cuMemGetInfo_v2, :cuMemGetInfo_v2, %i[pointer pointer], :CUresult
     attach_function :cuMemAlloc_v2, :cuMemAlloc_v2, %i[pointer size_t], :CUresult
     attach_function :cuMemAllocPitch_v2, :cuMemAllocPitch_v2, %i[pointer pointer size_t size_t uint], :CUresult
-    attach_function :cuMemFree_v2, :cuMemFree_v2, [:CUdeviceptr], :CUresult
-    attach_function :cuMemGetAddressRange_v2, :cuMemGetAddressRange_v2, %i[pointer pointer CUdeviceptr], :CUresult
+    attach_function :cuMemFree_v2, :cuMemFree_v2, [:pointer], :CUresult
+    attach_function :cuMemGetAddressRange_v2, :cuMemGetAddressRange_v2, %i[pointer pointer pointer], :CUresult
     attach_function :cuMemAllocHost_v2, :cuMemAllocHost_v2, %i[pointer size_t], :CUresult
     attach_function :cuMemFreeHost, :cuMemFreeHost, [:pointer], :CUresult
     attach_function :cuMemHostAlloc, :cuMemHostAlloc, %i[pointer size_t uint], :CUresult

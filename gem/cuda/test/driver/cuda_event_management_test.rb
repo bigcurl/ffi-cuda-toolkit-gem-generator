@@ -3,22 +3,22 @@
 require 'test_helper'
 
 class CudaEventManagementTest < Minitest::Test
-  @@cuContext = FFI::MemoryPointer.new :pointer
-  @@cuEvent = FFI::MemoryPointer.new :pointer
-  @@cuStream = FFI::MemoryPointer.new :pointer
-
   def setup
+    @cu_context = FFI::MemoryPointer.new :pointer
+    @cu_event = FFI::MemoryPointer.new :pointer
+    @cu_stream = FFI::MemoryPointer.new :pointer
+
     Cuda::DriverApi.cuInit(0)
 
-    cuDevicePtr = FFI::MemoryPointer.new(:int, 1)
-    Cuda::DriverApi.cuDeviceGet(cuDevicePtr, 0)
+    cu_device_ptr = FFI::MemoryPointer.new(:int, 1)
+    Cuda::DriverApi.cuDeviceGet(cu_device_ptr, 0)
 
     # For testing the memory we need to have a context created
-    Cuda::DriverApi.cuCtxCreate_v2(@@cuContext, 0, cuDevicePtr.read(:int))
+    Cuda::DriverApi.cuCtxCreate_v2(@cu_context, 0, cu_device_ptr.read(:int))
 
-    Cuda::DriverApi.cuStreamCreate(@@cuStream, Cuda::DriverApi::CU_STREAM_DEFAULT)
+    Cuda::DriverApi.cuStreamCreate(@cu_stream, Cuda::DriverApi::CU_STREAM_DEFAULT)
 
-    Cuda::DriverApi.cuEventCreate(@@cuEvent, Cuda::DriverApi::CU_EVENT_DEFAULT)
+    Cuda::DriverApi.cuEventCreate(@cu_event, Cuda::DriverApi::CU_EVENT_DEFAULT)
   end
 
   def test_cu_event_create_default_event
@@ -47,7 +47,7 @@ class CudaEventManagementTest < Minitest::Test
   end
 
   def test_cu_event_record
-    assert_equal(:success, Cuda::DriverApi.cuEventRecord(@@cuEvent.read_pointer, @@cuStream.read_pointer))
+    assert_equal(:success, Cuda::DriverApi.cuEventRecord(@cu_event.read_pointer, @cu_stream.read_pointer))
   end
 
   def test_cu_event_elapsed_time
@@ -67,7 +67,7 @@ class CudaEventManagementTest < Minitest::Test
   end
 
   def test_cu_event_query
-    assert_equal(:success, Cuda::DriverApi.cuEventQuery(@@cuEvent.read_pointer))
+    assert_equal(:success, Cuda::DriverApi.cuEventQuery(@cu_event.read_pointer))
   end
 
   def test_cu_event_query_invalid_context
@@ -82,6 +82,6 @@ class CudaEventManagementTest < Minitest::Test
   end
 
   def test_cu_event_synchronize
-    assert_equal(:success, Cuda::DriverApi.cuEventSynchronize(@@cuEvent.read_pointer))
+    assert_equal(:success, Cuda::DriverApi.cuEventSynchronize(@cu_event.read_pointer))
   end
 end
