@@ -36,13 +36,11 @@ module Parser
               while field_type_name.nil?
                 case field_element.name
                 when 'Typedef', 'FundamentalType', 'Enumeration', 'Union', 'Struct'
-                  debugger
                   field_type_name = field_element.attr('name')
                 else
                   field_element = xml_doc.at_xpath("//*[@id='#{field_element.attr('type')}']")
                 end
               end
-              debugger
               ":#{field_name}, #{field_type_name}"
             end
 
@@ -70,7 +68,6 @@ module Parser
       }
     end
 
-    debugger
     structs
   end
 end

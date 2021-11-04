@@ -56,7 +56,7 @@ class CudaContextManagementTest < Minitest::Test
     params_array = FFI::MemoryPointer.new(:pointer, num_params)
     params_array.write_array_of_pointer([affinity_st])
 
-    # Note: Affinity type not supported
+    # NOTE: Affinity type not supported
     assert_equal(:error_unsupported_exec_affinity, Cuda::DriverApi.cuCtxCreate_v3(p_ctx, params_array, num_params, Cuda::DriverApi::CU_CTX_SCHED_AUTO, @cu_device))
   end
 

@@ -129,8 +129,8 @@ class CudaMemoryManagementTest < Minitest::Test
                  # Segmentation fault. Trying to access invalid memory address
                  Cuda::DriverApi.cuArray3DGetDescriptor_v2(
                    p_array_3d_descriptor_ptr,
-                   cu_array_3d_ptr))
-
+                   cu_array_3d_ptr
+                 ))
   end
 
   def test_cu_array_create

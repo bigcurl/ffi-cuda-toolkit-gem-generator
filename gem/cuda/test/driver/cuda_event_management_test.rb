@@ -54,7 +54,7 @@ class CudaEventManagementTest < Minitest::Test
     h_start = FFI::MemoryPointer.new(:pointer, 1)
     Cuda::DriverApi.cuEventCreate(h_start, Cuda::DriverApi::CU_EVENT_DEFAULT)
     Cuda::DriverApi.cuEventRecord(h_start.read_pointer, @cu_stream.read_pointer)
-    
+
     h_end = FFI::MemoryPointer.new(:pointer, 1)
     Cuda::DriverApi.cuEventCreate(h_end, Cuda::DriverApi::CU_EVENT_DEFAULT)
     Cuda::DriverApi.cuEventRecord(h_end.read_pointer, @cu_stream.read_pointer)
