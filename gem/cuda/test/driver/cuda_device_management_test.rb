@@ -69,14 +69,14 @@ class CudaDeviceManagementTest < Minitest::Test
     cu_memory_pool_ptr = FFI::MemoryPointer.new :pointer
 
     # NOTE: Refute used for making the test pass as some GPU might not support it
-    refute_equal(:success, Cuda::DriverApi.cuDeviceGetDefaultMemPool(cu_memory_pool_ptr, @@device_pointer.read(:int)))
+    assert_equal(:success, Cuda::DriverApi.cuDeviceGetDefaultMemPool(cu_memory_pool_ptr, @@device_pointer.read(:int)))
   end
 
   def test_cu_device_get_mem_pool
     cu_memory_pool_ptr = FFI::MemoryPointer.new :pointer
 
     # NOTE: Refute used for making the test pass as some GPU might not support it
-    refute_equal(:success, Cuda::DriverApi.cuDeviceGetMemPool(cu_memory_pool_ptr, @@device_pointer.read(:int)))
+    assert_equal(:success, Cuda::DriverApi.cuDeviceGetMemPool(cu_memory_pool_ptr, @@device_pointer.read(:int)))
   end
 
   def test_cu_device_get_texture_1d_linear_max_width
