@@ -6,26 +6,26 @@ require 'minitest/hooks/test'
 class CudaContextManagementTest < Minitest::Test
   include Minitest::Hooks
 
-  @@cuDevice = 0
-  @@cuCtx = FFI::MemoryPointer.new :pointer
-
   def setup
+    @cu_device = 0
+    @cu_ctx = FFI::MemoryPointer.new :pointer
+
     Cuda::DriverApi.cuInit(0)
 
     device_pointer = FFI::MemoryPointer.new :pointer
     Cuda::DriverApi.cuDeviceGet(device_pointer, 0)
-    @@cuDevice = device_pointer.read(:int)
+    @cu_device = device_pointer.read(:int)
 
-    Cuda::DriverApi.cuCtxCreate_v2(@@cuCtx, Cuda::DriverApi::CU_CTX_SCHED_AUTO, @@cuDevice)
+    Cuda::DriverApi.cuCtxCreate_v2(@cu_ctx, Cuda::DriverApi::CU_CTX_SCHED_AUTO, @cu_device)
   end
 
   def after_all
-    Cuda::DriverApi.cuCtxDestroy_v2(@@cuCtx.read_pointer)
+    Cuda::DriverApi.cuCtxDestroy_v2(@cu_ctx.read_pointer) if @cu_ctx.class != NilClass
   end
 
   def test_cu_ctx_create
     p_ctx = FFI::MemoryPointer.new :pointer
-    assert_equal(:success, Cuda::DriverApi.cuCtxCreate_v2(p_ctx, Cuda::DriverApi::CU_CTX_SCHED_AUTO, @@cuDevice))
+    assert_equal(:success, Cuda::DriverApi.cuCtxCreate_v2(p_ctx, Cuda::DriverApi::CU_CTX_SCHED_AUTO, @cu_device))
 
     # have to destroy a context after creating it
     assert_equal(:success, Cuda::DriverApi.cuCtxDestroy_v2(p_ctx.read_pointer))
@@ -33,7 +33,7 @@ class CudaContextManagementTest < Minitest::Test
 
   def test_cu_ctx_destroy
     p_ctx = FFI::MemoryPointer.new :pointer
-    Cuda::DriverApi.cuCtxCreate_v2(p_ctx, Cuda::DriverApi::CU_CTX_SCHED_AUTO, @@cuDevice)
+    Cuda::DriverApi.cuCtxCreate_v2(p_ctx, Cuda::DriverApi::CU_CTX_SCHED_AUTO, @cu_device)
 
     # have to destroy a context after creating it
     assert_equal(:success, Cuda::DriverApi.cuCtxDestroy_v2(p_ctx.read_pointer))
@@ -53,16 +53,25 @@ class CudaContextManagementTest < Minitest::Test
     affinity_st[:type] = :sm_count
     affinity_st[:param] = struct_param
 
-    params_array = FFI::MemoryPointer.new(:pointer, 1)
+    params_array = FFI::MemoryPointer.new(:pointer, num_params)
     params_array.write_array_of_pointer([affinity_st])
 
-    # FIXME: No understanding about the param array
-    assert_equal(:success, Cuda::DriverApi.cuCtxCreate_v3(p_ctx, params_array, num_params, Cuda::DriverApi::CU_CTX_SCHED_AUTO, @@cuDevice))
+    # Note: Affinity type not supported
+    assert_equal(:error_unsupported_exec_affinity, Cuda::DriverApi.cuCtxCreate_v3(p_ctx, params_array, num_params, Cuda::DriverApi::CU_CTX_SCHED_AUTO, @cu_device))
+  end
+
+  def test_cu_ctx_get_exec_affinity
+    p_exec_affinity = FFI::MemoryPointer.new :pointer
+    assert_equal :success, Cuda::DriverApi.cuCtxGetExecAffinity(p_exec_affinity, Cuda::DriverApi::CU_EXEC_AFFINITY_TYPE_SM_COUNT)
+
+    cu_exec_affinity_param = Cuda::DriverApi::CUexecAffinityParamSt.new p_exec_affinity
+    assert_equal :sm_count, cu_exec_affinity_param[:type]
+    refute_nil cu_exec_affinity_param[:param][:smCount][:val]
   end
 
   def test_cu_ctx_get_api_version
     version = FFI::MemoryPointer.new(:uint, 1)
-    assert_equal(:success, Cuda::DriverApi.cuCtxGetApiVersion(@@cuCtx.read_pointer, version))
+    assert_equal(:success, Cuda::DriverApi.cuCtxGetApiVersion(@cu_ctx.read_pointer, version))
     refute_nil(version.read(:uint))
   end
 
@@ -75,7 +84,7 @@ class CudaContextManagementTest < Minitest::Test
   def test_cu_ctx_get_set_current
     p_ctx = FFI::MemoryPointer.new :pointer
     assert_equal(:success, Cuda::DriverApi.cuCtxGetCurrent(p_ctx))
-    assert_equal(p_ctx.read_pointer, @@cuCtx.read_pointer)
+    assert_equal(p_ctx.read_pointer, @cu_ctx.read_pointer)
 
     assert_equal(:success, Cuda::DriverApi.cuCtxSetCurrent(p_ctx.read_pointer))
   end
@@ -83,16 +92,7 @@ class CudaContextManagementTest < Minitest::Test
   def test_cu_ctx_get_device
     device = FFI::MemoryPointer.new :int, 1
     assert_equal :success, Cuda::DriverApi.cuCtxGetDevice(device)
-    assert_equal device.read(:int), @@cuDevice
-  end
-
-  def test_cu_ctx_get_exec_affinity
-    p_exec_affinity = FFI::MemoryPointer.new :pointer
-    assert_equal :success, Cuda::DriverApi.cuCtxGetExecAffinity(p_exec_affinity, Cuda::DriverApi::CU_EXEC_AFFINITY_TYPE_SM_COUNT)
-
-    cuExecAffinityParam = Cuda::DriverApi::CUexecAffinityParamSt.new p_exec_affinity
-    assert_equal :sm_count, cuExecAffinityParam[:type]
-    refute_nil cuExecAffinityParam[:param][:smCount][:val]
+    assert_equal device.read(:int), @cu_device
   end
 
   def test_cu_ctx_get_flags
@@ -127,7 +127,7 @@ class CudaContextManagementTest < Minitest::Test
     assert_equal(:success, Cuda::DriverApi.cuCtxPushCurrent_v2(p_ctx.read_pointer))
   end
 
-  def test_cu_ctx_reset_persisting_L2_cache
+  def test_cu_ctx_reset_persisting_l2_cache
     assert_equal(:success, Cuda::DriverApi.cuCtxResetPersistingL2Cache)
   end
 

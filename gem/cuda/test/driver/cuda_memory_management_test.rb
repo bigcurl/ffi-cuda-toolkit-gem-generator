@@ -68,23 +68,20 @@ require 'test_helper'
 # CUresult cuMipmappedArrayGetSparseProperties ( CUDA_ARRAY_SPARSE_PROPERTIES* sparseProperties, CUmipmappedArray mipmap )
 
 class CudaMemoryManagementTest < Minitest::Test
-  @@cuContext = FFI::MemoryPointer.new :pointer
-  @@cuArray = FFI::MemoryPointer.new :pointer
-  @@cuArray3D = FFI::MemoryPointer.new :pointer
-  @@cuDevice = 0
-
   def setup
+    @cu_context = FFI::MemoryPointer.new :pointer
+    @cu_array = FFI::MemoryPointer.new :pointer
+    @cu_array_3d = FFI::MemoryPointer.new :pointer
+    @device_pointer = FFI::MemoryPointer.new(:int, 1)
+    @cu_device = 0
+
     Cuda::DriverApi.cuInit(0)
 
-    cuDevicePtr = FFI::MemoryPointer.new(:int, 1)
-    Cuda::DriverApi.cuDeviceGet(cuDevicePtr, 0)
+    Cuda::DriverApi.cuDeviceGet(@device_pointer, 0)
+    @cu_device = @device_pointer.read(:int)
 
     # For testing the memory we need to have a context created
-    Cuda::DriverApi.cuCtxCreate_v2(@@cuContext, 0, cuDevicePtr.read(:int))
-
-    @@device_pointer = FFI::MemoryPointer.new(:int, 1)
-    Cuda::DriverApi.cuDeviceGet(@@device_pointer, 0)
-    @@cuDevice = @@device_pointer.read(:int)
+    Cuda::DriverApi.cuCtxCreate_v2(@cu_context, 0, @cu_device)
 
     p_allocate_array = Cuda::DriverApi::CUDAARRAY3DDESCRIPTORSt.new
     p_allocate_array[:Width] = 2048
@@ -93,14 +90,14 @@ class CudaMemoryManagementTest < Minitest::Test
     p_allocate_array[:Format] = Cuda::DriverApi::CU_AD_FORMAT_FLOAT
     p_allocate_array[:NumChannels] = 1
     p_allocate_array[:Flags] = Cuda::DriverApi::CUDA_ARRAY3D_SURFACE_LDST
-    Cuda::DriverApi.cuArray3DCreate_v2(@@cuArray3D, p_allocate_array)
+    Cuda::DriverApi.cuArray3DCreate_v2(@cu_array_3d, p_allocate_array)
 
     p_allocate_array = Cuda::DriverApi::CUDAARRAYDESCRIPTORSt.new
     p_allocate_array[:Width] = 64
     p_allocate_array[:Height] = 64
     p_allocate_array[:Format] = Cuda::DriverApi::CU_AD_FORMAT_FLOAT
     p_allocate_array[:NumChannels] = 1
-    Cuda::DriverApi.cuArrayCreate_v2(@@cuArray, p_allocate_array)
+    Cuda::DriverApi.cuArrayCreate_v2(@cu_array, p_allocate_array)
   end
 
   def test_cu_array_3d_create
@@ -162,17 +159,17 @@ class CudaMemoryManagementTest < Minitest::Test
 
   def test_cu_array_get_descriptor
     p_array_descriptor_ptr = FFI::MemoryPointer.new :pointer
-    assert_equal(:success, Cuda::DriverApi.cuArrayGetDescriptor_v2(p_array_descriptor_ptr, @@cuArray.read_pointer))
+    assert_equal(:success, Cuda::DriverApi.cuArrayGetDescriptor_v2(p_array_descriptor_ptr, @cu_array.read_pointer))
   end
 
   def test_cu_array_get_plane
     p_plane_array = FFI::MemoryPointer.new :pointer
-    assert_equal(:error_invalid_value, Cuda::DriverApi.cuArrayGetPlane(p_plane_array, @@cuArray.read_pointer, 0))
+    assert_equal(:error_invalid_value, Cuda::DriverApi.cuArrayGetPlane(p_plane_array, @cu_array.read_pointer, 0))
   end
 
   def test_cu_array_get_sparse_properties_invalid_value
     sparse_properties = FFI::MemoryPointer.new :pointer
-    assert_equal(:error_invalid_value, Cuda::DriverApi.cuArrayGetSparseProperties(sparse_properties, @@cuArray3D.read_pointer))
+    assert_equal(:error_invalid_value, Cuda::DriverApi.cuArrayGetSparseProperties(sparse_properties, @cu_array_3d.read_pointer))
   end
 
   def test_cu_array_get_sparse_properties
@@ -193,18 +190,18 @@ class CudaMemoryManagementTest < Minitest::Test
   def test_cu_device_get_pci_bus_id
     len = 100
     pci_bus_id = FFI::MemoryPointer.new(len)
-    assert_equal(:success, Cuda::DriverApi.cuDeviceGetPCIBusId(pci_bus_id, len, @@cuDevice))
+    assert_equal(:success, Cuda::DriverApi.cuDeviceGetPCIBusId(pci_bus_id, len, @cu_device))
     refute_nil(pci_bus_id.read_string)
   end
 
   def test_cu_device_get_by_pci_bus_id
     len = 100
     pci_bus_id = FFI::MemoryPointer.new(len)
-    Cuda::DriverApi.cuDeviceGetPCIBusId(pci_bus_id, len, @@cuDevice)
+    Cuda::DriverApi.cuDeviceGetPCIBusId(pci_bus_id, len, @cu_device)
     refute_nil(pci_bus_id.read_string)
 
     dev = FFI::MemoryPointer.new :pointer
     assert_equal(:success, Cuda::DriverApi.cuDeviceGetByPCIBusId(dev, pci_bus_id.read_string))
-    assert_equal(@@cuDevice, dev.read(:int))
+    assert_equal(@cu_device, dev.read(:int))
   end
 end
