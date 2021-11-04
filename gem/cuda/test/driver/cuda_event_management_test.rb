@@ -53,11 +53,11 @@ class CudaEventManagementTest < Minitest::Test
   def test_cu_event_elapsed_time
     h_start = FFI::MemoryPointer.new(:pointer, 1)
     Cuda::DriverApi.cuEventCreate(h_start, Cuda::DriverApi::CU_EVENT_DEFAULT)
-    Cuda::DriverApi.cuEventRecord(h_start.read_pointer, @@cuStream.read_pointer)
+    Cuda::DriverApi.cuEventRecord(h_start.read_pointer, @cu_stream.read_pointer)
     
     h_end = FFI::MemoryPointer.new(:pointer, 1)
     Cuda::DriverApi.cuEventCreate(h_end, Cuda::DriverApi::CU_EVENT_DEFAULT)
-    Cuda::DriverApi.cuEventRecord(h_end.read_pointer, @@cuStream.read_pointer)
+    Cuda::DriverApi.cuEventRecord(h_end.read_pointer, @cu_stream.read_pointer)
     Cuda::DriverApi.cuEventSynchronize(h_end.read_pointer)
 
     p_milliseconds = FFI::MemoryPointer.new(:float, 1)

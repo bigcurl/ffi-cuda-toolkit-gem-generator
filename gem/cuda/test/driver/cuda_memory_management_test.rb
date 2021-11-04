@@ -237,7 +237,7 @@ class CudaMemoryManagementTest < Minitest::Test
     height = 2
     element_size_bytes = 4
     assert_equal(:success, Cuda::DriverApi.cuMemAllocPitch_v2(d_ptr, p_pitch, width_in_bytes, height, element_size_bytes))
-    puts "Pitch #{p_pitch.read(:size_t)}"
+    # puts "Pitch #{p_pitch.read(:size_t)}"
   end
 
   def test_cu_mem_get_address_range
@@ -254,7 +254,7 @@ class CudaMemoryManagementTest < Minitest::Test
     free = FFI::MemoryPointer.new(:size_t, 1)
     total = FFI::MemoryPointer.new(:size_t, 1)
     assert_equal(:success, Cuda::DriverApi.cuMemGetInfo_v2(free, total))
-    puts "Free #{free.read(:size_t)} Total #{total.read(:size_t)}"
+    # puts "Free #{free.read(:size_t)} Total #{total.read(:size_t)}"
   end
 
   def test_cu_mem_host_alloc_free
