@@ -25,13 +25,17 @@ class GenerateDriverApi < ApplicationSubcommand
         'cuda.h.xml'
       )
 
-      xml_doc = File.open(cuda_header_path) { |f| Nokogiri::XML(f) }
+      # Parse required html documentation
+      c_type_structs = Parser.parse_structs_from_documentation(cuda_docu_path)
+      c_type_defines = Parser.parse_define_from_documentation(cuda_docu_path)
+      c_type_enums = Parser.parse_enums_from_documentation(cuda_docu_path)
+      c_type_functions = Parser.parse_functions_from_documentation(cuda_docu_path)
+      c_type_typedefs = Parser.parse_typedefs_from_documentation(cuda_docu_path)
 
-      # Parse File
-      file_id = Parser.parse_file_definition(xml_doc)
-
-      # Parse Function
-      functions_definition = Parser.parse_functions_definition(xml_doc, file_id)
+      # Store everything to disk into the gem folder
+      store_ffi_types_on_disk(cuda_version, c_type_defines, c_type_structs, c_type_typedefs, c_type_enums, c_type_functions)
+      @logger.info "End parsing CUDA version #{cuda_version}"
+    end
 
       # Parse Enum
       enums_definition = Parser.parse_enums_definition(xml_doc, file_id)
@@ -57,11 +61,23 @@ class GenerateDriverApi < ApplicationSubcommand
 
       @logger.info "End parsing CUDA version #{cuda_version}"
     end
+    converted_types
+  end
+
+  def store_ffi_types_on_disk(cuda_version, c_defines, c_structs, typedefs, c_type_enums, c_type_functions)
+    enums = stringify_enum_types(c_type_enums)
+    functions = stringify_function_types(c_type_functions)
+    ### Generate enum from template
+    #  enum :letters, [:a, 1, :b, :c, :y, 25, :z]
 
     @logger.info 'End generate-driver-api subcommand'
   end
 
-  def store_definitions_on_disk(cuda_version, functions, enums, fundamental_types, typedefs, unions)
+    index = 1
+    count = 2
+    sep = ''
+    sep = ',' if index != count
+
     wrapper_template = %(
       # rubocop:disable Naming/VariableNumber
       # rubocop:disable Metrics/ModuleLength
@@ -95,9 +111,92 @@ class GenerateDriverApi < ApplicationSubcommand
             typedef :<%= typedef[:type_name].gsub(' ', '_') %>, :<%= typedef[:name].gsub(' ', '_') %>
             <% end %>
 
-            # Enums
-            <% for enum in enums %>
-            enum :<%= enum[:name] %>, [<%= enum[:values_string] %>]
+            # Unions and structs
+
+            class StreamMemOpValueStruct_U < FFI::Union
+              layout :value, :cuuint32_t,
+                     :value64, :cuuint64_t
+            end
+
+            class StreamMemOpValue_Struct < FFI::Struct
+              layout :operation, :CUstreamBatchMemOpType,
+                     :address, :CUdeviceptr,
+                     :unionValue, StreamMemOpValueStruct_U,
+                     :flags, :uint,
+                     :alias, :CUdeviceptr
+            end
+
+            class FlushRemoteWrites_Struct < FFI::Struct
+              layout :operation, :CUstreamBatchMemOpType,
+                     :flags, :uint
+            end
+
+            class CUstreamBatchMemOpParams_v1 < FFI::Struct
+              layout :operation, :CUstreamBatchMemOpType,
+                     :waitValue, StreamMemOpValue_Struct,
+                     :writeValue, StreamMemOpValue_Struct,
+                     :flushRemoteWrites, FlushRemoteWrites_Struct,
+                     :pad, [:cuuint64_t, 6]
+            end
+
+            typedef :CUstreamBatchMemOpParams_v1, :CUstreamBatchMemOpParams
+
+            class CUkernelNodeAttrValue_v1 < FFI::Union
+              layout :accessPolicyWindow, :CUaccessPolicyWindow,
+                     :cooperative, :int
+            end
+            typedef :CUkernelNodeAttrValue_v1, :CUkernelNodeAttrValue
+
+            class CUkernelNodeAttrValue_v1 < FFI::Union
+              layout :accessPolicyWindow, :CUaccessPolicyWindow,
+                     :cooperative, :int
+            end
+            typedef :CUkernelNodeAttrValue_v1, :CUkernelNodeAttrValue
+
+            # DEFINES
+            <% for define in defines %>
+            <%= define[:name] %> = <%= define[:value] %>
+            <% end %>
+
+            # Structs
+            <% for struct in c_structs %>
+              <% struct_name = struct[:name] %>
+              class <%= struct_name %> < FFI::Struct
+                <% unless struct[:members].empty? %>
+                  <% sep = ',' if struct[:members].count > 1 %>
+                  <% name = struct[:members][0][:name] %>
+                  <% type = struct[:members][0][:type] %>
+                  <% if name.include?('[') && name.include?(']') %>
+                    <% size_match = name.match(/\\[[0-9]+\\]/).to_s %>
+                    <% size = size_match.to_s.gsub(/\\[/, '').gsub(/\\]/, '') %>
+                    <% name = name.gsub(/\\[[0-9]+\\]/, '') %>
+                    layout :<%= name %>, [:<%= type %>, <%= size %>]<%= ',' if struct[:members].count > 1 %>
+                  <% else %>
+                    layout :<%= name %>, :<%= type %><%= ',' if struct[:members].count > 1 %>
+                  <% end %>
+                  <% index = 1 %>
+                  <% count = struct[:members].count %>
+                  <% for member in struct[:members] %>
+                    <% if index == 1 %>
+                      <% index += 1 %>
+                      <% next %>
+                    <% end %>
+                    <% name = member[:name] %>
+                    <% type = member[:type] %>
+                    <% if name.include?('[') && name.include?(']') %>
+                      <% size_match = name.match(/\\[[0-9]+\\]/).to_s %>
+                      <% size = size_match.gsub(/\\[/, '').gsub(/\\]/, '') %>
+                      <% name = name.gsub(/\\[[0-9]+\\]/, '') %>
+                      :<%= name %>, [:<%= type %>, <%= size %>]<%= ',' if index != count %>
+                    <% else %>
+                      :<%= name %>, :<%= type %><%= ',' if index != count %>
+                    <% end %>
+                    <% index += 1 %>
+                  <% end %>
+                <% end %>
+              end
+              <% new_struct_name = struct_name.split('_v') %>
+              typedef :<%= struct_name %>, :<%= new_struct_name[0] %>
             <% end %>
 
             # Functions
