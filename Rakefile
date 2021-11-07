@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
-require 'rubygems'
-require 'bundler/setup'
-require 'rubocop/rake_task'
+require 'bundler/gem_tasks'
+require 'rake/testtask'
 
-RuboCop::RakeTask.new
+Rake::TestTask.new(:test) do |t|
+  t.libs << 'test'
+  t.libs << 'lib'
+  t.test_files = FileList['test/**/*_test.rb']
+end
 
-task default: %i[rubocop:auto_correct]
+task default: %i[test]
