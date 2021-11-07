@@ -4,6 +4,16 @@ require 'test_helper'
 
 # Problems
 # CUresult cuArray3DGetDescriptor ( CUDA_ARRAY3D_DESCRIPTOR* pArrayDescriptor, CUarray hArray )
+# CUresult cuArrayGetSparseProperties ( CUDA_ARRAY_SPARSE_PROPERTIES* sparseProperties, CUarray array )
+# CUresult cuMipmappedArrayGetSparseProperties ( CUDA_ARRAY_SPARSE_PROPERTIES* sparseProperties, CUmipmappedArray mipmap )
+
+# CUresult cuMemcpy2D ( const CUDA_MEMCPY2D* pCopy )
+# CUresult cuMemcpy2DAsync ( const CUDA_MEMCPY2D* pCopy, CUstream hStream )
+# CUresult cuMemcpy2DUnaligned ( const CUDA_MEMCPY2D* pCopy )
+# CUresult cuMemcpy3D ( const CUDA_MEMCPY3D* pCopy )
+# CUresult cuMemcpy3DAsync ( const CUDA_MEMCPY3D* pCopy, CUstream hStream )
+# CUresult cuMemcpy3DPeer ( const CUDA_MEMCPY3D_PEER* pCopy )
+# CUresult cuMemcpy3DPeerAsync ( const CUDA_MEMCPY3D_PEER* pCopy, CUstream hStream )
 
 # Not done
 # CUresult cuIpcCloseMemHandle ( CUdeviceptr dptr )
@@ -12,15 +22,6 @@ require 'test_helper'
 # CUresult cuIpcOpenEventHandle ( CUevent* phEvent, CUipcEventHandle handle )
 # CUresult cuIpcOpenMemHandle ( CUdeviceptr* pdptr, CUipcMemHandle handle, unsigned int  Flags )
 
-# CUresult cuMemcpy ( CUdeviceptr dst, CUdeviceptr src, size_t ByteCount )
-# CUresult cuMemcpy2D ( const CUDA_MEMCPY2D* pCopy )
-# CUresult cuMemcpy2DAsync ( const CUDA_MEMCPY2D* pCopy, CUstream hStream )
-# CUresult cuMemcpy2DUnaligned ( const CUDA_MEMCPY2D* pCopy )
-# CUresult cuMemcpy3D ( const CUDA_MEMCPY3D* pCopy )
-# CUresult cuMemcpy3DAsync ( const CUDA_MEMCPY3D* pCopy, CUstream hStream )
-# CUresult cuMemcpy3DPeer ( const CUDA_MEMCPY3D_PEER* pCopy )
-# CUresult cuMemcpy3DPeerAsync ( const CUDA_MEMCPY3D_PEER* pCopy, CUstream hStream )
-# CUresult cuMemcpyAsync ( CUdeviceptr dst, CUdeviceptr src, size_t ByteCount, CUstream hStream )
 # CUresult cuMemcpyAtoA ( CUarray dstArray, size_t dstOffset, CUarray srcArray, size_t srcOffset, size_t ByteCount )
 # CUresult cuMemcpyAtoD ( CUdeviceptr dstDevice, CUarray srcArray, size_t srcOffset, size_t ByteCount )
 # CUresult cuMemcpyAtoH ( void* dstHost, CUarray srcArray, size_t srcOffset, size_t ByteCount )
@@ -48,10 +49,6 @@ require 'test_helper'
 # CUresult cuMemsetD32Async ( CUdeviceptr dstDevice, unsigned int  ui, size_t N, CUstream hStream )
 # CUresult cuMemsetD8 ( CUdeviceptr dstDevice, unsigned char  uc, size_t N )
 # CUresult cuMemsetD8Async ( CUdeviceptr dstDevice, unsigned char  uc, size_t N, CUstream hStream )
-# CUresult cuMipmappedArrayCreate ( CUmipmappedArray* pHandle, const CUDA_ARRAY3D_DESCRIPTOR* pMipmappedArrayDesc, unsigned int  numMipmapLevels )
-# CUresult cuMipmappedArrayDestroy ( CUmipmappedArray hMipmappedArray )
-# CUresult cuMipmappedArrayGetLevel ( CUarray* pLevelArray, CUmipmappedArray hMipmappedArray, unsigned int  level )
-# CUresult cuMipmappedArrayGetSparseProperties ( CUDA_ARRAY_SPARSE_PROPERTIES* sparseProperties, CUmipmappedArray mipmap )
 
 class CudaMemoryManagementTest < Minitest::Test
   def setup
@@ -101,36 +98,32 @@ class CudaMemoryManagementTest < Minitest::Test
 
   # FIXME: memory issues
   def test_cu_array_3d_get_descriptor
-    # cu_ctx = FFI::MemoryPointer.new :pointer
-    # Cuda::DriverApi.cuDevicePrimaryCtxRetain(cu_ctx, @cu_device)
-    # Cuda::DriverApi.cuCtxPushCurrent_v2(cu_ctx.read_pointer)
-    # Cuda::DriverApi.cuCtxSetCurrent(cu_ctx.read_pointer)
+    cu_array_3d_ptr = FFI::MemoryPointer.new :pointer
 
-    cu_array_3d_ptr = FFI::Pointer.new(:pointer, 1)
     cu_array_3d_descriptor = Cuda::DriverApi::CUDAARRAY3DDESCRIPTORSt.new
-    cu_array_3d_descriptor[:Width] = 64
-    cu_array_3d_descriptor[:Height] = 64
-    cu_array_3d_descriptor[:Depth] = 0
+    cu_array_3d_descriptor[:Width] = 8
+    cu_array_3d_descriptor[:Height] = 6
+    cu_array_3d_descriptor[:Depth] = 4
     cu_array_3d_descriptor[:Format] = Cuda::DriverApi::CU_AD_FORMAT_FLOAT
     cu_array_3d_descriptor[:NumChannels] = 1
-    cu_array_3d_descriptor[:Flags] = Cuda::DriverApi::CUDA_ARRAY3D_SURFACE_LDST
+    cu_array_3d_descriptor[:Flags] = Cuda::DriverApi::CUDA_ARRAY3D_LAYERED
 
-    cu_array_3d_descriptor_array = FFI::MemoryPointer.new :pointer
-    cu_array_3d_descriptor_array.write_array_of_pointer([cu_array_3d_descriptor])
-    Cuda::DriverApi.cuArray3DCreate_v2(cu_array_3d_ptr, cu_array_3d_descriptor_array)
+    assert_equal(:success, Cuda::DriverApi.cuArray3DCreate_v2(cu_array_3d_ptr, cu_array_3d_descriptor))
 
-    # cu_ctx_curr = FFI::MemoryPointer.new :pointer
-    # Cuda::DriverApi.cuCtxGetCurrent(cu_ctx_curr)
-    # assert_equal(cu_ctx_curr.read_pointer, cu_ctx.read_pointer)
+    refute_nil(cu_array_3d_ptr.read_pointer)
 
-    assert_equal('Success', 'Segmentation fault')
-    p_array_3d_descriptor_ptr = FFI::MemoryPointer.new(:pointer, 1)
-    assert_equal(:error_context_is_destroyed,
-                 # Segmentation fault. Trying to access invalid memory address
+    assert_equal("Success", "Test returns successfully but ruby got segmentation fault.")
+    p_array_3d_descriptor_ptr = FFI::MemoryPointer.new :pointer
+    assert_equal(:success,
                  Cuda::DriverApi.cuArray3DGetDescriptor_v2(
                    p_array_3d_descriptor_ptr,
-                   cu_array_3d_ptr
+                   cu_array_3d_ptr.read_pointer
                  ))
+
+    refute_nil(cu_array_3d_ptr.read_pointer)
+
+    array_3d_descriptor = Cuda::DriverApi::CUDAARRAY3DDESCRIPTORSt.new p_array_3d_descriptor_ptr
+    puts array_3d_descriptor[:Width]
   end
 
   def test_cu_array_create
@@ -157,8 +150,19 @@ class CudaMemoryManagementTest < Minitest::Test
   end
 
   def test_cu_array_get_descriptor
+    p_allocate_array = Cuda::DriverApi::CUDAARRAYDESCRIPTORSt.new
+    p_allocate_array[:Width] = 64
+    p_allocate_array[:Height] = 64
+    p_allocate_array[:Format] = Cuda::DriverApi::CU_AD_FORMAT_FLOAT
+    p_allocate_array[:NumChannels] = 1
+    assert_equal(:success, Cuda::DriverApi.cuArrayCreate_v2(@cu_array, p_allocate_array))
+
     p_array_descriptor_ptr = FFI::MemoryPointer.new :pointer
     assert_equal(:success, Cuda::DriverApi.cuArrayGetDescriptor_v2(p_array_descriptor_ptr, @cu_array.read_pointer))
+
+    array_descriptor = Cuda::DriverApi::CUDAARRAYDESCRIPTORSt.new p_array_descriptor_ptr
+
+    assert_equal(64, array_descriptor[:Width])
   end
 
   def test_cu_array_get_plane
@@ -171,20 +175,21 @@ class CudaMemoryManagementTest < Minitest::Test
     assert_equal(:error_invalid_value, Cuda::DriverApi.cuArrayGetSparseProperties(sparse_properties, @cu_array_3d.read_pointer))
   end
 
-  def test_cu_array_get_sparse_properties
-    p_handle_ptr = FFI::MemoryPointer.new :pointer
-    p_allocate_array = Cuda::DriverApi::CUDAARRAY3DDESCRIPTORSt.new
-    p_allocate_array[:Width] = 64
-    p_allocate_array[:Height] = 64
-    p_allocate_array[:Depth] = 64
-    p_allocate_array[:Format] = Cuda::DriverApi::CU_AD_FORMAT_FLOAT
-    p_allocate_array[:NumChannels] = 6
-    p_allocate_array[:Flags] = Cuda::DriverApi::CU_AD_FORMAT_NV12
-    Cuda::DriverApi.cuArray3DCreate_v2(p_handle_ptr, p_allocate_array)
-
-    sparse_properties = FFI::MemoryPointer.new :pointer
-    assert_equal(:error_invalid_value, Cuda::DriverApi.cuArrayGetSparseProperties(sparse_properties, p_handle_ptr.read_pointer))
-  end
+  # TODO: Can not create a sparse array to test sparse properties
+  # def test_cu_array_get_sparse_properties
+  #   p_handle_ptr = FFI::MemoryPointer.new :pointer
+  #   p_allocate_array = Cuda::DriverApi::CUDAARRAY3DDESCRIPTORSt.new
+  #   p_allocate_array[:Width] = 64
+  #   p_allocate_array[:Height] = 64
+  #   p_allocate_array[:Depth] = 4
+  #   p_allocate_array[:Format] = Cuda::DriverApi::CU_AD_FORMAT_FLOAT
+  #   p_allocate_array[:NumChannels] = 2
+  #   p_allocate_array[:Flags] = Cuda::DriverApi::CUDA_ARRAY3D_SPARSE
+  #   assert_equal(:success, Cuda::DriverApi.cuArray3DCreate_v2(p_handle_ptr, p_allocate_array))
+  #
+  #   sparse_properties = FFI::MemoryPointer.new :pointer
+  #   assert_equal(:success, Cuda::DriverApi.cuArrayGetSparseProperties(sparse_properties, p_handle_ptr))
+  # end
 
   def test_cu_device_get_pci_bus_id
     len = 100
@@ -286,5 +291,185 @@ class CudaMemoryManagementTest < Minitest::Test
     byte_size = 4
     assert_equal(:success, Cuda::DriverApi.cuMemHostRegister_v2(p, byte_size, Cuda::DriverApi::CU_MEMHOSTREGISTER_PORTABLE))
     assert_equal(:success, Cuda::DriverApi.cuMemHostUnregister(p))
+  end
+
+  def test_cu_mipmapped_array_create_destroy
+    p_handle = FFI::MemoryPointer.new(:pointer, 1)
+
+    # Array descriptor needs to be specific on which type of array will be created otherwise it will send error invalid value
+    p_mipmapped_array_desc = Cuda::DriverApi::CUDAARRAY3DDESCRIPTORSt.new
+    p_mipmapped_array_desc[:Width] = 4
+    p_mipmapped_array_desc[:Height] = 4
+    p_mipmapped_array_desc[:Depth] = 6
+    p_mipmapped_array_desc[:Format] = Cuda::DriverApi::CU_AD_FORMAT_FLOAT
+    p_mipmapped_array_desc[:NumChannels] = 1 # 1, 2 or 4
+    p_mipmapped_array_desc[:Flags] = Cuda::DriverApi::CUDA_ARRAY3D_CUBEMAP
+    num_mipmap_levels = 2
+    assert_equal(:success, Cuda::DriverApi.cuMipmappedArrayCreate(p_handle, p_mipmapped_array_desc, num_mipmap_levels))
+    assert_equal(:success, Cuda::DriverApi.cuMipmappedArrayDestroy(p_handle.read_pointer))
+  end
+
+  def test_cu_mipmapped_array_get_level
+    p_handle = FFI::MemoryPointer.new(:pointer, 1)
+
+    # Array descriptor needs to be specific on which type of array will be created otherwise it will send error invalid value
+    p_mipmapped_array_desc = Cuda::DriverApi::CUDAARRAY3DDESCRIPTORSt.new
+    p_mipmapped_array_desc[:Width] = 4
+    p_mipmapped_array_desc[:Height] = 4
+    p_mipmapped_array_desc[:Depth] = 6
+    p_mipmapped_array_desc[:Format] = Cuda::DriverApi::CU_AD_FORMAT_FLOAT
+    p_mipmapped_array_desc[:NumChannels] = 1 # 1, 2 or 4
+    p_mipmapped_array_desc[:Flags] = Cuda::DriverApi::CUDA_ARRAY3D_CUBEMAP
+    num_mipmap_levels = 2
+    assert_equal(:success, Cuda::DriverApi.cuMipmappedArrayCreate(p_handle, p_mipmapped_array_desc, num_mipmap_levels))
+
+    p_level_array = FFI::MemoryPointer.new :pointer
+    assert_equal(:success, Cuda::DriverApi.cuMipmappedArrayGetLevel(p_level_array, p_handle.read_pointer, 1))
+  end
+
+  # TODO: Can not create a sparse array to test the sparse properties
+  # def test_cu_mipmapped_array_get_sparse_properties
+  #   p_handle = FFI::MemoryPointer.new(:pointer, 1)
+  #
+  #   # Array descriptor needs to be specific on which type of array will be created otherwise it will send error invalid value
+  #   p_mipmapped_array_desc = Cuda::DriverApi::CUDAARRAY3DDESCRIPTORSt.new
+  #   p_mipmapped_array_desc[:Width] = 2
+  #   p_mipmapped_array_desc[:Height] = 0
+  #   p_mipmapped_array_desc[:Depth] = 0
+  #   p_mipmapped_array_desc[:Format] = Cuda::DriverApi::CU_AD_FORMAT_FLOAT
+  #   p_mipmapped_array_desc[:NumChannels] = 1 # 1, 2 or 4
+  #   p_mipmapped_array_desc[:Flags] = Cuda::DriverApi::CUDA_ARRAY3D_SPARSE
+  #   num_mipmap_levels = 2
+  #   assert_equal(:success, Cuda::DriverApi.cuMipmappedArrayCreate(p_handle, p_mipmapped_array_desc, num_mipmap_levels))
+  #
+  #   sparse_properties = FFI::MemoryPointer.new(:pointer, 1)
+  #   assert_equal(:success, Cuda::DriverApi.cuMipmappedArrayGetSparseProperties(sparse_properties, p_handle.read_pointer))
+  # end
+
+  def test_cu_mem_cpy
+    dst = FFI::MemoryPointer.new(:pointer, 3)
+    src = FFI::MemoryPointer.new(:pointer, 3)
+    src.write_array_of_int([1, 2, 3])
+
+    byte_count = src.size
+
+    assert_equal(:success, Cuda::DriverApi.cuMemcpy(dst, src, byte_count))
+
+    refute_nil(dst.read_pointer)
+
+    assert_equal([1, 2, 3].to_s, dst.read_array_of_int(3).to_s)
+  end
+
+  def test_cu_mem_cpy_async
+    dst = FFI::MemoryPointer.new(:pointer, 3)
+    src = FFI::MemoryPointer.new(:pointer, 3)
+    src.write_array_of_int([1, 2, 3])
+
+    byte_count = src.size
+
+    cu_stream = FFI::MemoryPointer.new :pointer
+    assert_equal(:success, Cuda::DriverApi.cuStreamCreate(cu_stream, Cuda::DriverApi::CU_STREAM_DEFAULT))
+    assert_equal(:success, Cuda::DriverApi.cuMemcpyAsync(dst, src, byte_count, cu_stream.read_pointer))
+
+    assert_equal([1, 2, 3].to_s, dst.read_array_of_int(3).to_s)
+  end
+
+  # TODO: CUDAMEMCPY2DSt parameters are not correct
+  def test_cu_mem_cpy_2d_async_unaligned
+    # Not a correct CUDAMEMCPY2DSt structure
+    p_copy = Cuda::DriverApi::CUDAMEMCPY2DSt.new
+    p_copy[:srcXInBytes] = 0
+    p_copy[:srcY] = 0
+    p_copy[:srcMemoryType] = Cuda::DriverApi::CU_MEMORYTYPE_ARRAY
+    p_copy[:srcHost] = 0
+    p_copy[:srcDevice] = 0
+    p_copy[:srcArray] = 0
+    p_copy[:srcPitch] = 0
+    p_copy[:dstXInBytes] = 0
+    p_copy[:dstY] = 0
+    p_copy[:dstMemoryType] = Cuda::DriverApi::CU_MEMORYTYPE_ARRAY
+    p_copy[:dstHost] = 0
+    p_copy[:dstDevice] = 0
+    p_copy[:dstArray] = 0
+    p_copy[:dstPitch] = 0
+    p_copy[:WidthInBytes] = 0
+    p_copy[:Height] = 0
+    assert_equal(:success, Cuda::DriverApi.cuMemcpy2D_v2(p_copy))
+
+    cu_stream = FFI::MemoryPointer.new :pointer
+    Cuda::DriverApi.cuStreamCreate(cu_stream, Cuda::DriverApi::CU_STREAM_DEFAULT)
+    assert_equal(:success, Cuda::DriverApi.cuMemcpy2DAsync_v2(p_copy, cu_stream.read_pointer))
+
+    assert_equal(:success, Cuda::DriverApi.cuMemcpy2DUnaligned_v2(p_copy))
+  end
+
+  # TODO: CUDAMEMCPY3DSt parameter are not correct
+  def test_cu_mem_cpy_3d_async
+    p_copy = Cuda::DriverApi::CUDAMEMCPY3DSt.new
+    p_copy[:srcXInBytes] = 0
+    p_copy[:srcY] = 0
+    p_copy[:srcZ] = 0
+    p_copy[:srcLOD] = 0
+    p_copy[:srcMemoryType] = 0
+    p_copy[:srcHost] = 0
+    p_copy[:srcDevice] = 0
+    p_copy[:srcArray] = 0
+    p_copy[:reserved0] = 0
+    p_copy[:srcPitch] = 0
+    p_copy[:srcHeight] = 0
+    p_copy[:dstXInBytes] = 0
+    p_copy[:dstY] = 0
+    p_copy[:dstZ] = 0
+    p_copy[:dstLOD] = 0
+    p_copy[:dstMemoryType] = 0
+    p_copy[:dstHost] = 0
+    p_copy[:dstDevice] = 0
+    p_copy[:dstArray] = 0
+    p_copy[:reserved1] = 0
+    p_copy[:dstPitch] = 0
+    p_copy[:dstHeight] = 0
+    p_copy[:WidthInBytes] = 0
+    p_copy[:Height] = 0
+    p_copy[:Depth] = 0
+    assert_equal(:success, Cuda::DriverApi.cuMemcpy3D_v2(p_copy))
+
+    cu_stream = FFI::MemoryPointer.new :pointer
+    assert_equal(:success, Cuda::DriverApi.cuStreamCreate(cu_stream, Cuda::DriverApi::CU_STREAM_DEFAULT))
+    assert_equal(:success, Cuda::DriverApi.cuMemcpy3DAsync_v2(p_copy, cu_stream.read_pointer))
+  end
+
+  # TODO: CUDAMEMCPY3DSt parameter are not correct
+  def test_cu_mem_cpy_3d_peer_peer_async
+    p_copy = Cuda::DriverApi::CUDAMEMCPY3DSt.new
+    p_copy[:srcXInBytes] = 0
+    p_copy[:srcY] = 0
+    p_copy[:srcZ] = 0
+    p_copy[:srcLOD] = 0
+    p_copy[:srcMemoryType] = 0
+    p_copy[:srcHost] = 0
+    p_copy[:srcDevice] = 0
+    p_copy[:srcArray] = 0
+    p_copy[:reserved0] = 0
+    p_copy[:srcPitch] = 0
+    p_copy[:srcHeight] = 0
+    p_copy[:dstXInBytes] = 0
+    p_copy[:dstY] = 0
+    p_copy[:dstZ] = 0
+    p_copy[:dstLOD] = 0
+    p_copy[:dstMemoryType] = 0
+    p_copy[:dstHost] = 0
+    p_copy[:dstDevice] = 0
+    p_copy[:dstArray] = 0
+    p_copy[:reserved1] = 0
+    p_copy[:dstPitch] = 0
+    p_copy[:dstHeight] = 0
+    p_copy[:WidthInBytes] = 0
+    p_copy[:Height] = 0
+    p_copy[:Depth] = 0
+    assert_equal(:success, Cuda::DriverApi.cuMemcpy3DPeer(p_copy))
+
+    cu_stream = FFI::MemoryPointer.new :pointer
+    assert_equal(:success, Cuda::DriverApi.cuStreamCreate(cu_stream, Cuda::DriverApi::CU_STREAM_DEFAULT))
+    assert_equal(:success, Cuda::DriverApi.cuMemcpy3DPeerAsync(p_copy, cu_stream.read_pointer))
   end
 end

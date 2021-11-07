@@ -2240,7 +2240,7 @@ module Cuda
     attach_function :cuIpcCloseMemHandle, :cuIpcCloseMemHandle, [:CUdeviceptr], :CUresult
     attach_function :cuMemHostRegister_v2, :cuMemHostRegister_v2, %i[pointer size_t uint], :CUresult
     attach_function :cuMemHostUnregister, :cuMemHostUnregister, [:pointer], :CUresult
-    attach_function :cuMemcpy, :cuMemcpy, %i[CUdeviceptr CUdeviceptr size_t], :CUresult
+    attach_function :cuMemcpy, :cuMemcpy, %i[pointer pointer size_t], :CUresult
     attach_function :cuMemcpyPeer, :cuMemcpyPeer, %i[CUdeviceptr CUcontext CUdeviceptr CUcontext size_t], :CUresult
     attach_function :cuMemcpyHtoD_v2, :cuMemcpyHtoD_v2, %i[CUdeviceptr pointer size_t], :CUresult
     attach_function :cuMemcpyDtoH_v2, :cuMemcpyDtoH_v2, %i[pointer CUdeviceptr size_t], :CUresult
@@ -2254,7 +2254,7 @@ module Cuda
     attach_function :cuMemcpy2DUnaligned_v2, :cuMemcpy2DUnaligned_v2, [:pointer], :CUresult
     attach_function :cuMemcpy3D_v2, :cuMemcpy3D_v2, [:pointer], :CUresult
     attach_function :cuMemcpy3DPeer, :cuMemcpy3DPeer, [:pointer], :CUresult
-    attach_function :cuMemcpyAsync, :cuMemcpyAsync, %i[CUdeviceptr CUdeviceptr size_t CUstream], :CUresult
+    attach_function :cuMemcpyAsync, :cuMemcpyAsync, %i[pointer pointer size_t CUstream], :CUresult
     attach_function :cuMemcpyPeerAsync, :cuMemcpyPeerAsync, %i[CUdeviceptr CUcontext CUdeviceptr CUcontext size_t CUstream], :CUresult
     attach_function :cuMemcpyHtoDAsync_v2, :cuMemcpyHtoDAsync_v2, %i[CUdeviceptr pointer size_t CUstream], :CUresult
     attach_function :cuMemcpyDtoHAsync_v2, :cuMemcpyDtoHAsync_v2, %i[pointer CUdeviceptr size_t CUstream], :CUresult
