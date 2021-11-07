@@ -45,7 +45,7 @@ module Parser
             end
 
             name = ':union'
-            type_name = ''.dup # can't modify frozen String that is why we call dup
+            type_name = +'' # can't modify frozen String that is why we call dup
             type_name << "Class.new(FFI::Union) do \n"
             type_name << 'layout '
             type_name << fields.join(", \n")

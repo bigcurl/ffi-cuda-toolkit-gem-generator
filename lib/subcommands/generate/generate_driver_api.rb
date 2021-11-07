@@ -153,7 +153,7 @@ class GenerateDriverApi < ApplicationSubcommand
   def stringify_function_types(functions)
     functions.each do |ffi_type_function|
       args_string = ffi_type_function[:arguments].map do |x|
-        arg = ":#{x[:type_name].gsub(' ', '_')}" # colon in string is an ugly way to get sym but works
+        arg = ":#{x[:type_name].tr(' ', '_')}" # colon in string is an ugly way to get sym but works
         arg = ':pointer' if arg.include? 'void'
         arg
       end
