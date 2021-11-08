@@ -112,7 +112,7 @@ class CudaMemoryManagementTest < Minitest::Test
 
     refute_nil(cu_array_3d_ptr.read_pointer)
 
-    assert_equal("Success", "Test returns successfully but ruby got segmentation fault.")
+    assert_equal('Success', 'Test returns successfully but ruby got segmentation fault.')
     p_array_3d_descriptor_ptr = FFI::MemoryPointer.new :pointer
     assert_equal(:success,
                  Cuda::DriverApi.cuArray3DGetDescriptor_v2(
