@@ -2,6 +2,10 @@
 
 require 'test_helper'
 
+# Needed 
+# CUresult cuGetErrorName ( CUresult error, const char** pStr )
+# CUresult cuGetErrorString ( CUresult error, const char** pStr )
+
 class CudaErrorHandlingTest < Minitest::Test
   def test_cu_get_error_name
     p_str = FFI::MemoryPointer.new(:pointer, 1)

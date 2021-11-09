@@ -2,6 +2,9 @@
 
 require 'test_helper'
 
+# Needed
+# CUresult cuDriverGetVersion ( int* driverVersion )
+
 class CudaVersionManagementTest < Minitest::Test
   def setup
     Cuda::DriverApi.cuInit(0)

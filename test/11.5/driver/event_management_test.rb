@@ -2,6 +2,15 @@
 
 require 'test_helper'
 
+# Needed
+# CUresult cuEventCreate ( CUevent* phEvent, unsigned int  Flags )
+# CUresult cuEventDestroy ( CUevent hEvent )
+# CUresult cuEventElapsedTime ( float* pMilliseconds, CUevent hStart, CUevent hEnd )
+# CUresult cuEventQuery ( CUevent hEvent )
+# CUresult cuEventRecord ( CUevent hEvent, CUstream hStream )
+# CUresult cuEventRecordWithFlags ( CUevent hEvent, CUstream hStream, unsigned int  flags )
+# CUresult cuEventSynchronize ( CUevent hEvent )
+
 class CudaEventManagementTest < Minitest::Test
   def setup
     @cu_context = FFI::MemoryPointer.new :pointer

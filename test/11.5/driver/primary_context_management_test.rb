@@ -2,6 +2,13 @@
 
 require 'test_helper'
 
+# Needed
+# CUresult cuDevicePrimaryCtxGetState ( CUdevice dev, unsigned int* flags, int* active )
+# CUresult cuDevicePrimaryCtxRelease ( CUdevice dev )
+# CUresult cuDevicePrimaryCtxReset ( CUdevice dev )
+# CUresult cuDevicePrimaryCtxRetain ( CUcontext* pctx, CUdevice dev )
+# CUresult cuDevicePrimaryCtxSetFlags ( CUdevice dev, unsigned int  flags ) 
+
 class CudaPrimaryContextTest < Minitest::Test
   def setup
     @cu_device = 0

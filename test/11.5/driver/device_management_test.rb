@@ -2,6 +2,24 @@
 
 require 'test_helper'
 
+# Needed
+# CUresult cuDeviceGet ( CUdevice* device, int  ordinal )
+# CUresult cuDeviceGetAttribute ( int* pi, CUdevice_attribute attrib, CUdevice dev )
+# CUresult cuDeviceGetCount ( int* count )
+# CUresult cuDeviceGetName ( char* name, int  len, CUdevice dev )
+# CUresult cuDeviceGetUuid ( CUuuid* uuid, CUdevice dev )
+# CUresult cuDeviceGetUuid_v2 ( CUuuid* uuid, CUdevice dev )
+# CUresult cuDeviceTotalMem ( size_t* bytes, CUdevice dev )
+
+# Not needed
+# CUresult cuDeviceGetDefaultMemPool ( CUmemoryPool* pool_out, CUdevice dev )
+# CUresult cuDeviceGetLuid ( char* luid, unsigned int* deviceNodeMask, CUdevice dev )
+# CUresult cuDeviceGetMemPool ( CUmemoryPool* pool, CUdevice dev )
+# CUresult cuDeviceGetNvSciSyncAttributes ( void* nvSciSyncAttrList, CUdevice dev, int  flags )
+# CUresult cuDeviceGetTexture1DLinearMaxWidth ( size_t* maxWidthInElements, CUarray_format format, unsigned numChannels, CUdevice dev )
+# CUresult cuDeviceSetMemPool ( CUdevice dev, CUmemoryPool pool )
+# CUresult cuFlushGPUDirectRDMAWrites ( CUflushGPUDirectRDMAWritesTarget target, CUflushGPUDirectRDMAWritesScope scope )
+
 # Not done
 # cuFlushGPUDirectRDMAWrites ( CUflushGPUDirectRDMAWritesTarget target, CUflushGPUDirectRDMAWritesScope scope )
 

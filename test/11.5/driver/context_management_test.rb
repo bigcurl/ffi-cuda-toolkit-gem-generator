@@ -3,6 +3,28 @@
 require 'test_helper'
 require 'minitest/hooks/test'
 
+# Needed
+# CUresult cuCtxCreate ( CUcontext* pctx, unsigned int  flags, CUdevice dev )
+# CUresult cuCtxCreate_v3 ( CUcontext* pctx, CUexecAffinityParam* paramsArray, int  numParams, unsigned int  flags, CUdevice dev )
+# CUresult cuCtxDestroy ( CUcontext ctx )
+# CUresult cuCtxGetApiVersion ( CUcontext ctx, unsigned int* version )
+# CUresult cuCtxGetCacheConfig ( CUfunc_cache* pconfig )
+# CUresult cuCtxGetCurrent ( CUcontext* pctx )
+# CUresult cuCtxGetDevice ( CUdevice* device )
+# CUresult cuCtxGetExecAffinity ( CUexecAffinityParam* pExecAffinity, CUexecAffinityType type )
+# CUresult cuCtxGetFlags ( unsigned int* flags )
+# CUresult cuCtxGetLimit ( size_t* pvalue, CUlimit limit )
+# CUresult cuCtxGetSharedMemConfig ( CUsharedconfig* pConfig )
+# CUresult cuCtxGetStreamPriorityRange ( int* leastPriority, int* greatestPriority )
+# CUresult cuCtxPopCurrent ( CUcontext* pctx )
+# CUresult cuCtxPushCurrent ( CUcontext ctx )
+# CUresult cuCtxResetPersistingL2Cache ( void )
+# CUresult cuCtxSetCacheConfig ( CUfunc_cache config )
+# CUresult cuCtxSetCurrent ( CUcontext ctx )
+# CUresult cuCtxSetLimit ( CUlimit limit, size_t value )
+# CUresult cuCtxSetSharedMemConfig ( CUsharedconfig config )
+# CUresult cuCtxSynchronize ( void )
+    
 class CudaContextManagementTest < Minitest::Test
   include Minitest::Hooks
 

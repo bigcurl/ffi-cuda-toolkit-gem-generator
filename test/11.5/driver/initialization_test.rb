@@ -2,6 +2,9 @@
 
 require 'test_helper'
 
+# Needed
+# CUresult cuInit ( unsigned int  Flags ) 
+
 class CudaInitializationTest < Minitest::Test
   def test_cu_init
     assert_equal(:success, Cuda::DriverApi.cuInit(0))
