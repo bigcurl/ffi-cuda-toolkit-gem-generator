@@ -15,8 +15,8 @@ module Cuda
     typedef :uint32, :cuuint32_t
     typedef :uint64, :cuuint64_t
     CUDA_VERSION = 11050
-    typedef :uint, :CUdeviceptr_v2
-    typedef :CUdeviceptr_v2, :CUdeviceptr
+    typedef :ulong_long, :CUdeviceptr_v2
+    typedef :ulong_long, :CUdeviceptr
     typedef :int, :CUdevice_v1
     typedef :CUdevice_v1, :CUdevice
     typedef :pointer, :CUcontext
@@ -2240,10 +2240,10 @@ module Cuda
     attach_function :cuIpcCloseMemHandle, :cuIpcCloseMemHandle, [:CUdeviceptr], :CUresult
     attach_function :cuMemHostRegister_v2, :cuMemHostRegister_v2, %i[pointer size_t uint], :CUresult
     attach_function :cuMemHostUnregister, :cuMemHostUnregister, [:pointer], :CUresult
-    attach_function :cuMemcpy, :cuMemcpy, %i[pointer pointer size_t], :CUresult
+    attach_function :cuMemcpy, :cuMemcpy, %i[CUdeviceptr CUdeviceptr size_t], :CUresult
     attach_function :cuMemcpyPeer, :cuMemcpyPeer, %i[CUdeviceptr CUcontext CUdeviceptr CUcontext size_t], :CUresult
-    attach_function :cuMemcpyHtoD_v2, :cuMemcpyHtoD_v2, %i[pointer pointer size_t], :CUresult
-    attach_function :cuMemcpyDtoH_v2, :cuMemcpyDtoH_v2, %i[pointer pointer size_t], :CUresult
+    attach_function :cuMemcpyHtoD_v2, :cuMemcpyHtoD_v2, %i[CUdeviceptr pointer size_t], :CUresult
+    attach_function :cuMemcpyDtoH_v2, :cuMemcpyDtoH_v2, %i[pointer CUdeviceptr size_t], :CUresult
     attach_function :cuMemcpyDtoD_v2, :cuMemcpyDtoD_v2, %i[CUdeviceptr CUdeviceptr size_t], :CUresult
     attach_function :cuMemcpyDtoA_v2, :cuMemcpyDtoA_v2, %i[CUarray size_t CUdeviceptr size_t], :CUresult
     attach_function :cuMemcpyAtoD_v2, :cuMemcpyAtoD_v2, %i[CUdeviceptr CUarray size_t size_t], :CUresult
@@ -2256,8 +2256,8 @@ module Cuda
     attach_function :cuMemcpy3DPeer, :cuMemcpy3DPeer, [:pointer], :CUresult
     attach_function :cuMemcpyAsync, :cuMemcpyAsync, %i[pointer pointer size_t CUstream], :CUresult
     attach_function :cuMemcpyPeerAsync, :cuMemcpyPeerAsync, %i[CUdeviceptr CUcontext CUdeviceptr CUcontext size_t CUstream], :CUresult
-    attach_function :cuMemcpyHtoDAsync_v2, :cuMemcpyHtoDAsync_v2, %i[pointer pointer size_t CUstream], :CUresult
-    attach_function :cuMemcpyDtoHAsync_v2, :cuMemcpyDtoHAsync_v2, %i[pointer pointer size_t CUstream], :CUresult
+    attach_function :cuMemcpyHtoDAsync_v2, :cuMemcpyHtoDAsync_v2, %i[CUdeviceptr pointer size_t CUstream], :CUresult
+    attach_function :cuMemcpyDtoHAsync_v2, :cuMemcpyDtoHAsync_v2, %i[pointer CUdeviceptr size_t CUstream], :CUresult
     attach_function :cuMemcpyDtoDAsync_v2, :cuMemcpyDtoDAsync_v2, %i[CUdeviceptr CUdeviceptr size_t CUstream], :CUresult
     attach_function :cuMemcpyHtoAAsync_v2, :cuMemcpyHtoAAsync_v2, %i[CUarray size_t pointer size_t CUstream], :CUresult
     attach_function :cuMemcpyAtoHAsync_v2, :cuMemcpyAtoHAsync_v2, %i[pointer CUarray size_t size_t CUstream], :CUresult

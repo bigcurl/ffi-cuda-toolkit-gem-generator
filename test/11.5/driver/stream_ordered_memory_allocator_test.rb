@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Needed
 # CUresult cuMemAllocAsync ( CUdeviceptr* dptr, size_t bytesize, CUstream hStream )
 # CUresult cuMemAllocFromPoolAsync ( CUdeviceptr* dptr, size_t bytesize, CUmemoryPool pool, CUstream hStream )

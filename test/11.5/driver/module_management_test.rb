@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Needed
 # CUresult cuModuleGetFunction ( CUfunction* hfunc, CUmodule hmod, const char* name )
 # CUresult cuModuleGetGlobal ( CUdeviceptr* dptr, size_t* bytes, CUmodule hmod, const char* name )

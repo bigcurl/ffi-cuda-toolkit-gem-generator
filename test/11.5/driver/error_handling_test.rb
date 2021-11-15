@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-# Needed 
+# Needed
 # CUresult cuGetErrorName ( CUresult error, const char** pStr )
 # CUresult cuGetErrorString ( CUresult error, const char** pStr )
 

@@ -7,7 +7,7 @@ require 'test_helper'
 # CUresult cuDevicePrimaryCtxRelease ( CUdevice dev )
 # CUresult cuDevicePrimaryCtxReset ( CUdevice dev )
 # CUresult cuDevicePrimaryCtxRetain ( CUcontext* pctx, CUdevice dev )
-# CUresult cuDevicePrimaryCtxSetFlags ( CUdevice dev, unsigned int  flags ) 
+# CUresult cuDevicePrimaryCtxSetFlags ( CUdevice dev, unsigned int  flags )
 
 class CudaPrimaryContextTest < Minitest::Test
   def setup

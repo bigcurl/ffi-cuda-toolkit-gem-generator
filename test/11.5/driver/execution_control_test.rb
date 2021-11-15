@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Needed
 # CUresult cuFuncGetAttribute ( int* pi, CUfunction_attribute attrib, CUfunction hfunc )
 # CUresult cuFuncGetModule ( CUmodule* hmod, CUfunction hfunc )

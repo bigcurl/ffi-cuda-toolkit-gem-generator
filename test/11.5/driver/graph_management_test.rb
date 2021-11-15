@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Needed
 # CUresult cuDeviceGetGraphMemAttribute ( CUdevice device, CUgraphMem_attribute attr, void* value )
 # CUresult cuDeviceGraphMemTrim ( CUdevice device )

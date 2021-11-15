@@ -24,7 +24,7 @@ require 'minitest/hooks/test'
 # CUresult cuCtxSetLimit ( CUlimit limit, size_t value )
 # CUresult cuCtxSetSharedMemConfig ( CUsharedconfig config )
 # CUresult cuCtxSynchronize ( void )
-    
+
 class CudaContextManagementTest < Minitest::Test
   include Minitest::Hooks
 

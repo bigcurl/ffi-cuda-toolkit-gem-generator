@@ -3,7 +3,7 @@
 require 'test_helper'
 
 # Needed
-# CUresult cuInit ( unsigned int  Flags ) 
+# CUresult cuInit ( unsigned int  Flags )
 
 class CudaInitializationTest < Minitest::Test
   def test_cu_init

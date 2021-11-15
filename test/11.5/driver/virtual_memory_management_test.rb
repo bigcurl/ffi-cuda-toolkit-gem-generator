@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Not Needed
 # CUresult cuMemAddressFree ( CUdeviceptr ptr, size_t size )
 # CUresult cuMemAddressReserve ( CUdeviceptr* ptr, size_t size, size_t alignment, CUdeviceptr addr, unsigned long long flags )

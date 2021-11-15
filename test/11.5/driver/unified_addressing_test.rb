@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Needed
 # CUresult cuMemAdvise ( CUdeviceptr devPtr, size_t count, CUmem_advise advice, CUdevice device )
 # CUresult cuMemPrefetchAsync ( CUdeviceptr devPtr, size_t count, CUdevice dstDevice, CUstream hStream )

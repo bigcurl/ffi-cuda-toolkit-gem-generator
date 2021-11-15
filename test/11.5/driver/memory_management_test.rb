@@ -410,17 +410,15 @@ class CudaMemoryManagementTest < Minitest::Test
   # end
 
   def test_cu_mem_cpy
-    dst = FFI::MemoryPointer.new(:pointer, 3)
-    src = FFI::MemoryPointer.new(:pointer, 3)
-    src.write_array_of_int([1, 2, 3])
+    array = [1, 2, 3]
+    dst = FFI::MemoryPointer.new(:ulong_long, array.size)
+    src = FFI::MemoryPointer.new(:ulong_long, array.size)
+    src.write_array_of_ulong_long([1, 2, 3])
 
     byte_count = src.size
 
-    assert_equal(:success, Cuda::DriverApi.cuMemcpy(dst, src, byte_count))
-
-    refute_nil(dst.read_pointer)
-
-    assert_equal([1, 2, 3].to_s, dst.read_array_of_int(3).to_s)
+    assert_equal(:success, Cuda::DriverApi.cuMemcpy(dst.address, src.address, byte_count))
+    assert_equal([1, 2, 3], dst.read_array_of_ulong_long(3))
   end
 
   def test_cu_mem_cpy_async
@@ -538,27 +536,29 @@ class CudaMemoryManagementTest < Minitest::Test
 
   def test_cu_mem_cpy_d_to_h
     dst_host = FFI::MemoryPointer.new(:int, 3)
-    src_device = FFI::MemoryPointer.new(:int, 3)
+    src_device = FFI::MemoryPointer.new(:ulong_long)
     byte_count = src_device.size
     assert_equal(:success, Cuda::DriverApi.cuMemAlloc_v2(src_device, byte_count))
-
-    assert_equal(:success, Cuda::DriverApi.cuMemcpyDtoH_v2(dst_host, src_device.read_pointer, byte_count))
+    # TODO: Here we need to put data on the device first and than read it again
+    # otherwise we cannot verify the output as dst_host contains random values from device
+    assert_equal(:success, Cuda::DriverApi.cuMemcpyDtoH_v2(dst_host, src_device.read_ulong_long, byte_count))
+    # TODO: Verify output
   end
 
   # FIXME: Having trouble.
   # Returns error_invalid_valid.
   # Possibly device memory allocation is not correct
   def test_cu_mem_cpy_h_to_d
-    src_host = FFI::MemoryPointer.new(:int, 3)
-    src_host.write_array_of_int([1, 2, 3])
+    array_host = [1, 2, 3]
+    src_host = FFI::MemoryPointer.new(:int, array_host.size)
+    src_host.write_array_of_int(array_host)
 
     byte_count = src_host.size # byte_count is the memory size in bytes
 
-    dst_device = FFI::MemoryPointer.new(:int, 3)
+    dst_device = FFI::MemoryPointer.new(:ulong_long)
 
     assert_equal(:success, Cuda::DriverApi.cuMemAlloc_v2(dst_device, byte_count))
-
-    assert_equal(:success, Cuda::DriverApi.cuMemcpyHtoD_v2(dst_device, src_host.read_pointer, byte_count))
+    assert_equal(:success, Cuda::DriverApi.cuMemcpyHtoD_v2(dst_device.read_ulong_long, src_host, byte_count))
   end
 
   def test_cu_mem_cpy_d_to_h_async
@@ -566,11 +566,13 @@ class CudaMemoryManagementTest < Minitest::Test
     assert_equal(:success, Cuda::DriverApi.cuStreamCreate(cu_stream, Cuda::DriverApi::CU_STREAM_DEFAULT))
 
     dst_host = FFI::MemoryPointer.new(:int, 3)
-    src_device = FFI::MemoryPointer.new(:int, 3)
+    src_device = FFI::MemoryPointer.new(:ulong_long)
     byte_count = src_device.size
     assert_equal(:success, Cuda::DriverApi.cuMemAlloc_v2(src_device, byte_count))
-
-    assert_equal(:success, Cuda::DriverApi.cuMemcpyDtoHAsync_v2(dst_host, src_device.read_pointer, byte_count, cu_stream.read_pointer))
+    # TODO: Here we need to put data on the device first and than read it again
+    # otherwise we cannot verify the output as dst_host contains random values from device
+    assert_equal(:success, Cuda::DriverApi.cuMemcpyDtoHAsync_v2(dst_host, src_device.read_ulong_long, byte_count, cu_stream.read_pointer))
+    # TODO: Verify output
   end
 
   # FIXME: Having trouble.
@@ -580,11 +582,10 @@ class CudaMemoryManagementTest < Minitest::Test
     cu_stream = FFI::MemoryPointer.new :pointer
     assert_equal(:success, Cuda::DriverApi.cuStreamCreate(cu_stream, Cuda::DriverApi::CU_STREAM_DEFAULT))
 
-    dst_device = FFI::MemoryPointer.new(:int, 3)
+    dst_device = FFI::MemoryPointer.new(:ulong_long)
     src_host = FFI::MemoryPointer.new(:int, 3)
     byte_count = src_host.size
     assert_equal(:success, Cuda::DriverApi.cuMemAlloc_v2(dst_device, byte_count))
-
-    assert_equal(:success, Cuda::DriverApi.cuMemcpyHtoDAsync_v2(dst_device, src_host.read_pointer, byte_count, cu_stream.read_pointer))
+    assert_equal(:success, Cuda::DriverApi.cuMemcpyHtoDAsync_v2(dst_device.read_ulong_long, src_host, byte_count, cu_stream.read_pointer))
   end
 end
