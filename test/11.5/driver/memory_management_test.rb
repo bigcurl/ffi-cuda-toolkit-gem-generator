@@ -536,18 +536,23 @@ class CudaMemoryManagementTest < Minitest::Test
 
   def test_cu_mem_cpy_d_to_h
     dst_host = FFI::MemoryPointer.new(:int, 3)
-    src_device = FFI::MemoryPointer.new(:ulong_long)
+    src_device = FFI::MemoryPointer.new(:ulong_long, 3)
+
     byte_count = src_device.size
+
     assert_equal(:success, Cuda::DriverApi.cuMemAlloc_v2(src_device, byte_count))
+
     # TODO: Here we need to put data on the device first and than read it again
+    # >>> Whenever we allocate a device memory FFI can no longer write into the device memory. <<<
+    # >>> If we write some data it says invalid value. After looking at the sample of cuda it seems <<<
+    # >>> a Nvidia kernel is launched at the device memory. <<<
     # otherwise we cannot verify the output as dst_host contains random values from device
+    # >>> After allocating the memory at device the data will be empty/zero. <<<
     assert_equal(:success, Cuda::DriverApi.cuMemcpyDtoH_v2(dst_host, src_device.read_ulong_long, byte_count))
-    # TODO: Verify output
+
+    assert_equal([0, 0, 0],dst_host.read_array_of_int(3))
   end
 
-  # FIXME: Having trouble.
-  # Returns error_invalid_valid.
-  # Possibly device memory allocation is not correct
   def test_cu_mem_cpy_h_to_d
     array_host = [1, 2, 3]
     src_host = FFI::MemoryPointer.new(:int, array_host.size)
@@ -559,6 +564,8 @@ class CudaMemoryManagementTest < Minitest::Test
 
     assert_equal(:success, Cuda::DriverApi.cuMemAlloc_v2(dst_device, byte_count))
     assert_equal(:success, Cuda::DriverApi.cuMemcpyHtoD_v2(dst_device.read_ulong_long, src_host, byte_count))
+
+    # Again we can not check whether device memory contains our host data or not
   end
 
   def test_cu_mem_cpy_d_to_h_async
@@ -570,14 +577,15 @@ class CudaMemoryManagementTest < Minitest::Test
     byte_count = src_device.size
     assert_equal(:success, Cuda::DriverApi.cuMemAlloc_v2(src_device, byte_count))
     # TODO: Here we need to put data on the device first and than read it again
+    # >>> Discussed before <<<
     # otherwise we cannot verify the output as dst_host contains random values from device
     assert_equal(:success, Cuda::DriverApi.cuMemcpyDtoHAsync_v2(dst_host, src_device.read_ulong_long, byte_count, cu_stream.read_pointer))
     # TODO: Verify output
+    # >>> Discussed before <<<
+
+    # assert_equal([0, 0, 0],dst_host.read_array_of_int(3))
   end
 
-  # FIXME: Having trouble.
-  # Returns error_invalid_valid.
-  # Possibly device memory allocation is not correct
   def test_cu_mem_cpy_h_to_d_async
     cu_stream = FFI::MemoryPointer.new :pointer
     assert_equal(:success, Cuda::DriverApi.cuStreamCreate(cu_stream, Cuda::DriverApi::CU_STREAM_DEFAULT))
