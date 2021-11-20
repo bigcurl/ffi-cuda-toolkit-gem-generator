@@ -413,12 +413,12 @@ class CudaMemoryManagementTest < Minitest::Test
     array = [1, 2, 3]
     dst = FFI::MemoryPointer.new(:ulong_long, array.size)
     src = FFI::MemoryPointer.new(:ulong_long, array.size)
-    src.write_array_of_ulong_long([1, 2, 3])
+    src.write_array_of_ulong_long(array)
 
     byte_count = src.size
 
     assert_equal(:success, Cuda::DriverApi.cuMemcpy(dst.address, src.address, byte_count))
-    assert_equal([1, 2, 3], dst.read_array_of_ulong_long(3))
+    assert_equal(src.read_array_of_ulong_long(3), dst.read_array_of_ulong_long(3))
   end
 
   def test_cu_mem_cpy_async
