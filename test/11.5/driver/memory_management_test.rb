@@ -256,62 +256,62 @@ class CudaMemoryManagementTest < Minitest::Test
     assert_equal([1, 2, 3].to_s, dst.read_array_of_int(3).to_s)
   end
 
-  # def test_cu_mem_cpy_host_to_device_and_back
-  #   # Fixed: Here we need to put data on the device first and than read it again
-  #   # otherwise we cannot verify the output as dst_host contains random values from device
-  #   # # Here is a full example of getting data from the host to the device and back
+  def test_cu_mem_cpy_host_to_device_and_back
+    # Fixed: Here we need to put data on the device first and than read it again
+    # otherwise we cannot verify the output as dst_host contains random values from device
+    # # Here is a full example of getting data from the host to the device and back
 
-  #   src_host = FFI::MemoryPointer.new(:ulong_long, 3)
-  #   src_host.write_array_of_int([3, 2, 1])
-  #   byte_count = src_host.size
+    src_host = FFI::MemoryPointer.new(:ulong_long, 3)
+    src_host.write_array_of_int([3, 2, 1])
+    byte_count = src_host.size
 
-  #   # First dst_host is zero
-  #   dst_host = FFI::MemoryPointer.new(:ulong_long, 3)
-  #   assert_equal([0, 0, 0], dst_host.read_array_of_int(3))
+    # First dst_host is zero
+    dst_host = FFI::MemoryPointer.new(:ulong_long, 3)
+    assert_equal([0, 0, 0], dst_host.read_array_of_int(3))
 
-  #   tmp_device = FFI::MemoryPointer.new(:ulong_long, 3)
-  #   assert_equal(:success, Cuda::DriverApi.cuMemAlloc_v2(tmp_device, byte_count))
-  #   assert_equal(:success, Cuda::DriverApi.cuMemcpy(tmp_device.read_ulong_long, src_host.address, byte_count))
-  #   assert_equal(:success, Cuda::DriverApi.cuMemcpyDtoH_v2(dst_host, tmp_device.read_ulong_long, byte_count))
+    tmp_device = FFI::MemoryPointer.new(:ulong_long, 3)
+    assert_equal(:success, Cuda::DriverApi.cuMemAlloc_v2(tmp_device, byte_count))
+    assert_equal(:success, Cuda::DriverApi.cuMemcpy(tmp_device.read_ulong_long, src_host.address, byte_count))
+    assert_equal(:success, Cuda::DriverApi.cuMemcpyDtoH_v2(dst_host, tmp_device.read_ulong_long, byte_count))
 
-  #   # Now dst_host is the same as src_host and has been copied through the device
-  #   assert_equal([3, 2, 1], dst_host.read_array_of_int(3))
+    # Now dst_host is the same as src_host and has been copied through the device
+    assert_equal([3, 2, 1], dst_host.read_array_of_int(3))
 
-  #   # >>> Whenever we allocate a device memory FFI can no longer write into the device memory. <<<
-  #   # # It is true that we cannot read/write to the device through the pointers allocated on the host.
-  #   # # This is why we have the api to copy data back and forth.
-  #   # >>> If we write some data it says invalid value.
-  #   # # So to access data on the device we have to copy it to the host first and the other way around
+    # >>> Whenever we allocate a device memory FFI can no longer write into the device memory. <<<
+    # # It is true that we cannot read/write to the device through the pointers allocated on the host.
+    # # This is why we have the api to copy data back and forth.
+    # >>> If we write some data it says invalid value.
+    # # So to access data on the device we have to copy it to the host first and the other way around
 
-  #   # >>> After looking at the sample of cuda it seems. A Nvidia kernel is launched at the device memory. <<<
-  #   # # A kernel is basicaly a callback on the device (which is called with some special variables filled).
-  #   # # This is the principle workflow of every cuda program:
-  #   # # 1. We prepare the device memory first on the device by copying the data over.
-  #   # # 2. Than we launch a kernel with the pointer values as arguments.
-  #   # # 3. In the kernel we use the device pointer to access the data and do our computations
-  #   # # 4. We copy the results back from device to the host
+    # >>> After looking at the sample of cuda it seems. A Nvidia kernel is launched at the device memory. <<<
+    # # A kernel is basicaly a callback on the device (which is called with some special variables filled).
+    # # This is the principle workflow of every cuda program:
+    # # 1. We prepare the device memory first on the device by copying the data over.
+    # # 2. Than we launch a kernel with the pointer values as arguments.
+    # # 3. In the kernel we use the device pointer to access the data and do our computations
+    # # 4. We copy the results back from device to the host
 
-  #   # >>> After allocating the memory at device the data will be empty/zero. <<<
-  #   # # I think the data is undefined after a device malloc
-  # end
+    # >>> After allocating the memory at device the data will be empty/zero. <<<
+    # # I think the data is undefined after a device malloc
+  end
 
-  # def test_cu_mem_cpy_h_to_d_to_h
-  #   array = [3,2,1]
-  #   src_dst_host = FFI::MemoryPointer.new(:ulong_long, array.size)
-  #   src_dst_host.write_array_of_int(array)
-  #   byte_count = src_dst_host.size
+  def test_cu_mem_cpy_h_to_d_to_h
+    array = [3,2,1]
+    src_dst_host = FFI::MemoryPointer.new(:ulong_long, array.size)
+    src_dst_host.write_array_of_int(array)
+    byte_count = src_dst_host.size
 
-  #   dst_device = FFI::MemoryPointer.new(:ulong_long, array.size)
-  #   assert_equal(:success, Cuda::DriverApi.cuMemAlloc_v2(dst_device, byte_count))
+    dst_device = FFI::MemoryPointer.new(:ulong_long, array.size)
+    assert_equal(:success, Cuda::DriverApi.cuMemAlloc_v2(dst_device, byte_count))
 
-  #   assert_equal(:success, Cuda::DriverApi.cuMemcpyHtoD_v2(dst_device.read_ulong_long, src_dst_host, byte_count))
-  #   zeroed_array = [0, 0, 0]
-  #   src_dst_host.write_array_of_int(zeroed_array)
-  #   assert_equal(zeroed_array, src_dst_host.read_array_of_int(array.size))
+    assert_equal(:success, Cuda::DriverApi.cuMemcpyHtoD_v2(dst_device.read_ulong_long, src_dst_host, byte_count))
+    zeroed_array = [0, 0, 0]
+    src_dst_host.write_array_of_int(zeroed_array)
+    assert_equal(zeroed_array, src_dst_host.read_array_of_int(array.size))
 
-  #   assert_equal(:success, Cuda::DriverApi.cuMemcpyDtoH_v2(src_dst_host, dst_device.read_ulong_long, byte_count))
-  #   assert_equal(array, src_dst_host.read_array_of_int(array.size))
-  # end
+    assert_equal(:success, Cuda::DriverApi.cuMemcpyDtoH_v2(src_dst_host, dst_device.read_ulong_long, byte_count))
+    assert_equal(array, src_dst_host.read_array_of_int(array.size))
+  end
 
   def test_cu_mem_cpy_h_to_d
     array_host = [1, 2, 3]
