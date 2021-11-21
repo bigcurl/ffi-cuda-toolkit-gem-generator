@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 # Needed
+# CUresult cuGraphCreate ( CUgraph* phGraph, unsigned int  flags )
+# CUresult cuGraphDestroy ( CUgraph hGraph )
+# CUresult cuGraphLaunch ( CUgraphExec hGraphExec, CUstream hStream )
+# CUresult cuGraphClone ( CUgraph* phGraphClone, CUgraph originalGraph )
 # CUresult cuDeviceGetGraphMemAttribute ( CUdevice device, CUgraphMem_attribute attr, void* value )
 # CUresult cuDeviceGraphMemTrim ( CUdevice device )
 # CUresult cuDeviceSetGraphMemAttribute ( CUdevice device, CUgraphMem_attribute attr, void* value )
@@ -15,10 +19,7 @@
 # CUresult cuGraphAddMemcpyNode ( CUgraphNode* phGraphNode, CUgraph hGraph, const CUgraphNode* dependencies, size_t numDependencies, const CUDA_MEMCPY3D* copyParams, CUcontext ctx )
 # CUresult cuGraphAddMemsetNode ( CUgraphNode* phGraphNode, CUgraph hGraph, const CUgraphNode* dependencies, size_t numDependencies, const CUDA_MEMSET_NODE_PARAMS* memsetParams, CUcontext ctx )
 # CUresult cuGraphChildGraphNodeGetGraph ( CUgraphNode hNode, CUgraph* phGraph )
-# CUresult cuGraphClone ( CUgraph* phGraphClone, CUgraph originalGraph )
-# CUresult cuGraphCreate ( CUgraph* phGraph, unsigned int  flags )
 # CUresult cuGraphDebugDotPrint ( CUgraph hGraph, const char* path, unsigned int  flags )
-# CUresult cuGraphDestroy ( CUgraph hGraph )
 # CUresult cuGraphDestroyNode ( CUgraphNode hNode )
 # CUresult cuGraphEventRecordNodeGetEvent ( CUgraphNode hNode, CUevent* event_out )
 # CUresult cuGraphEventRecordNodeSetEvent ( CUgraphNode hNode, CUevent event )
@@ -47,7 +48,6 @@
 # CUresult cuGraphKernelNodeGetParams ( CUgraphNode hNode, CUDA_KERNEL_NODE_PARAMS* nodeParams )
 # CUresult cuGraphKernelNodeSetAttribute ( CUgraphNode hNode, CUkernelNodeAttrID attr, const CUkernelNodeAttrValue* value )
 # CUresult cuGraphKernelNodeSetParams ( CUgraphNode hNode, const CUDA_KERNEL_NODE_PARAMS* nodeParams )
-# CUresult cuGraphLaunch ( CUgraphExec hGraphExec, CUstream hStream )
 # CUresult cuGraphMemAllocNodeGetParams ( CUgraphNode hNode, CUDA_MEM_ALLOC_NODE_PARAMS* params_out )
 # CUresult cuGraphMemFreeNodeGetParams ( CUgraphNode hNode, CUdeviceptr* dptr_out )
 # CUresult cuGraphMemcpyNodeGetParams ( CUgraphNode hNode, CUDA_MEMCPY3D* nodeParams )
