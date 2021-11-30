@@ -2371,7 +2371,7 @@ module Cuda
     attach_function :cuLaunchKernel, :cuLaunchKernel, %i[CUfunction uint uint uint uint uint uint uint CUstream pointer pointer], :CUresult
     attach_function :cuLaunchCooperativeKernel, :cuLaunchCooperativeKernel, %i[CUfunction uint uint uint uint uint uint uint CUstream pointer], :CUresult
     attach_function :cuLaunchCooperativeKernelMultiDevice, :cuLaunchCooperativeKernelMultiDevice, %i[pointer uint uint], :CUresult
-    attach_function :cuLaunchHostFunc, :cuLaunchHostFunc, [:CUstream, Callback_CUhostFn, :pointer], :CUresult
+    attach_function :cuLaunchHostFunc, :cuLaunchHostFunc, %i[CUstream CUhostFn pointer], :CUresult
     attach_function :cuFuncSetBlockShape, :cuFuncSetBlockShape, %i[CUfunction int int int], :CUresult
     attach_function :cuFuncSetSharedSize, :cuFuncSetSharedSize, %i[CUfunction uint], :CUresult
     attach_function :cuParamSetSize, :cuParamSetSize, %i[CUfunction uint], :CUresult

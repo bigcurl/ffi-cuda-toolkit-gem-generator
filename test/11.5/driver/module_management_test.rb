@@ -59,7 +59,7 @@ class CudaModuleManagementTest < Minitest::Test
 
   def test_cu_module_load
     cu_module = FFI::MemoryPointer.new :pointer
-    filepath = ('./test/11.5/driver/vectorAdd_kernel64.fatbin')
+    filepath = './test/11.5/driver/vectorAdd_kernel64.fatbin'
 
     assert_equal(:success, Cuda::DriverApi.cuModuleLoad(cu_module, filepath))
     refute_nil(cu_module.read_pointer)
@@ -117,8 +117,8 @@ class CudaModuleManagementTest < Minitest::Test
 
     assert_equal(:success, Cuda::DriverApi.cuModuleLoadData(cu_module, image))
 
-    assert_equal(:success, Cuda::DriverApi.cuModuleGetFunction(h_func, cu_module.read_pointer, "VecAdd_kernel"))
-    assert_equal(:error_not_found, Cuda::DriverApi.cuModuleGetFunction(h_func, cu_module.read_pointer, "empty"))
+    assert_equal(:success, Cuda::DriverApi.cuModuleGetFunction(h_func, cu_module.read_pointer, 'VecAdd_kernel'))
+    assert_equal(:error_not_found, Cuda::DriverApi.cuModuleGetFunction(h_func, cu_module.read_pointer, 'empty'))
   end
 
   def test_cu_module_get_global
@@ -131,7 +131,6 @@ class CudaModuleManagementTest < Minitest::Test
     d_ptr = FFI::MemoryPointer.new(:ulong_long)
     bytes = FFI::MemoryPointer.new(:size_t)
     # vector kernel fatbin has no global variable
-    assert_equal(:error_not_found, Cuda::DriverApi.cuModuleGetGlobal_v2(d_ptr, bytes, cu_module.read_pointer, "error"))
+    assert_equal(:error_not_found, Cuda::DriverApi.cuModuleGetGlobal_v2(d_ptr, bytes, cu_module.read_pointer, 'error'))
   end
-
 end

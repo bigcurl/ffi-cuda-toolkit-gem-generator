@@ -7,6 +7,10 @@ require 'test_helper'
 # CUresult cuGetErrorString ( CUresult error, const char** pStr )
 
 class CudaErrorHandlingTest < Minitest::Test
+  def setup
+    Cuda::DriverApi.cuInit(0)
+  end
+
   def test_cu_get_error_name
     p_str = FFI::MemoryPointer.new(:pointer, 1)
     assert_equal(:success, Cuda::DriverApi.cuGetErrorName(:error_not_initialized, p_str))

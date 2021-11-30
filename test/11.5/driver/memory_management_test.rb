@@ -292,7 +292,7 @@ class CudaMemoryManagementTest < Minitest::Test
   end
 
   def test_cu_mem_cpy_h_to_d_to_h
-    array = [3,2,1]
+    array = [3, 2, 1]
     src_dst_host = FFI::MemoryPointer.new(:ulong_long, array.size)
     src_dst_host.write_array_of_int(array)
     byte_count = src_dst_host.size

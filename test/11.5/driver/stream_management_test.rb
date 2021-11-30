@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Needed
 # CUresult cuStreamCreate ( CUstream* phStream, unsigned int  Flags )
 # CUresult cuStreamCreateWithPriority ( CUstream* phStream, unsigned int  flags, int  priority )
