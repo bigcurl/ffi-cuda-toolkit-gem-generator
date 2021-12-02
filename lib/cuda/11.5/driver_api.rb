@@ -1179,7 +1179,7 @@ module Cuda
     CUDA_ERROR_GRAPH_EXEC_UPDATE_FAILURE = 910
     CUDA_ERROR_EXTERNAL_DEVICE = 911
     CUDA_ERROR_UNKNOWN = 999
-    cudaError_enum = enum :CUresult, [
+    enum :CUresult, [
       :success, 0,
       :error_invalid_value, 1,
       :error_out_of_memory, 2,
