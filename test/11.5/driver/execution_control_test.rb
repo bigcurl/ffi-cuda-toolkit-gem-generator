@@ -18,11 +18,14 @@ class ExecutionControlTest < Minitest::Test
     Cuda::DriverApi.cuInit(0)
   end
 
-  Callback = proc do |_buf_ptr|
-    assert_success
+  Callback = Proc.new do |data, _buf_ptr|
+    # debugger
+    # puts data
   end
 
   def test_cu_launch_host_func
-    assert_equal(:success, Cuda::DriverApi.cuLaunchHostFunc(nil, Callback, nil))
+    results = []
+    callback = Callback[results]
+    assert_equal(:success, Cuda::DriverApi.cuLaunchHostFunc(nil, callback, nil))
   end
 end
