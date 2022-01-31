@@ -5,8 +5,8 @@ require_relative 'lib/cuda/version'
 Gem::Specification.new do |spec|
   spec.name          = 'cuda'
   spec.version       = Cuda::VERSION
-  spec.authors       = ['Dr. Samuel Goebert']
-  spec.email         = ['samuel.goebert@bigcurl.de']
+  spec.authors       = ['Dr. Samuel Goebert', 'Abrar']
+  spec.email         = ['samuel.goebert@bigcurl.de', 's96mini.cube@gmail.com']
 
   spec.summary       = 'FFI wrapper for the NVIDIA Cuda Toolkit'
   spec.homepage      = 'https://github.com/bigcurl/ffi-cuda-toolkit-gem-generator'
